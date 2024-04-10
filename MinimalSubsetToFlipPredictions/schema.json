@@ -1,0 +1,43 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer"
+        },
+        "text": {
+            "type": "string"
+        },
+        "minimum_subset": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "index": {
+                        "type": "integer"
+                    },
+                    "text": {
+                        "type": "string"
+                    },
+                    "label": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "index",
+                    "text",
+                    "label"
+                ]
+            }
+        },
+        "label": {
+            "type": "integer"
+        }
+    },
+    "required": [
+        "id",
+        "str",
+        "minimum_subset",
+        "label"
+    ]
+}

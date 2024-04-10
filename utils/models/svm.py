@@ -30,8 +30,11 @@ def project_inputs(inputs: np.ndarray, clf: LinearSVC) -> np.ndarray:
     # Since distances is a 1D array of shape (n_samples,), we need to make it compatible with the shape of x_input
     # for broadcasting. We reshape distances to (n_samples, 1) and then multiply by w, which broadcasts the operation
     # across all dimensions except the last, aligning with the shape of w.
-    projected_vectors = (
+    projection_vectors = (
         dist_to_hyperplane[:, np.newaxis] * w / np.linalg.norm(w)
     )
 
-    return projected_vectors
+    # Compute the points on the hyperplane
+    x_proj_on_hyperplane = inputs - projection_vectors
+
+    return x_proj_on_hyperplane

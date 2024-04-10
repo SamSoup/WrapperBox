@@ -43,6 +43,9 @@ class SVMExampleBasedExplanation(ExampleBasedExplanation):
             projected_vectors, clf.support_vectors_
         )
 
+        # print(projected_vectors)
+        # print(dist_to_support_vectors)
+
         # Indices of support vectors, sorted ascendingly by distance
         # from 0 to num_of_support_vectors; this will be translated/mapped
         # to 0 to num_of_train_eval_examples
@@ -54,6 +57,7 @@ class SVMExampleBasedExplanation(ExampleBasedExplanation):
         # indices within [0, num_support_vectors)
         sorted_indices_per_test_example = sorted_indices_per_test_example[:, :M]
 
+        # print(sorted_indices_per_test_example)
         # Translate indices of support vectors to indices of training example
         original_indices = clf.support_[sorted_indices_per_test_example]
 
