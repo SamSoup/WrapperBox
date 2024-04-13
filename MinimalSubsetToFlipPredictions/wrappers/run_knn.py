@@ -1,4 +1,4 @@
-from MinimalSubsetToFlipPredictions.wrappers.svm import FindMinimalSubsetSVM
+from MinimalSubsetToFlipPredictions.wrappers.knn import FindMinimalSubsetKNN
 from utils.constants.directory import RESULTS_DIR
 from utils.io import mkdir_if_not_exists
 from datasets import concatenate_datasets, DatasetDict
@@ -48,10 +48,10 @@ output_dir = RESULTS_DIR / "MinimalSubset"
 mkdir_if_not_exists(output_dir)
 
 # Running SVM
-handler = FindMinimalSubsetSVM(ITERATIVE_THRESHOLD=10, SPLITS=10)
-wrapper_name = "SVM"
+handler = FindMinimalSubsetKNN()
+wrapper_name = "KNN"
 
-svm_clf = load_saved_wrapperbox_model(
+clf = load_saved_wrapperbox_model(
     dataset="toxigen",
     model="deberta-large",
     seed=42,
@@ -67,7 +67,7 @@ dataset_dict = DatasetDict(
 )
 
 minimal_subset_indices = handler.find_minimal_subset(
-    clf=svm_clf,
+    clf=clf,
     train_embeddings=train_eval_embeddings,
     test_embeddings=test_embeddings,
     train_labels=train_eval_labels,

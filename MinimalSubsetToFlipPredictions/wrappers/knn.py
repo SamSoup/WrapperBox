@@ -1,5 +1,6 @@
 # This script finds the minimal set of neighbors for a svm
-from interface import FindMinimalSubset
+from typing import List
+from .interface import FindMinimalSubset
 from sklearn.neighbors import KNeighborsClassifier
 from utils.inference import find_majority_batched
 from tqdm import tqdm
@@ -51,31 +52,29 @@ class FindMinimalSubsetKNN(FindMinimalSubset):
 
     def find_minimal_subset(
         self,
-        dataset: str,
         clf: KNeighborsClassifier,
         train_embeddings: np.ndarray,
-        eval_embeddings: np.ndarray,
         test_embeddings: np.ndarray,
         train_labels: np.ndarray,
-        eval_labels: np.ndarray,
-        test_labels: np.ndarray,
-        output_dir: str = "./results",
-    ):
+    ) -> List[List[int]]:
         # knn has no learning: so use train and eval labels together
-        train_eval_labels = np.concatenate([train_labels, eval_labels])
         predictions = clf.predict(test_embeddings)
-        neigh_dist, neigh_ind = clf.kneighbors(
+        neigh_ind = clf.kneighbors(
             X=test_embeddings,
-            n_neighbors=len(train_eval_labels),
-            return_distance=True,
+            n_neighbors=len(train_labels),
+            return_distance=False,
         )
         # use the neigh_ind to retrieve the indices of the neighbors
-        neigh_labels = train_eval_labels[neigh_ind]
+        neigh_labels = train_labels[neigh_ind]
 
         # the task of finding the minimal set for the nearest neighbor approach
         # is just using a sliding window to see when the majority label changes
         # from the predictions
 
         movement = self._compute_movement(neigh_labels, predictions)
+        subset_indices = []
+        # the train indices to remove is simply from 0:movement
+        for indices, end in tqdm(zip(neigh_ind, movement)):
+            subset_indices.append(indices[:end].tolist())
 
-        # TODO: Finish Movement code
+        return subset_indices

@@ -1,5 +1,5 @@
 from ExampleBasedExplanations.lmeans import (
-    KMeansExampleBasedExplanation,
+    LMeansExampleBasedExplanation,
 )
 from data.datasets import load_labels_at_split
 from classifiers.KMeansClassifier import KMeansClassifier
@@ -75,7 +75,7 @@ testset_perfm = compute_metrics(
 pprint(testset_perfm)
 
 # Obtain Example Based Explanations
-handler = KMeansExampleBasedExplanation()
+handler = LMeansExampleBasedExplanation()
 
 neigh_indices = handler.get_explanation_indices(
     M=M,

@@ -5,7 +5,6 @@ from utils.inference import compute_metrics, cross_validation_with_grid_search
 from utils.constants.models import SVM_BASE
 from ExampleBasedExplanations.svm import SVMExampleBasedExplanation
 from datasets import Dataset, DatasetDict, concatenate_datasets
-from utils.constants.directory import RESULTS_DIR
 from utils.io import mkdir_if_not_exists
 from pprint import pprint
 import numpy as np
@@ -80,6 +79,7 @@ print(f"Best {wrapper_name} Params:", best_params_svm)
 
 predictions = best_svm.predict(test_embeddings)
 
+print(predictions)
 # Print some metrics
 testset_perfm = compute_metrics(
     y_true=test_labels, y_pred=predictions, is_multiclass=False, prefix="test"
@@ -96,11 +96,13 @@ neigh_indices = handler.get_explanation_indices(
     test_embeddings=test_embeddings,
 )
 
+print(neigh_indices)
+
 output_dir = "./AnubrataQA/results"
 mkdir_if_not_exists(output_dir)
 
 handler.persist_to_disk(
-    dataset=dataset_dict,
+    dataset=new_dataset,
     dataset_name="AnubrataQA",
     model_name="SentenceT5Large",
     wrapper_name=wrapper_name,

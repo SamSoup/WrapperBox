@@ -1,4 +1,4 @@
-# This script finds the minimal set of examples required to flip a svm
+# This script finds the minimal set of examples required to flip a svm pred
 from sympy import reduced
 from MinimalSubsetToFlipPredictions.wrappers.interface import FindMinimalSubset
 from ExampleBasedExplanations.svm import SVMExampleBasedExplanation
@@ -246,27 +246,6 @@ class FindMinimalSubsetSVM(FindMinimalSubset):
         test_embeddings: np.ndarray,
         train_labels: np.ndarray,
     ) -> List[List[int]]:
-        """
-
-        Args:
-            dataset (DatasetDict): {
-                "train": ["text", "label", ...]
-                "eval": ["text", "label", ...]
-                "test": ["text", "label", ...]
-            }
-            clf (SVC): a Linear SVM classifier
-            train_embeddings (np.ndarray): _description_
-            eval_embeddings (np.ndarray): _description_
-            test_embeddings (np.ndarray): _description_
-            train_labels (np.ndarray): _description_
-            eval_labels (np.ndarray): _description_
-            test_labels (np.ndarray): _description_
-            output_dir (str, optional): _description_. Defaults to "./results".
-
-        Returns:
-            (List[List[int]]), the list of the indices to the train_eval data
-            for the minimal subset per each example
-        """
         # the preprocessing is equivalent to finding the example-based
         # explanations for SVM
         handler = SVMExampleBasedExplanation()

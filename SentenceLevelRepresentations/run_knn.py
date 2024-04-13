@@ -63,7 +63,7 @@ wrapper_name = "KNN"
 best_knn, best_score_knn, best_params_knn = cross_validation_with_grid_search(
     estimator=KNeighborsClassifier(n_jobs=-1),
     param_grid={
-        "n_neighbors": [1, 5, 10, 25, 50, 75, 100],
+        "n_neighbors": [10],
     },
     X_train=train_embeddings,
     y_train=dataset_dict["train"]["label"],

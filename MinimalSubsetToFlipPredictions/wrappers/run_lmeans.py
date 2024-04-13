@@ -1,4 +1,6 @@
-from MinimalSubsetToFlipPredictions.wrappers.svm import FindMinimalSubsetSVM
+from MinimalSubsetToFlipPredictions.wrappers.lmeans import (
+    FindMinimalSubsetLMeans,
+)
 from utils.constants.directory import RESULTS_DIR
 from utils.io import mkdir_if_not_exists
 from datasets import concatenate_datasets, DatasetDict
@@ -47,11 +49,11 @@ test_labels = load_labels_at_split(dataset, "test")
 output_dir = RESULTS_DIR / "MinimalSubset"
 mkdir_if_not_exists(output_dir)
 
-# Running SVM
-handler = FindMinimalSubsetSVM(ITERATIVE_THRESHOLD=10, SPLITS=10)
-wrapper_name = "SVM"
+# Running LMeans
+handler = FindMinimalSubsetLMeans()
+wrapper_name = "L_Means"
 
-svm_clf = load_saved_wrapperbox_model(
+lmeans_clf = load_saved_wrapperbox_model(
     dataset="toxigen",
     model="deberta-large",
     seed=42,
@@ -66,8 +68,11 @@ dataset_dict = DatasetDict(
     {"train": train_eval_dataset, "test": dataset["test"]}
 )
 
+# TODO: subset test embeddings for testing, for now
+# test_embeddings = test_embeddings[:, :]
+
 minimal_subset_indices = handler.find_minimal_subset(
-    clf=svm_clf,
+    clf=lmeans_clf,
     train_embeddings=train_eval_embeddings,
     test_embeddings=test_embeddings,
     train_labels=train_eval_labels,

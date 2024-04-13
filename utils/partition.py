@@ -1,4 +1,5 @@
 from typing import List
+from datasets import DatasetDict
 
 
 def partition_indices(N, M) -> List[int]:
@@ -20,3 +21,24 @@ def partition_indices(N, M) -> List[int]:
     sections_indices.append(N)
 
     return sections_indices
+
+
+def filter_first_N_entries(dataset_dict: DatasetDict, N: int):
+    """
+    Filter down each split in a DatasetDict to only the first N entries.
+    Useful when needing to test functionality of a small amonnt of code
+
+    Args:
+        dataset_dict (DatasetDict): The DatasetDict containing splits of a dataset.
+
+    Returns:
+        DatasetDict: The filtered DatasetDict.
+    """
+    filtered_dataset = DatasetDict(
+        {
+            split: dataset_dict[split].select(range(N))
+            for split in dataset_dict.keys()
+        }
+    )
+
+    return filtered_dataset

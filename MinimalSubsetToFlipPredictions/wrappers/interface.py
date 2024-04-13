@@ -44,28 +44,27 @@ class FindMinimalSubset(ABC):
         minimal_subset_indices: List[List[int]],
         output_dir: str = "./results",
     ):
-        train_eval_dataset = concatenate_datasets(
-            [dataset["train"], dataset["eval"]]
-        )
         compiled_data = []
 
         for i, indices in tqdm(
             enumerate(minimal_subset_indices), "persisting to disc"
         ):
-            minimal_subset = [
-                {
-                    "index": idx,
-                    "example": train_eval_dataset["text"][idx],
-                    "label": train_eval_dataset["label"][idx],
-                }
-                for idx in indices
-            ]
+            # NOTE: due to the possibly large size of minimal subset,
+            # only store the indices and NOT the associated example/label
+            # minimal_subset = [
+            #     {
+            #         "index": idx,
+            #         "example": dataset["train"]["text"][idx],
+            #         "label": dataset["train"]["label"][idx],
+            #     }
+            #     for idx in indices
+            # ]
             compiled_data.append(
                 {
                     "id": i,
                     "text": dataset["test"][i]["text"],
                     "label": dataset["test"][i]["label"],
-                    "minimum_subset": minimal_subset,
+                    "minimum_subset": indices,
                 }
             )
 
