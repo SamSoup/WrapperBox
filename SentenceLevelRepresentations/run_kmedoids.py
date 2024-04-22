@@ -1,12 +1,16 @@
-from sklearn.metrics import classification_report, f1_score
-from sklearn.base import clone
+from sklearn.metrics import f1_score
+from ExampleBasedExplanations.kmedoids import KMedoidsExampleBasedExplanation
+from ExampleBasedExplanations.lmeans import (
+    LMeansExampleBasedExplanation,
+)
+from classifiers.KMedoidsClassifier import KMedoidsClassifier
 from data.datasets import load_labels_at_split
-from utils.inference import compute_metrics, cross_validation_with_grid_search
-from utils.constants.models import SVM_BASE
-from ExampleBasedExplanations.svm import SVMExampleBasedExplanation
 from datasets import Dataset, DatasetDict, concatenate_datasets
+from utils.inference import compute_metrics, cross_validation_with_grid_search
+from utils.constants.directory import RESULTS_DIR
 from utils.io import mkdir_if_not_exists
 from pprint import pprint
+from sklearn.metrics import classification_report
 import numpy as np
 import pandas as pd
 
@@ -63,27 +67,25 @@ new_dataset = DatasetDict(
 
 # Load Models
 M = 5
-wrapper_name = "SVM"
+wrapper_name = "K_Medoids"
 
 # Hyper-parameter search with decision_tree
-best_svm, best_score_svm, best_params_svm = cross_validation_with_grid_search(
-    estimator=SVM_BASE,
-    param_grid={
-        "C": [0.1, 0.5, 1, 5, 10],
-        "class_weight": ["balanced", None],
-        "kernel": ["linear"],
-        "gamma": ["scale", "auto"],
-    },
-    X_train=train_embeddings,
-    y_train=dataset_dict["train"]["label"],
-    X_eval=eval_embeddings,
-    y_eval=dataset_dict["valid"]["label"],
-    scoring=lambda y_true, y_pred: f1_score(y_true, y_pred, average="weighted"),
-)
-print(f"Best {wrapper_name} Valid Weighted F1:", best_score_svm)
-print(f"Best {wrapper_name} Params:", best_params_svm)
-
-predictions = best_svm.predict(test_embeddings)
+# clf, best_score, best_params = cross_validation_with_grid_search(
+#     estimator=KMedoidsClassifier(),
+#     param_grid={
+#         "n_clusters": [2, 3, 4, 5, 6, 7, 8, 9, 10],
+#     },
+#     X_train=train_embeddings,
+#     y_train=dataset_dict["train"]["label"],
+#     X_eval=eval_embeddings,
+#     y_eval=dataset_dict["valid"]["label"],
+#     scoring=lambda y_true, y_pred: f1_score(y_true, y_pred, average="weighted"),
+# )
+# print(f"Best {wrapper_name} Valid Weighted F1:", best_params)
+# print(f"Best {wrapper_name} Params:", best_score)
+clf = KMedoidsClassifier(n_clusters=5)
+clf.fit(train_eval_embeddings, train_eval_labels)
+predictions = clf.predict(test_embeddings)
 
 # Print some metrics
 testset_perfm = compute_metrics(
@@ -93,12 +95,12 @@ pprint(testset_perfm)
 print(classification_report(y_true=test_labels, y_pred=predictions))
 
 # Obtain Example Based Explanations
-handler = SVMExampleBasedExplanation()
+handler = KMedoidsExampleBasedExplanation()
 
 neigh_indices = handler.get_explanation_indices(
     M=M,
-    clf=best_svm,
-    train_embeddings=train_embeddings,
+    clf=clf,
+    train_embeddings=train_eval_embeddings,
     test_embeddings=test_embeddings,
 )
 

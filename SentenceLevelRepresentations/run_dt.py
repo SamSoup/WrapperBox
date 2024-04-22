@@ -1,4 +1,4 @@
-from sklearn.metrics import f1_score
+from sklearn.metrics import classification_report, f1_score
 from sklearn.tree import DecisionTreeClassifier
 from utils.inference import compute_metrics, cross_validation_with_grid_search
 from ExampleBasedExplanations.decisiontree import (
@@ -13,9 +13,15 @@ import numpy as np
 import pandas as pd
 
 # Load Embeddings
-train_embeddings = np.load("AnubrataQA/embeddings/train_embeddings.npy")
-eval_embeddings = np.load("AnubrataQA/embeddings/valid_embeddings.npy")
-test_embeddings = np.load("AnubrataQA/embeddings/test_embeddings.npy")
+train_embeddings = np.load(
+    "/home/samsoup/Work/WrapperBox/SentenceLevelRepresentations/AnubrataQA/embeddings/T5Base/train_representations.npy"
+)
+eval_embeddings = np.load(
+    "/home/samsoup/Work/WrapperBox/SentenceLevelRepresentations/AnubrataQA/embeddings/T5Base/valid_representations.npy"
+)
+test_embeddings = np.load(
+    "/home/samsoup/Work/WrapperBox/SentenceLevelRepresentations/AnubrataQA/embeddings/T5Base/test_representations.npy"
+)
 train_eval_embeddings = np.vstack([train_embeddings, eval_embeddings])
 
 # Load datasets from Parquet files
@@ -85,6 +91,7 @@ testset_perfm = compute_metrics(
     y_true=test_labels, y_pred=predictions, is_multiclass=False, prefix="test"
 )
 pprint(testset_perfm)
+print(classification_report(y_true=test_labels, y_pred=predictions))
 
 # Obtain Example Based Explanations
 handler = DecisionTreeExampleBasedExplanation()
@@ -101,7 +108,7 @@ mkdir_if_not_exists(output_dir)
 handler.persist_to_disk(
     dataset=dataset_dict,
     dataset_name="AnubrataQA",
-    model_name="SentenceT5Large",
+    model_name="T5Base",
     wrapper_name=wrapper_name,
     predictions=predictions,
     explanation_indices=neigh_indices,
