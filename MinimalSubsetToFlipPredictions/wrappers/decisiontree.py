@@ -88,10 +88,6 @@ class FindMinimalSubsetDecisionTree(FindMinimalSubset):
                 # Retrain the classifier on the reduced dataset
                 new_clf = clone(clf)
                 new_clf.fit(reduced_embeddings, reduced_labels)
-                print(
-                    f"\nNem SVM has {new_clf.support_vectors_.shape[0]}"
-                    "support vectors\n"
-                )
                 new_prediction = new_clf.predict(x.reshape(1, -1))[0]
                 print(
                     f"\nRemoved {reduced_indices.size} examples\n"
