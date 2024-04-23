@@ -36,7 +36,6 @@ class GenericFactory(ABC):
             for name, obj in inspect.getmembers(module)
             if inspect.isclass(obj) and obj.__module__ == module_name
         ]
-        print(class_names)
         if len(class_names) > 1:
             raise ValueError(
                 f"More than one class identified in {filename}"
