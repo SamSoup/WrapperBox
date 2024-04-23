@@ -32,7 +32,7 @@ class FindMinimalSubsetKNN(FindMinimalSubset):
             identified greedily
         """
         # Initialize variables to keep track of window and movement
-        movement = np.full(labels.shape[0], -1, dtype=int)
+        movement = np.full(shape=labels.shape[0], fill_value=-1, dtype=int)
 
         # Slide the window and compute movement for each row
         for i in tqdm(range(1, labels.shape[1] - window_size)):
@@ -45,6 +45,8 @@ class FindMinimalSubsetKNN(FindMinimalSubset):
             print(majority_current)
             print(current_window)
             print(changed_majority)
+            print(movement)
+            input()
             # print(np.logical_and(movement == -1, changed_majority))
             movement[np.logical_and(movement == -1, changed_majority)] = i
 

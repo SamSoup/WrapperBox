@@ -22,7 +22,7 @@ def find_majority_batched(votes: np.ndarray):
     but this would not work for multi-label scenarios
     """
     mode, count = stats.mode(votes, axis=1)
-    return mode
+    return mode[0]
 
 
 def find_majority(votes: Iterable[Union[str, int]]):
