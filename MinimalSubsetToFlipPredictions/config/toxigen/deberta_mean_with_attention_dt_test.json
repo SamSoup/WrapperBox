@@ -1,0 +1,13 @@
+{
+    "dataset": "toxigen",
+    "model": "deberta-large",
+    "seed": 42,
+    "pooler": "mean_with_attention",
+    "layer": 24,
+    "wrapper_name": "DecisionTree",
+    "output_dir": "MinimalSubset/Test",
+    "iterative_threshold": 10,
+    "splits": 10,
+    "do_debug": true,
+    "debug_examples": 50
+}

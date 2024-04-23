@@ -1,14 +1,42 @@
-from typing import List
+from typing import Iterable, List, Union, Tuple
 from datasets import DatasetDict
+import numpy as np
 
 
-def partition_indices(N, M) -> List[int]:
+def get_partition_X(
+    arr: np.ndarray, X: int
+) -> Tuple[Iterable[int], Iterable[int], Iterable[int]]:
+    """
+    Given an array of items in `arr` of integer values (cluster ids, leaf ids),
+    and a desired partition `X`, return the indices and subset of items in
+    partition (cluster or leaf) X
+
+    Args:
+        arr (np.ndarray): 1D iterable of items to filter
+        X (int): Desired partition
+
+    Returns:
+        Tuple[Iterable[int], Iterable[int], Iterable[int]]: Mask, indices of
+            desired items in partition, as well as the partition subset.
+            If
+    """
+    indices = np.arange(arr.shape[0])
+    # only obtain the training examples in the same leaf
+    # as the test example
+    mask = arr == X
+    indices_subset = indices[mask]
+    subset = arr[mask]
+
+    return mask, indices_subset, subset
+
+
+def partition_indices(N: int, M: int) -> List[int]:
     """
     Divides a sequence of indices from 1 to N into M partitions
 
     Parameters:
-    - total_elements (int): The total number of elements to be divided.
-    - num_sections (int): The number of sections to divide the elements into.
+    - N (int): The total number of elements to be divided.
+    - M (int): The number of sections to divide the elements into.
 
     Returns:
         List[int]: - a list of the index of the partitions, namely:
