@@ -59,13 +59,16 @@ def cross_validation_with_grid_search(
 
     Args:
         estimator: An uninitialized sklearn-compatible estimator.
-        param_grid (dict): Dictionary with parameters names (`str`) as keys and lists of parameter settings to try as values.
+        param_grid (dict): Dictionary with parameters names (`str`) as keys and
+            lists of parameter settings to try as values.
         X_train, y_train (np.array): Training data and labels.
         X_eval, y_eval (np.array): Validation data and labels.
-        scoring (callable): A callable to evaluate the predictions on the validation set.
+        scoring (callable): A callable to evaluate the predictions on the
+            validation set.
 
     Returns:
-        best_model: The model with the best hyperparameters, fitted on the combined training and validation dataset.
+        best_model: The model with the best hyperparameters, fitted on the
+            combined training and validation dataset.
         best_score: The best score achieved on the validation set.
         best_params: The set of hyperparameters that achieved the best score.
     """
@@ -89,13 +92,15 @@ def cross_validation_with_grid_search(
         y_pred_eval = model.predict(X_eval)
         score = scoring(y_eval, y_pred_eval)
 
-        # Update best_score, best_params, and best_model if the current model is better
+        # Update best_score, best_params, and best_model if the current model
+        # is better
         if score > best_score:
             best_score = score
             best_params = hyperparams
             best_model = model
 
-    # Optionally, refit the best model on the combined training and validation dataset
+    # Optionally, refit the best model on the combined training and
+    # validation dataset
     X_combined = np.vstack((X_train, X_eval))
     y_combined = np.hstack((y_train, y_eval))
     best_model.fit(X_combined, y_combined)

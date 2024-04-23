@@ -8,6 +8,10 @@ import numpy as np
 
 
 class DecisionTreeExampleBasedExplanation(ExampleBasedExplanation):
+    def __init__(self, ITERATIVE_THRESHOLD: int) -> None:
+        super().__init__()
+        self.ITERATIVE_THRESHOLD = ITERATIVE_THRESHOLD
+
     def _get_explanation_indices_leaf_batched(
         self,
         M: int,
@@ -136,3 +140,25 @@ class DecisionTreeExampleBasedExplanation(ExampleBasedExplanation):
             indices.append(train_indices_subset[top_k])
 
         return indices
+
+    def get_explanation_indices(
+        self,
+        M: int,
+        clf: DecisionTreeClassifier,
+        train_embeddings: np.ndarray,
+        test_embeddings: np.ndarray,
+    ) -> List[List[int]]:
+        if len(test_embeddings) <= self.ITERATIVE_THRESHOLD:
+            return self._get_explanation_indices_brute_force(
+                M=M,
+                clf=clf,
+                train_embeddings=train_embeddings,
+                test_embeddings=test_embeddings,
+            )
+        else:
+            return self._get_explanation_indices_leaf_batched(
+                M=M,
+                clf=clf,
+                train_embeddings=train_embeddings,
+                test_embeddings=test_embeddings,
+            )

@@ -244,7 +244,9 @@ class FindMinimalSubsetDecisionTree(FindMinimalSubset):
     ) -> List[List[int]]:
         # the preprocessing is equivalent to finding the example-based
         # explanations for DT
-        handler = DecisionTreeExampleBasedExplanation()
+        handler = DecisionTreeExampleBasedExplanation(
+            ITERATIVE_THRESHOLD=self.ITERATIVE_THRESHOLD
+        )
         sorted_indices_per_test_example = handler.get_explanation_indices(
             M=None,  # want indices for all leaf examples
             clf=clf,
