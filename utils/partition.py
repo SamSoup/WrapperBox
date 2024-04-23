@@ -18,7 +18,6 @@ def get_partition_X(
     Returns:
         Tuple[Iterable[int], Iterable[int], Iterable[int]]: Mask, indices of
             desired items in partition, as well as the partition subset.
-            If
     """
     indices = np.arange(arr.shape[0])
     # only obtain the training examples in the same leaf

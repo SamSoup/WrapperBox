@@ -77,7 +77,7 @@ class DecisionTreeExampleBasedExplanation(ExampleBasedExplanation):
             # Set the appropriate train example (expl) indices for each
             # test example
             for test_idx, expl_ind in zip(test_indices, sorted_expl_indices):
-                ex_indices[test_idx] = train_indices[expl_ind]
+                ex_indices[test_idx] = expl_ind
         return ex_indices
 
     def _get_explanation_indices_brute_force(
