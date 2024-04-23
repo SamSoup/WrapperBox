@@ -24,7 +24,7 @@ class FindMinimalSubsetKNN(FindMinimalSubset):
             predictions (np.ndarray): (num_test_examples), prediction of the
             knn classifier for each test example
 
-            window_size (int, optional): _description_. Defaults to 5.
+            window_size (int, optional): K. Defaults to 5.
 
         Returns:
             np.ndarray: (num_test_examples), the number of window shifts it
@@ -42,9 +42,9 @@ class FindMinimalSubsetKNN(FindMinimalSubset):
             # Check if majority of the window has changed from the first 5 per row
             changed_majority = np.logical_not(majority_current == predictions)
             # print(predictions)
-            # print(majority_current)
-            # print(current_window)
-            # print(changed_majority)
+            print(majority_current)
+            print(current_window)
+            print(changed_majority)
             # print(np.logical_and(movement == -1, changed_majority))
             movement[np.logical_and(movement == -1, changed_majority)] = i
 
