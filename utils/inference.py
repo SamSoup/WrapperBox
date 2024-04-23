@@ -21,8 +21,8 @@ def find_majority_batched(votes: np.ndarray):
     # np.mean(current_window, axis=1) > 0.5
     but this would not work for multi-label scenarios
     """
-    mode, count = stats.mode(votes, axis=1)
-    return mode[0]
+    mode, count = stats.mode(votes, axis=1, keepdims=False)
+    return mode
 
 
 def find_majority(votes: Iterable[Union[str, int]]):
