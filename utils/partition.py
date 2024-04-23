@@ -8,16 +8,16 @@ def get_partition_X(
 ) -> Tuple[Iterable[int], Iterable[int], Iterable[int]]:
     """
     Given an array of items in `arr` of integer values (cluster ids, leaf ids),
-    and a desired partition `X`, return the indices and subset of items in
-    partition (cluster or leaf) X
+    and a desired partition `X`, return the mask and indices of items that
+    would belong to partition (cluster or leaf) X
 
     Args:
         arr (np.ndarray): 1D iterable of items to filter
         X (int): Desired partition
 
     Returns:
-        Tuple[Iterable[int], Iterable[int], Iterable[int]]: Mask, indices of
-            desired items in partition, as well as the partition subset.
+        Tuple[Iterable[int], Iterable[int]]: Mask, indices of
+            desired items in partition
     """
     indices = np.arange(arr.shape[0])
     # only obtain the training examples in the same leaf
@@ -26,7 +26,7 @@ def get_partition_X(
     indices_subset = indices[mask]
     subset = arr[mask]
 
-    return mask, indices_subset, subset
+    return mask, indices_subset
 
 
 def partition_indices(N: int, M: int) -> List[int]:
