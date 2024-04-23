@@ -183,7 +183,7 @@ if __name__ == "__main__":
         f"{factory.interface_name}{args.wrapper_name}"
     )
     if args.wrapper_name in WRAPPER_BOXES_NEEDING_BATCHED_MINIMAL_SUBET_SEARCH:
-        hanlder = handler_class(
+        handler = handler_class(
             ITERATIVE_THRESHOLD=args.iterative_threshold, SPLITS=args.splits
         )
     else:
