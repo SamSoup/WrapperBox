@@ -47,25 +47,23 @@ class DecisionTreeExampleBasedExplanation(ExampleBasedExplanation):
             unique_leaf_ids_test, "Getting Expl Indices for DT Batched"
         ):
             # Get all test examples in the leaf id
-            _, test_indices, test_leaf_subset = get_partition_X(
-                leaf_ids_test, leaf_id
-            )
+            _, test_indices, _ = get_partition_X(leaf_ids_test, leaf_id)
 
             # Get all train examples in the leaf id
-            _, train_indices, train_leaf_subset = get_partition_X(
-                leaf_ids_train, leaf_id
-            )
+            _, train_indices, _ = get_partition_X(leaf_ids_train, leaf_id)
 
             # Compute distance from test examples to train examples
             # shape(test_leaf_subset.shape[0], train_leaf_subset.shape[0])
             dist_mat = cdist(
-                test_leaf_subset, train_leaf_subset, metric="euclidean"
+                test_embeddings[test_indices],
+                train_embeddings[train_indices],
+                metric="euclidean",
             )
 
             # Order the distances by indices
             if M is None:
                 # assume we want all train exampes
-                M = train_leaf_subset.shape[0]
+                M = test_indices.shape[0]
 
             # NOTE: one potential complications here is that there may not be M
             # examples in a leaf, if that leaf is particularly small
