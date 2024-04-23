@@ -9,5 +9,5 @@
     "iterative_threshold": 10,
     "splits": 10,
     "do_debug": true,
-    "debug_examples": 50
+    "debug_examples": 10
 }

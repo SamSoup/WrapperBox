@@ -7,5 +7,5 @@
     "wrapper_name": "LMeans",
     "output_dir": "MinimalSubset",
     "do_debug": true,
-    "debug_examples": 50
+    "debug_examples": 10
 }
