@@ -1,0 +1,32 @@
+[
+    {
+        "Test input": "Example input 1",
+        "Ground Truth": 1,
+        "Prediction": 1,
+        "Explanations": [
+            [
+                "Explanation 1",
+                1
+            ],
+            [
+                "Explanation 2",
+                0
+            ]
+        ]
+    },
+    {
+        "Test input": "Example input 2",
+        "Ground Truth": 0,
+        "Prediction": 0,
+        "Explanations": [
+            [
+                "Explanation 3",
+                1
+            ],
+            [
+                "Explanation 24",
+                0
+            ]
+        ]
+    }
+]

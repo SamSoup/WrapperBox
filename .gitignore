@@ -1,0 +1,5 @@
+.cache/
+data/
+results/
+build/
+*.egg-info
