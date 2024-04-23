@@ -1,0 +1,16 @@
+#!/bin/bash
+#SBATCH -J deberta_large_svm_minimal_subset
+#SBATCH -o deberta_large_svm_minimal_subset.o%j
+#SBATCH -e deberta_large_svm_minimal_subset.e%j
+#SBATCH -p normal
+#SBATCH -N 1
+#SBATCH -n 1
+#SBATCH -t 48:00:00
+#SBATCH --mail-user=sam.su@utexas.edu
+#SBATCH --mail-type=begin
+#SBATCH --mail-type=end
+#SBATCH -A CCR24018
+source /work/06782/ysu707/ls6/conda/etc/profile.d/conda.sh
+conda activate DkNN
+cd /work/06782/ysu707/ls6/WrapperBox/MinimalSubsetToFlipPredictions/wrappers
+python3 run_svm.py > svm_log.txt
