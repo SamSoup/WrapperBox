@@ -66,12 +66,19 @@ class FindMinimalSubsetKNN(FindMinimalSubset):
         )
         # use the neigh_ind to retrieve the indices of the neighbors
         neigh_labels = train_labels[neigh_ind]
-
+        print(neigh_labels.shape)
+        print(test_embeddings.shape)
+        print(predictions.shape)
+        input()
         # the task of finding the minimal set for the nearest neighbor approach
         # is just using a sliding window to see when the majority label changes
         # from the predictions
 
-        movement = self._compute_movement(neigh_labels, predictions)
+        movement = self._compute_movement(
+            labels=neigh_labels,
+            predictions=predictions,
+            window_size=clf.n_neighbors,
+        )
         subset_indices = []
         # the train indices to remove is simply from 0:movement
         for indices, end in tqdm(zip(neigh_ind, movement)):
