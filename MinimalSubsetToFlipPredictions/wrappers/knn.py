@@ -35,18 +35,20 @@ class FindMinimalSubsetKNN(FindMinimalSubset):
         movement = np.full(shape=labels.shape[0], fill_value=-1, dtype=int)
 
         # Slide the window and compute movement for each row
-        for i in tqdm(range(1, labels.shape[1] - window_size)):
+        for i in tqdm(
+            range(1, labels.shape[1] - window_size),
+            "Computing Expl Indices for KNN",
+        ):
             # Compute majority of the current window for each row
             current_window = labels[:, i : i + window_size]
             majority_current = find_majority_batched(current_window)
             # Check if majority of the window has changed from the first 5 per row
             changed_majority = np.logical_not(majority_current == predictions)
-            # print(predictions)
-            print(majority_current)
-            print(current_window)
-            print(changed_majority)
-            print(movement)
-            input()
+            print("Current window:", current_window)
+            print("Predictions:", predictions)
+            print("Current majorities:", majority_current)
+            print("Changed majorities:", changed_majority)
+            print("Current movement compilated:", movement)
             # print(np.logical_and(movement == -1, changed_majority))
             movement[np.logical_and(movement == -1, changed_majority)] = i
 
