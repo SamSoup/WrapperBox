@@ -74,4 +74,5 @@ class GenericFactory(ABC):
         handler = self._handlers.get(key)
         if not handler:
             raise ValueError(f"No handler found for {key}")
-        return handler()
+        # Do not initiate here: might need further args
+        return handler
