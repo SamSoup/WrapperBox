@@ -44,11 +44,11 @@ class FindMinimalSubsetKNN(FindMinimalSubset):
             majority_current = find_majority_batched(current_window)
             # Check if majority of the window has changed from the first 5 per row
             changed_majority = np.logical_not(majority_current == predictions)
-            print("Current window:", current_window)
-            print("Predictions:", predictions)
-            print("Current majorities:", majority_current)
-            print("Changed majorities:", changed_majority)
-            print("Current movement compilated:", movement)
+            # print("Current window:", current_window)
+            # print("Predictions:", predictions)
+            # print("Current majorities:", majority_current)
+            # print("Changed majorities:", changed_majority)
+            # print("Current movement compilated:", movement)
             # print(np.logical_and(movement == -1, changed_majority))
             movement[np.logical_and(movement == -1, changed_majority)] = i
 
@@ -70,10 +70,10 @@ class FindMinimalSubsetKNN(FindMinimalSubset):
         )
         # use the neigh_ind to retrieve the indices of the neighbors
         neigh_labels = train_labels[neigh_ind]
-        print(neigh_labels.shape)
-        print(test_embeddings.shape)
-        print(predictions.shape)
-        input()
+        # print(neigh_labels.shape)
+        # print(test_embeddings.shape)
+        # print(predictions.shape)
+        # input()
         # the task of finding the minimal set for the nearest neighbor approach
         # is just using a sliding window to see when the majority label changes
         # from the predictions

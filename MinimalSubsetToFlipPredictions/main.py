@@ -208,6 +208,8 @@ if __name__ == "__main__":
     if not os.path.isabs(args.output_dir):
         args.output_dir = RESULTS_DIR / args.output_dir
 
+    mkdir_if_not_exists(args.output_dir)
+
     handler.persist_to_disk(
         dataset=dataset_dict,
         dataset_name=args.dataset,
