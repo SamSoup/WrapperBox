@@ -13,4 +13,4 @@
 source /work/06782/ysu707/ls6/conda/etc/profile.d/conda.sh
 conda activate DkNN
 cd /work/06782/ysu707/ls6/WrapperBox/MinimalSubsetToFlipPredictions
-nohup python3 main.py --config config/toxigen/deberta_mean_with_attention_dt.json > dt.log 2>&1 &
+python3 main.py --config config/toxigen/deberta_mean_with_attention_dt.json
