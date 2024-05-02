@@ -1,7 +1,16 @@
 """Runner for Minimal Subsets
+
+Example usage: 
+
+python3 main.py --config conig/<X>
+
+OR: pass in all other arguments
 """
 
 from cgi import test
+from MinimalSubsetToFlipPredictions.Yang2023.interface import (
+    compute_minimal_subset_to_flip_predictions,
+)
 from MinimalSubsetToFlipPredictions.wrappers.factory import (
     FindMinimalSubsetFactory,
 )
@@ -52,10 +61,22 @@ def get_args():
     )
     parser.add_argument("--layer", type=int, default=24, help="Layer number")
     parser.add_argument(
+        "--do_yang2023",
+        type=bool,
+        default=False,
+        help="If true, run minimal subset algorithm" " from yang et. al. 2023",
+    )
+    parser.add_argument(
+        "--algorithm_type",
+        type=str,
+        default="fast",
+        help="Algorithm 1 or Algorithm 2 as indicated by fast (1) or slow (2)",
+    )
+    parser.add_argument(
         "--wrapper_name",
         type=str,
         default="KNN",
-        help="Name of the wrapper",
+        help="Name of the wrapper. Will be ignored if do_yang2023",
     )
     parser.add_argument(
         "--splits",
@@ -177,6 +198,22 @@ if __name__ == "__main__":
         test_labels,
     ) = load_dataset_and_labels(args=args)
 
+    if args.do_yang2023:
+        # Running Yang et al
+        compute_minimal_subset_to_flip_predictions(
+            dataset_name=args.dataset,
+            train_embeddings=train_embeddings,
+            eval_embeddings=eval_embeddings,
+            test_embeddings=test_embeddings,
+            train_labels=train_labels,
+            eval_labels=eval_labels,
+            test_labels=test_labels,
+            thresh=0.5,
+            l2=500,
+            output_dir="./results",
+            algorithm=args.algorithm_type,
+        )
+
     # Load handler
     factory = FindMinimalSubsetFactory()
     handler_class = factory.get_handler(
@@ -189,6 +226,7 @@ if __name__ == "__main__":
     else:
         handler = handler_class()
 
+    # Load Wrapper box
     clf = load_saved_wrapperbox_model(
         dataset=args.dataset,
         model=args.model,

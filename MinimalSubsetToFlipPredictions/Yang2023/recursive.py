@@ -278,7 +278,7 @@ def IP_iterative(
     np.save(f"{output_dir}/diffs_alg2_{dataname}{str(l2)}_LR_I_D1.npy", diffs)
     # flip list is a list of indices (np.array or none)
     with open(
-        f"{output_dir}/order_alg2_{dataname}{str(l2)}_LR_I_D1.pickle",
+        f"{output_dir}/yang2023_alg2_{dataname}{str(l2)}_LR_I_D1.pickle",
         "wb",
     ) as handle:
         pickle.dump(order_lists, handle)

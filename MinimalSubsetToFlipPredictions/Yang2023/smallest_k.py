@@ -193,7 +193,7 @@ def IP(
     )
     # flip list is a list of indices (np.array or none)
     with open(
-        f"{output_dir}/flip_list_alg1_{dataname}{str(l2)}.pickle",
+        f"{output_dir}/yang2023_alg1_{dataname}{str(l2)}.pickle",
         "wb",
     ) as handle:
         pickle.dump(flip_list, handle)
