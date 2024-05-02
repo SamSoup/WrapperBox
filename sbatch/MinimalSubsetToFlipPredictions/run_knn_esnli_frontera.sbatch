@@ -2,8 +2,8 @@
 #SBATCH -J deberta_large_knn_minimal_subset_esnli_frontera
 #SBATCH -o deberta_large_knn_minimal_subset_esnli_frontera.o%j
 #SBATCH -e deberta_large_knn_minimal_subset_esnli_frontera.e%j
-#SBATCH -p normal
-#SBATCH -N 3
+#SBATCH -p small
+#SBATCH -N 1
 #SBATCH -n 1
 #SBATCH -t 42:00:00
 #SBATCH --mail-user=sam.su@utexas.edu
