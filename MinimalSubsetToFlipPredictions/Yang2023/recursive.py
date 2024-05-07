@@ -34,16 +34,16 @@ def hessian_(X, model, C):
         # Calculate the element-wise weights for the Hessian
         weights = probs * (1 - probs)  # Element-wise multiplication
 
-        # Efficiently calculate the Hessian matrix
-        weighted_F_train = (
+        # Efficiently calculate the weighted part of H
+        weighted_F = (
             F * weights[:, np.newaxis]
         )  # Apply weights along each feature
-        H = (
-            np.dot(weighted_F_train.T, F) / X["train"].shape[0]
-        )  # Outer product and average
+        hessian_part = (
+            np.dot(weighted_F.T, F) / F.shape[0]
+        )  # Compute the outer product and divide by number of samples
 
         # Add the regularization term directly to the diagonal elements
-        np.fill_diagonal(H, H.diagonal() + C / X["train"].shape[0])
+        H = hessian_part + (C / X.shape[0]) * np.eye(F.shape[1])
     else:
         H = (
             F.T @ np.diag(probs * (1 - probs)) @ F / F.shape[0]
@@ -228,21 +228,19 @@ def IP_iterative(
 
     probs = model.predict_proba(X["train"])[:, 1]
     if probs.size > 10000:
-        # Do memory efficient Hessian due to large samples
-
         # Calculate the element-wise weights for the Hessian
         weights = probs * (1 - probs)  # Element-wise multiplication
 
-        # Efficiently calculate the Hessian matrix
+        # Efficiently calculate the weighted part of H
         weighted_F_train = (
             F_train * weights[:, np.newaxis]
         )  # Apply weights along each feature
-        H = (
+        hessian_part = (
             np.dot(weighted_F_train.T, F_train) / X["train"].shape[0]
         )  # Outer product and average
 
         # Add the regularization term directly to the diagonal elements
-        np.fill_diagonal(H, H.diagonal() + l2 / X["train"].shape[0])
+        H = hessian_part + np.eye(F_train.shape[1]) / X["train"].shape[0]
     else:
         H = (
             F_train.T
