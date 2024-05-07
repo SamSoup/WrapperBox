@@ -28,10 +28,27 @@ def gradient_(X, y, model, C):
 def hessian_(X, model, C):
     probs = prediction(X, model)
     F = concatenate(X)
-    H = (
-        F.T @ np.diag(probs * (1 - probs)) @ F / F.shape[0]
-        + C * np.eye(F.shape[1]) / X.shape[0]
-    )
+    if F.shape[1] > 10000:
+        # Do memory efficient Hessian due to large samples
+
+        # Calculate the element-wise weights for the Hessian
+        weights = probs * (1 - probs)  # Element-wise multiplication
+
+        # Efficiently calculate the Hessian matrix
+        weighted_F_train = (
+            F * weights[:, np.newaxis]
+        )  # Apply weights along each feature
+        H = (
+            np.dot(weighted_F_train.T, F) / X["train"].shape[0]
+        )  # Outer product and average
+
+        # Add the regularization term directly to the diagonal elements
+        np.fill_diagonal(H, H.diagonal() + C / X["train"].shape[0])
+    else:
+        H = (
+            F.T @ np.diag(probs * (1 - probs)) @ F / F.shape[0]
+            + C * np.eye(F.shape[1]) / X.shape[0]
+        )
     return H
 
 

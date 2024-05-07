@@ -146,10 +146,31 @@ def IP(
     gradient_dev = F_dev * error_dev[:, None]
 
     probs = model.predict_proba(X["train"])[:, 1]
-    hessian = (
-        F_train.T @ np.diag(probs * (1 - probs)) @ F_train / X["train"].shape[0]
-        + l2 * np.eye(F_train.shape[1]) / X["train"].shape[0]
-    )
+
+    if F_train.shape[1] > 10000:
+        # Do memory efficient Hessian due to large samples
+
+        # Calculate the element-wise weights for the Hessian
+        weights = probs * (1 - probs)  # Element-wise multiplication
+
+        # Efficiently calculate the Hessian matrix
+        weighted_F_train = (
+            F_train * weights[:, np.newaxis]
+        )  # Apply weights along each feature
+        hessian = (
+            np.dot(weighted_F_train.T, F_train) / X["train"].shape[0]
+        )  # Outer product and average
+
+        # Add the regularization term directly to the diagonal elements
+        np.fill_diagonal(hessian, hessian.diagonal() + l2 / X["train"].shape[0])
+    else:
+        hessian = (
+            F_train.T
+            @ np.diag(probs * (1 - probs))
+            @ F_train
+            / X["train"].shape[0]
+            + l2 * np.eye(F_train.shape[1]) / X["train"].shape[0]
+        )
     inverse_hessian = np.linalg.inv(hessian)
 
     eps = 1 / X["train"].shape[0]
