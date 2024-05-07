@@ -227,10 +227,30 @@ def IP_iterative(
     from scipy import sparse
 
     probs = model.predict_proba(X["train"])[:, 1]
-    H = (
-        F_train.T @ np.diag(probs * (1 - probs)) @ F_train / X["train"].shape[0]
-        + 1 * np.eye(F_train.shape[1]) / X["train"].shape[0]
-    )
+    if probs.size > 10000:
+        # Do memory efficient Hessian due to large samples
+
+        # Calculate the element-wise weights for the Hessian
+        weights = probs * (1 - probs)  # Element-wise multiplication
+
+        # Efficiently calculate the Hessian matrix
+        weighted_F_train = (
+            F_train * weights[:, np.newaxis]
+        )  # Apply weights along each feature
+        H = (
+            np.dot(weighted_F_train.T, F_train) / X["train"].shape[0]
+        )  # Outer product and average
+
+        # Add the regularization term directly to the diagonal elements
+        np.fill_diagonal(H, H.diagonal() + l2 / X["train"].shape[0])
+    else:
+        H = (
+            F_train.T
+            @ np.diag(probs * (1 - probs))
+            @ F_train
+            / X["train"].shape[0]
+            + 1 * np.eye(F_train.shape[1]) / X["train"].shape[0]
+        )
     H_inv = np.linalg.inv(H)
 
     eps = 1 / X["train"].shape[0]
