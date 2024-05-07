@@ -147,7 +147,7 @@ def IP(
 
     probs = model.predict_proba(X["train"])[:, 1]
 
-    if F_train.shape[1] > 10000:
+    if probs.size > 10000:
         # Do memory efficient Hessian due to large samples
 
         # Calculate the element-wise weights for the Hessian

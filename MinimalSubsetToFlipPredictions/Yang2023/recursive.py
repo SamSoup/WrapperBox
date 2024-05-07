@@ -28,7 +28,7 @@ def gradient_(X, y, model, C):
 def hessian_(X, model, C):
     probs = prediction(X, model)
     F = concatenate(X)
-    if F.shape[1] > 10000:
+    if probs.size > 10000:
         # Do memory efficient Hessian due to large samples
 
         # Calculate the element-wise weights for the Hessian
