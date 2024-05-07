@@ -187,7 +187,15 @@ def IP_iterative(
     # compute IP for new train
     from sklearn.preprocessing import normalize
 
-    w = np.concatenate((model.coef_, model.intercept_[None, :]), axis=1)
+    # Modified line to handle multi-class:
+    if np.unique(y["dev"]).size > 2:
+        print("Multiclassification detected, reshaping...")
+        intercept_reshaped = model.intercept_[
+            :, None
+        ]  # Reshape intercept to have the same second dimension as coef_
+        w = np.concatenate((model.coef_, intercept_reshaped), axis=1)
+    else:
+        w = np.concatenate((model.coef_, model.intercept_[None, :]), axis=1)
     F_train = np.concatenate(
         [X["train"], np.ones((X["train"].shape[0], 1))], axis=1
     )  # Concatenating one to calculate the gradient with respect to intercept
@@ -264,6 +272,7 @@ def IP_iterative(
         diffs.append(diff)
         order_lists.append(order)
 
+    print(f"Wrote results to {output_dir}")
     np.save(
         f"{output_dir}/NT_app_k_alg2_{dataname}{str(l2)}_LR_I_D1.npy", NT_app_k
     )

@@ -124,7 +124,16 @@ def IP(
 
     gradient_train_flip = loss_gradient(X["train"], y_flip, model)
 
-    w = np.concatenate((model.coef_, model.intercept_[None, :]), axis=1)
+    # Modified line to handle multi-class:
+    if np.unique(y["dev"]).size > 2:
+        print("Multiclassification detected, reshaping...")
+        intercept_reshaped = model.intercept_[
+            :, None
+        ]  # Reshape intercept to have the same second dimension as coef_
+        w = np.concatenate((model.coef_, intercept_reshaped), axis=1)
+    else:
+        w = np.concatenate((model.coef_, model.intercept_[None, :]), axis=1)
+    # w = np.concatenate((model.coef_, model.intercept_[None, :]), axis=1)
     F_train = np.concatenate(
         [X["train"], np.ones((X["train"].shape[0], 1))], axis=1
     )  # Concatenating one to calculate the gradient with respect to intercept
@@ -179,6 +188,7 @@ def IP(
     appro_ks = np.array(appro_ks)
     new_predictions = np.array(new_predictions)
 
+    print(f"Wrote results to {output_dir}")
     np.save(
         f"{output_dir}/appro_ks_IP_alg1_{dataname}{str(l2)}.npy",
         appro_ks,

@@ -1,7 +1,7 @@
 from MinimalSubsetToFlipPredictions.Yang2023.interface import (
     compute_minimal_subset_to_flip_predictions,
 )
-from utils.constants import RESULTS_DIR
+from utils.constants.directory import RESULTS_DIR
 from utils.io import mkdir_if_not_exists
 
 
@@ -9,7 +9,7 @@ from utils.io import mkdir_if_not_exists
 from data.embeddings import load_saved_embeddings
 
 train_embeddings = load_saved_embeddings(
-    dataset="toxigen",
+    dataset="esnli",
     model="deberta-large",
     seed=42,
     split="train",
@@ -18,7 +18,7 @@ train_embeddings = load_saved_embeddings(
 )
 
 eval_embeddings = load_saved_embeddings(
-    dataset="toxigen",
+    dataset="esnli",
     model="deberta-large",
     seed=42,
     split="eval",
@@ -27,7 +27,7 @@ eval_embeddings = load_saved_embeddings(
 )
 
 test_embeddings = load_saved_embeddings(
-    dataset="toxigen",
+    dataset="esnli",
     model="deberta-large",
     seed=42,
     split="test",
@@ -40,7 +40,7 @@ from data.models import load_saved_wrapperbox_model
 
 
 knn_clf = load_saved_wrapperbox_model(
-    dataset="toxigen",
+    dataset="esnli",
     model="deberta-large",
     seed=42,
     pooler="mean_with_attention",
@@ -51,7 +51,7 @@ knn_clf = load_saved_wrapperbox_model(
 from data.datasets import load_dataset_from_hf, load_labels_at_split
 import numpy as np
 
-dataset = load_dataset_from_hf(dataset="toxigen")
+dataset = load_dataset_from_hf(dataset="esnli")
 train_labels = load_labels_at_split(dataset, "train")
 eval_labels = load_labels_at_split(dataset, "eval")
 train_eval_labels = np.concatenate([train_labels, eval_labels])
@@ -62,7 +62,7 @@ mkdir_if_not_exists(output_dir)
 
 # Running Yang et al
 compute_minimal_subset_to_flip_predictions(
-    dataset_name="toxigen",
+    dataset_name="esnli",
     train_embeddings=train_embeddings,
     eval_embeddings=eval_embeddings,
     test_embeddings=test_embeddings,

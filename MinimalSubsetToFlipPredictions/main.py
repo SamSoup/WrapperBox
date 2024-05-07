@@ -8,6 +8,7 @@ OR: pass in all other arguments
 """
 
 from cgi import test
+import sys
 from MinimalSubsetToFlipPredictions.Yang2023.interface import (
     compute_minimal_subset_to_flip_predictions,
 )
@@ -199,6 +200,11 @@ if __name__ == "__main__":
     ) = load_dataset_and_labels(args=args)
 
     if args.do_yang2023:
+        # Check output dir is absolute path; if not, append RESULTS_DIR
+        if not os.path.isabs(args.output_dir):
+            args.output_dir = RESULTS_DIR / args.output_dir
+
+        mkdir_if_not_exists(args.output_dir)
         # Running Yang et al
         compute_minimal_subset_to_flip_predictions(
             dataset_name=args.dataset,
@@ -210,49 +216,52 @@ if __name__ == "__main__":
             test_labels=test_labels,
             thresh=0.5,
             l2=500,
-            output_dir="./results",
+            output_dir=args.output_dir,
             algorithm=args.algorithm_type,
         )
-
-    # Load handler
-    factory = FindMinimalSubsetFactory()
-    handler_class = factory.get_handler(
-        f"{factory.interface_name}{args.wrapper_name}"
-    )
-    if args.wrapper_name in WRAPPER_BOXES_NEEDING_BATCHED_MINIMAL_SUBET_SEARCH:
-        handler = handler_class(
-            ITERATIVE_THRESHOLD=args.iterative_threshold, SPLITS=args.splits
-        )
     else:
-        handler = handler_class()
+        # Load handler
+        factory = FindMinimalSubsetFactory()
+        handler_class = factory.get_handler(
+            f"{factory.interface_name}{args.wrapper_name}"
+        )
+        if (
+            args.wrapper_name
+            in WRAPPER_BOXES_NEEDING_BATCHED_MINIMAL_SUBET_SEARCH
+        ):
+            handler = handler_class(
+                ITERATIVE_THRESHOLD=args.iterative_threshold, SPLITS=args.splits
+            )
+        else:
+            handler = handler_class()
 
-    # Load Wrapper box
-    clf = load_saved_wrapperbox_model(
-        dataset=args.dataset,
-        model=args.model,
-        seed=args.seed,
-        pooler=args.pooler,
-        wrapperbox=args.wrapper_name,
-    )
+        # Load Wrapper box
+        clf = load_saved_wrapperbox_model(
+            dataset=args.dataset,
+            model=args.model,
+            seed=args.seed,
+            pooler=args.pooler,
+            wrapperbox=args.wrapper_name,
+        )
 
-    minimal_subset_indices = handler.find_minimal_subset(
-        clf=clf,
-        train_embeddings=train_eval_embeddings,
-        test_embeddings=test_embeddings,
-        train_labels=train_eval_labels,
-    )
+        minimal_subset_indices = handler.find_minimal_subset(
+            clf=clf,
+            train_embeddings=train_eval_embeddings,
+            test_embeddings=test_embeddings,
+            train_labels=train_eval_labels,
+        )
 
-    # Check output dir is absolute path; if not, append RESULTS_DIR
-    if not os.path.isabs(args.output_dir):
-        args.output_dir = RESULTS_DIR / args.output_dir
+        # Check output dir is absolute path; if not, append RESULTS_DIR
+        if not os.path.isabs(args.output_dir):
+            args.output_dir = RESULTS_DIR / args.output_dir
 
-    mkdir_if_not_exists(args.output_dir)
+        mkdir_if_not_exists(args.output_dir)
 
-    handler.persist_to_disk(
-        dataset=dataset_dict,
-        dataset_name=args.dataset,
-        model_name=args.model,
-        wrapper_name=args.wrapper_name,
-        minimal_subset_indices=minimal_subset_indices,
-        output_dir=args.output_dir,
-    )
+        handler.persist_to_disk(
+            dataset=dataset_dict,
+            dataset_name=args.dataset,
+            model_name=args.model,
+            wrapper_name=args.wrapper_name,
+            minimal_subset_indices=minimal_subset_indices,
+            output_dir=args.output_dir,
+        )
