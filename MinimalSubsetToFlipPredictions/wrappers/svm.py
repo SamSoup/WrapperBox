@@ -2,7 +2,7 @@
 from sympy import reduced
 from MinimalSubsetToFlipPredictions.wrappers.interface import FindMinimalSubset
 from ExampleBasedExplanations.svm import SVMExampleBasedExplanation
-from utils.models.svm import project_inputs
+from utils.models.svm import get_support_vectors, project_inputs
 from utils.partition import partition_indices
 from sklearn.neighbors import KNeighborsClassifier
 from typing import Iterable, List
@@ -92,10 +92,8 @@ class FindMinimalSubsetSVM(FindMinimalSubset):
                 # Retrain the classifier on the reduced dataset
                 new_clf = clone(clf)
                 new_clf.fit(reduced_embeddings, reduced_labels)
-                print(
-                    f"\nNem SVM has {new_clf.support_vectors_.shape[0]}"
-                    "support vectors\n"
-                )
+                svs, _ = get_support_vectors(new_clf, reduced_embeddings)
+                print(f"\nNem SVM has {svs.shape[0]}" "support vectors\n")
                 new_prediction = new_clf.predict(x.reshape(1, -1))[0]
                 print(
                     f"\nRemoved {reduced_indices.size} examples\n"
@@ -249,8 +247,9 @@ class FindMinimalSubsetSVM(FindMinimalSubset):
         # the preprocessing is equivalent to finding the example-based
         # explanations for SVM
         handler = SVMExampleBasedExplanation()
+        svs, _ = get_support_vectors(clf, train_embeddings)
         sorted_indices_per_test_example = handler.get_explanation_indices(
-            M=clf.support_vectors_.shape[0],  # want indices to all sv
+            M=svs.shape[0],  # want indices to all sv
             clf=clf,
             train_embeddings=train_embeddings,
             test_embeddings=test_embeddings,

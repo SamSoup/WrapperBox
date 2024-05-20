@@ -1,7 +1,7 @@
 # Class to find the ExampleBasedExplanations for SVM
 from ExampleBasedExplanations.interface import ExampleBasedExplanation
 from sklearn.svm import LinearSVC
-from utils.models.svm import project_inputs
+from utils.models.svm import get_support_vectors, project_inputs
 from sklearn.metrics.pairwise import euclidean_distances
 from typing import List
 from datasets import DatasetDict
@@ -39,9 +39,8 @@ class SVMExampleBasedExplanation(ExampleBasedExplanation):
             List[List[int]]: The M closest sv indices for each test example
         """
         projected_vectors = project_inputs(inputs=test_embeddings, clf=clf)
-        dist_to_support_vectors = euclidean_distances(
-            projected_vectors, clf.support_vectors_
-        )
+        svs, sv_indices = get_support_vectors(clf, train_embeddings)
+        dist_to_support_vectors = euclidean_distances(projected_vectors, svs)
 
         # print(projected_vectors)
         # print(dist_to_support_vectors)
@@ -59,6 +58,6 @@ class SVMExampleBasedExplanation(ExampleBasedExplanation):
 
         # print(sorted_indices_per_test_example)
         # Translate indices of support vectors to indices of training example
-        original_indices = clf.support_[sorted_indices_per_test_example]
+        original_indices = sv_indices[sorted_indices_per_test_example]
 
         return original_indices
