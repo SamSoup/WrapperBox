@@ -71,7 +71,7 @@ def get_support_vectors(
             (n_SV, n_features), and indices of shape (n_SV)
     """
 
-    if isinstance(M, LinearSVC):
+    if isinstance(M, SVC):
         return M.support_vectors_, M.support_
 
     # for linear svc, the code is a bit more complicated, because
