@@ -73,8 +73,12 @@ MODEL_METADATAS = {
     },
 }
 
-WRAPPER_BOXES_NAMES = ["KNN", "SVM", "DecisionTree", "LMeans"]
-WRAPPER_BOXES_NEEDING_BATCHED_MINIMAL_SUBET_SEARCH = ["SVM", "DecisionTree"]
+WRAPPER_BOXES_NAMES = ["KNN", "SVM", "DecisionTree", "LMeans", "LGBM"]
+WRAPPER_BOXES_NEEDING_BATCHED_MINIMAL_SUBET_SEARCH = [
+    "SVM",
+    "DecisionTree",
+    "LGBM",
+]
 
 # Defines the base wrapper boxes
 SVM_BASE = SVC(

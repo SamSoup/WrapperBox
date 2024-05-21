@@ -70,7 +70,7 @@ class FindMinimalSubsetLGBM(FindMinimalSubset):
         # Iteratively remove sections and check for a prediction flip
         for section_idx in tqdm(sections_indices, "Batch Removel"):
             print(
-                f"Batching removing the first {section_idx} closest Leaf Examples"
+                f"\nBatching removing the first {section_idx} closest leaf exs"
             )
             reduced_indices = indices_to_remove[:section_idx]
             # print("Reduced indices:", reduced_indices)
@@ -199,7 +199,7 @@ class FindMinimalSubsetLGBM(FindMinimalSubset):
             range(1, indices_to_remove.shape[0] + 1), "Iterative Removal"
         ):
             print(
-                f"Iteratively removing the first {i} examples.\n"
+                f"\nIteratively removing the first {i} examples.\n"
                 f"After having removed examples {indices_to_always_remove}\n"
             )
             reduced_indices = indices_to_remove[:i]
