@@ -1,9 +1,9 @@
-# This script finds the minimal set of examples required to flip a svm pred
-from sklearn.tree import DecisionTreeClassifier
-from sympy import reduced
+# This script finds the minimal set of examples required to flip a Light
+# Gradient Boost Machine model
+from lightgbm import LGBMModel
 from MinimalSubsetToFlipPredictions.wrappers.interface import FindMinimalSubset
-from ExampleBasedExplanations.decisiontree import (
-    DecisionTreeExampleBasedExplanation,
+from ExampleBasedExplanations.lgbm import (
+    LGBMExampleBasedExplanation,
 )
 from utils.models.dt import get_predictions
 from utils.partition import partition_indices
@@ -13,7 +13,7 @@ from tqdm import tqdm
 import numpy as np
 
 
-class FindMinimalSubsetDecisionTree(FindMinimalSubset):
+class FindMinimalSubsetLGBM(FindMinimalSubset):
     def __init__(self, ITERATIVE_THRESHOLD: int, SPLITS: int) -> None:
         super().__init__()
         # Parameters for batched removal
@@ -25,7 +25,7 @@ class FindMinimalSubsetDecisionTree(FindMinimalSubset):
         x: np.ndarray,
         prediction: int,
         indices_to_remove: np.ndarray,
-        clf: DecisionTreeClassifier,
+        clf: LGBMModel,
         train_embeddings: np.ndarray,
         train_labels: np.ndarray,
     ) -> Iterable[int]:
@@ -55,7 +55,7 @@ class FindMinimalSubsetDecisionTree(FindMinimalSubset):
             x (np.ndarray): (hidden_size), an test input
             prediction (int): the model's prediction for that test input
             indices_per_test_to_remove (np.ndarray): (num_examples_to_remove)
-            clf (DecisionTreeClassifier): the original model
+            clf (LGBMModel): the original model
             train_embeddings (np.ndarray): (num_train_examples, hidden_size)
             train_labels (np.ndarray): (num_train_examples)
 
@@ -87,7 +87,7 @@ class FindMinimalSubsetDecisionTree(FindMinimalSubset):
             # if after removal there is only one/less class, then obv flipped
             if len(np.unique(reduced_labels)) == num_classes:
                 # Retrain the classifier on the reduced dataset
-                new_clf = clone(clf)
+                new_clf = LGBMModel(**clf.get_params())
                 new_clf.fit(reduced_embeddings, reduced_labels)
                 new_prediction = get_predictions(new_clf, x.reshape(1, -1))[0]
                 # new_prediction = new_clf.predict(x.reshape(1, -1))[0]
@@ -168,7 +168,7 @@ class FindMinimalSubsetDecisionTree(FindMinimalSubset):
         x: np.ndarray,
         prediction: int,
         indices_to_remove: np.ndarray,
-        clf: DecisionTreeClassifier,
+        clf: LGBMModel,
         train_embeddings: np.ndarray,
         train_labels: np.ndarray,
         indices_to_always_remove: np.ndarray = None,
@@ -181,7 +181,7 @@ class FindMinimalSubsetDecisionTree(FindMinimalSubset):
             x (np.ndarray):
             prediction (int):
             indices_to_remove (np.ndarray):
-            clf (DecisionTreeClassifier):
+            clf (LGBMModel):
             train_embeddings (np.ndarray):
             train_labels (np.ndarray):
             indices_to_always_remove (np.ndarray, optional): the only difference
@@ -217,7 +217,7 @@ class FindMinimalSubsetDecisionTree(FindMinimalSubset):
             # Clone the original model and retrain, unless there is not enough
             # labels per unique class
             if len(np.unique(y_train)) == num_classes:
-                new_clf = clone(clf)
+                new_clf = LGBMModel(**clf.get_params())
                 new_clf.fit(X_train, y_train)
                 new_prediction = get_predictions(new_clf, x.reshape(1, -1))[0]
                 # new_prediction = new_clf.predict(x.reshape(1, -1))[0]
@@ -236,16 +236,13 @@ class FindMinimalSubsetDecisionTree(FindMinimalSubset):
 
     def find_minimal_subset(
         self,
-        clf: DecisionTreeClassifier,
+        clf: LGBMModel,
         train_embeddings: np.ndarray,
         test_embeddings: np.ndarray,
         train_labels: np.ndarray,
     ) -> List[List[int]]:
-        # the preprocessing is equivalent to finding the example-based
-        # explanations for DT
-        handler = DecisionTreeExampleBasedExplanation(
-            ITERATIVE_THRESHOLD=self.ITERATIVE_THRESHOLD
-        )
+        # preprocessing is equivalent to finding example-based explanations
+        handler = LGBMExampleBasedExplanation()
         sorted_indices_per_test_example = handler.get_explanation_indices(
             M=None,  # want indices for all leaf examples
             clf=clf,
@@ -264,6 +261,7 @@ class FindMinimalSubsetDecisionTree(FindMinimalSubset):
                         sorted_indices_per_test_example,
                     )
                 ),
+                total=predictions.size,
             )
         ):
             pbar.set_description(f"Finding Minimal Set for Example {i}\n")

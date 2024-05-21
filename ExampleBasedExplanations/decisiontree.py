@@ -1,9 +1,10 @@
 from sklearn.tree import DecisionTreeClassifier
 from tqdm import tqdm
+from utils.models.dt import get_leaf_ids
 from utils.partition import get_partition_X
 from ExampleBasedExplanations.interface import ExampleBasedExplanation
 from scipy.spatial.distance import cdist
-from typing import List
+from typing import List, Union
 import numpy as np
 
 
@@ -38,8 +39,8 @@ class DecisionTreeExampleBasedExplanation(ExampleBasedExplanation):
             np.ndarray: The M closest leaf example indices for each test example,
                 (num_test_examples, M)
         """
-        leaf_ids_train = clf.apply(train_embeddings)
-        leaf_ids_test = clf.apply(test_embeddings)
+        leaf_ids_train = get_leaf_ids(clf, train_embeddings)
+        leaf_ids_test = get_leaf_ids(clf, test_embeddings)
 
         unique_leaf_ids_test = set(leaf_ids_test)
         ex_indices = [[] for _ in range(test_embeddings.shape[0])]
@@ -109,13 +110,13 @@ class DecisionTreeExampleBasedExplanation(ExampleBasedExplanation):
                 (num_test_examples, M)
         """
 
-        leaf_ids_train = clf.apply(train_embeddings)
-        leaf_ids_test = clf.apply(test_embeddings)
+        leaf_ids_train = get_leaf_ids(clf, train_embeddings)
+        leaf_ids_test = get_leaf_ids(clf, test_embeddings)
 
         indices = []
         for i in tqdm(
             range(test_embeddings.shape[0]),
-            "Getting Expl Indices for DT Manual",
+            "Getting Expl Indices for DT Manually",
         ):
             # [0, num_train_examples)
             train_indices = np.arange(leaf_ids_train.shape[0])
