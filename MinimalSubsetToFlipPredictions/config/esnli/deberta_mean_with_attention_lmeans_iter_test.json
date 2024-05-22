@@ -6,8 +6,8 @@
     "layer": 24,
     "wrapper_name": "LMeans",
     "output_dir": "MinimalSubset/Test",
-    "iterative_threshold": 10,
-    "splits": 10,
+    "iterative_threshold": 100,
+    "splits": 100,
     "idx_start": 10,
     "idx_end": 15
 }
