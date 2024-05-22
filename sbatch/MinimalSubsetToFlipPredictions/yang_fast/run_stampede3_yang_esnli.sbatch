@@ -4,7 +4,7 @@
 #SBATCH -e esnli_yang_fast_multinode.e%j
 #SBATCH -p skx
 #SBATCH -N 24
-#SBATCH -ntasks-per-node 1
+#SBATCH -n 24
 #SBATCH -t 24:00:00
 #SBATCH --mail-user=sam.su@utexas.edu
 #SBATCH --mail-type=ALL
