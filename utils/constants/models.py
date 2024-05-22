@@ -78,6 +78,7 @@ WRAPPER_BOXES_NEEDING_BATCHED_MINIMAL_SUBET_SEARCH = [
     "SVM",
     "DecisionTree",
     "LGBM",
+    "LMeans",
 ]
 
 # Defines the base wrapper boxes

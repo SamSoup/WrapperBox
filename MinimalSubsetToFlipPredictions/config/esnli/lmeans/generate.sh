@@ -7,7 +7,7 @@ base_config='{
     "seed": 42,
     "pooler": "mean_with_attention",
     "layer": 24,
-    "wrapper_name": "LGBM",
+    "wrapper_name": "LMeans",
     "output_dir": "MinimalSubset",
     "iterative_threshold": 10,
     "splits": 10,
@@ -19,7 +19,7 @@ base_config='{
 generate_config() {
   start=$1
   end=$((start + 700))
-  filename="deberta_mean_with_attention_lgbm_${start}_${end}.json"
+  filename="deberta_mean_with_attention_LMeans_${start}_${end}.json"
 
   echo "$base_config" | sed -e "s/__START__/${start}/" -e "s/__END__/${end}/" > $filename
 }

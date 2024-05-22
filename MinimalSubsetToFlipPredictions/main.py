@@ -85,13 +85,13 @@ def get_args():
     parser.add_argument(
         "--splits",
         type=int,
-        default=10,
+        default=None,
         help="How many batches to create for subset searching? Not used for KNN",
     )
     parser.add_argument(
         "--iterative_threshold",
         type=int,
-        default=10,
+        default=None,
         help="How many remaining examples to stop batch searching? Not used for KNN",
     )
     parser.add_argument(
