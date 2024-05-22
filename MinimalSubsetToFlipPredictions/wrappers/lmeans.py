@@ -398,14 +398,14 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
         train_labels: np.ndarray,
     ):
         if self.SPLITS is not None and self.ITERATIVE_THRESHOLD is not None:
-            return self.find_minimal_subset_cluster_batched(
+            return self.find_minimal_subset_brute_force(
                 clf=clf,
                 train_embeddings=train_embeddings,
                 test_embeddings=test_embeddings,
                 train_labels=train_labels,
             )
         else:
-            return self.find_minimal_subset_brute_force(
+            return self.find_minimal_subset_cluster_batched(
                 clf=clf,
                 train_embeddings=train_embeddings,
                 test_embeddings=test_embeddings,
