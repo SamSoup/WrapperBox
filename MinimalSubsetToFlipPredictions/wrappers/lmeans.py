@@ -124,6 +124,7 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
         clf: KMeansClassifier,
         train_embeddings: np.ndarray,
         train_labels: np.ndarray,
+        indices_to_always_remove: np.ndarray = None,
     ) -> Iterable[int]:
         """
         Splits the dataset into K batches for removal, iteratively removing
@@ -154,6 +155,10 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
             clf (KMeansClassifier): the original model
             train_embeddings (np.ndarray): (num_train_examples, hidden_size)
             train_labels (np.ndarray): (num_train_examples)
+            indices_to_always_remove (np.ndarray, optional): the only difference
+                from batched removal. Sometimes we want to iteratively remove
+                examples having always removing some set (e.g., in bet. chunks)
+                Defaults to None.
 
         Returns:
             Iterable[int]: empty, or the list of indices that compose a subset
@@ -165,10 +170,15 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
         )
         # Iteratively remove sections and check for a prediction flip
         for section_idx in tqdm(sections_indices, "Batch Removel"):
+            reduced_indices = indices_to_remove[:section_idx]
+            if indices_to_always_remove is not None:
+                reduced_indices = np.concatenate(
+                    [indices_to_always_remove, reduced_indices]
+                )
             print(
                 f"\nBatching removing the first {section_idx} closest centroid exs"
+                f"After having removed examples {indices_to_always_remove}\n"
             )
-            reduced_indices = indices_to_remove[:section_idx]
             # print("Reduced indices:", reduced_indices)
             train_mask = np.ones(train_embeddings.shape[0], dtype=bool)
             train_mask[reduced_indices] = False
@@ -202,12 +212,12 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
                 # Found, but need to split again because very large
                 if reduced_indices.size >= self.ITERATIVE_THRESHOLD:
                     # check if subset_indices is reduced: if not, then we
-                    # have a problem: must reduce iteratively, from the last
+                    # have a problem: must reduce again, from the last
                     # chunk of len(reduced_indices) into `SPLITS` splits
                     if indices_to_remove.size == reduced_indices.size:
                         print(
                             "Recursive refinement failed to identify a smaller"
-                            " subset, initiating iterative refinement of the "
+                            " subset, initiating recursive refinement of the "
                             "last split chunk"
                         )
                         second_last_chunk_end_idx = partition_indices(
@@ -219,15 +229,28 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
                         last_chunk_indices = reduced_indices[
                             second_last_chunk_end_idx : reduced_indices.shape[0]
                         ]
-                        subset_indices = self._iterative_remove_and_refit(
-                            x=x,
-                            prediction=prediction,
-                            indices_to_remove=last_chunk_indices,
-                            clf=clf,
-                            train_embeddings=train_embeddings,
-                            train_labels=train_labels,
-                            indices_to_always_remove=prior_chunk,
-                        )
+                        if last_chunk_indices.size >= self.ITERATIVE_THRESHOLD:
+                            print("Recursively refining last chunk")
+                            subset_indices = self._batched_remove_and_refit(
+                                x=x,
+                                prediction=prediction,
+                                indices_to_remove=last_chunk_indices,
+                                clf=clf,
+                                train_embeddings=train_embeddings,
+                                train_labels=train_labels,
+                                indices_to_always_remove=prior_chunk,
+                            )
+                        else:
+                            print("Iteratively refining last chunk")
+                            subset_indices = self._iterative_remove_and_refit(
+                                x=x,
+                                prediction=prediction,
+                                indices_to_remove=last_chunk_indices,
+                                clf=clf,
+                                train_embeddings=train_embeddings,
+                                train_labels=train_labels,
+                                indices_to_always_remove=prior_chunk,
+                            )
                     else:
                         print(
                             f"It is above the threshold {self.ITERATIVE_THRESHOLD}\n",
