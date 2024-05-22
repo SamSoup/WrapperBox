@@ -177,6 +177,11 @@ def load_dataset_and_labels(args: argparse.Namespace):
         {"train": train_eval_dataset, "test": test_dataset}
     )
     train_eval_labels = np.concatenate([train_labels, eval_labels])
+
+    # Print summary of datasets
+    for name, dataset in dataset_dict.items():
+        print(f"Loaded {name} dataset with {dataset.num_rows} rows")
+
     return (
         dataset_dict,
         train_eval_dataset_dict,
