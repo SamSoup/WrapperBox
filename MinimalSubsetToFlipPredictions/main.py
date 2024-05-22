@@ -169,12 +169,11 @@ def load_dataset_and_labels(args: argparse.Namespace):
         [dataset_dict["train"], dataset_dict["eval"]]
     )
     test_dataset = dataset_dict["test"]
-    if args.do_debug:
-        test_dataset = test_dataset.select(
-            range(int(args.idx_start), int(args.idx_end))
-        )
-        test_labels = test_labels[int(args.idx_start) : int(args.idx_end)]
-        dataset_dict["test"] = test_dataset
+    test_dataset = test_dataset.select(
+        range(int(args.idx_start), int(args.idx_end))
+    )
+    test_labels = test_labels[int(args.idx_start) : int(args.idx_end)]
+    dataset_dict["test"] = test_dataset
 
     train_eval_dataset_dict = DatasetDict(
         {"train": train_eval_dataset, "test": test_dataset}
