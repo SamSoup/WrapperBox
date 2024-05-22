@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J esnli_yang_fast_multinode
+#SBATCH -J esnli_lmeans_multinode
 #SBATCH -o esnli_yang_fast_multinode.o%j
 #SBATCH -e esnli_yang_fast_multinode.e%j
 #SBATCH -p skx
