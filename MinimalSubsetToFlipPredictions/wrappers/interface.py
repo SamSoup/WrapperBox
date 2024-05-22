@@ -73,13 +73,15 @@ class FindMinimalSubset(ABC):
         json_string = json.dumps(compiled_data, indent=2)
         prefix = f"{offset}to{offset + len(minimal_subset_indices)}"
         prefix = f"{prefix}_{dataset_name}_{model_name}_{wrapper_name}"
-
+        filename = f"{prefix}_minimal_subsets.json"
         # Write the JSON string to a file
         with open(
             os.path.join(
                 output_dir,
-                f"{prefix}_minimal_subsets.json",
+                filename,
             ),
             "w",
         ) as f:
             f.write(json_string)
+
+        print(f"Wrote results to {filename}")
