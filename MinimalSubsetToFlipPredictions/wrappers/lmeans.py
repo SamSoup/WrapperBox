@@ -7,7 +7,7 @@ from tqdm import tqdm
 from utils.partition import partition_indices
 from ExampleBasedExplanations.lmeans import LMeansExampleBasedExplanation
 from MinimalSubsetToFlipPredictions.wrappers.interface import FindMinimalSubset
-from classifiers import KMeansClassifier
+from classifiers.KMeansClassifier import KMeansClassifier
 import numpy as np
 
 
@@ -166,7 +166,7 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
         # Iteratively remove sections and check for a prediction flip
         for section_idx in tqdm(sections_indices, "Batch Removel"):
             print(
-                f"\nBatching removing the first {section_idx} closest leaf exs"
+                f"\nBatching removing the first {section_idx} closest centroid exs"
             )
             reduced_indices = indices_to_remove[:section_idx]
             # print("Reduced indices:", reduced_indices)
@@ -183,7 +183,7 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
             # if after removal there is only one/less class, then obv flipped
             if len(np.unique(reduced_labels)) == num_classes:
                 # Retrain the classifier on the reduced dataset
-                new_clf = KMeansClassifier(clf)
+                new_clf = clone(clf)
                 new_clf.fit(reduced_embeddings, reduced_labels)
                 new_prediction = new_clf.predict(x.reshape(1, -1))[0]
                 # new_prediction = new_clf.predict(x.reshape(1, -1))[0]
@@ -295,7 +295,7 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
             range(1, indices_to_remove.shape[0] + 1), "Iterative Removal"
         ):
             print(
-                f"\nIteratively removing the first {i} examples.\n"
+                f"\nIteratively removing the first {i} centroid examples.\n"
                 f"After having removed examples {indices_to_always_remove}\n"
             )
             reduced_indices = indices_to_remove[:i]
@@ -343,7 +343,7 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
         # preprocessing is equivalent to finding example-based explanations
         handler = LMeansExampleBasedExplanation()
         sorted_indices_per_test_example = handler.get_explanation_indices(
-            M=None,  # want indices for all leaf examples
+            M=None,  # want indices for all centroid examples
             clf=clf,
             train_embeddings=train_embeddings,
             test_embeddings=test_embeddings,
