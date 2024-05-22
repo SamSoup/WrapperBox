@@ -42,6 +42,7 @@ class FindMinimalSubset(ABC):
         model_name: str,
         wrapper_name: str,
         minimal_subset_indices: List[List[int]],
+        offset: int,
         output_dir: str = "./results",
     ):
         compiled_data = []
@@ -61,7 +62,7 @@ class FindMinimalSubset(ABC):
             # ]
             compiled_data.append(
                 {
-                    "id": i,
+                    "id": i + offset,
                     "text": dataset["test"][i]["text"],
                     "label": dataset["test"][i]["label"],
                     "minimum_subset": indices,
@@ -70,12 +71,14 @@ class FindMinimalSubset(ABC):
 
         # Serialize the list of JSON objects to a JSON string
         json_string = json.dumps(compiled_data, indent=2)
+        prefix = f"{offset}to{offset + len(minimal_subset_indices)}"
+        prefix = f"{prefix}_{dataset_name}_{model_name}_{wrapper_name}"
 
         # Write the JSON string to a file
         with open(
             os.path.join(
                 output_dir,
-                f"{dataset_name}_{model_name}_{wrapper_name}_minimal_subsets.json",
+                f"{prefix}_minimal_subsets.json",
             ),
             "w",
         ) as f:

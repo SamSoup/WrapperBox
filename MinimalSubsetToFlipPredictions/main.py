@@ -37,15 +37,18 @@ def get_args():
         "--config", type=str, help="Path to JSON configuration file"
     )
     parser.add_argument(
-        "--do_debug",
-        type=bool,
-        help="If true, truncate the test dataset to the"
-        " the first `debug_examples` to test the script for completion",
+        "--idx_start",
+        type=int,
+        default=0,
+        help="Signify the 0-based index of the first test example to obtain the"
+        " subsets for",
     )
     parser.add_argument(
-        "--debug_examples",
+        "--idx_end",
         type=int,
-        help="Ignored unless do_debug is true",
+        default=None,
+        help="Signify the 0-based index of the last test example to obtain the"
+        " subsets for, must be greater than `start` if specified",
     )
     parser.add_argument(
         "--dataset", type=str, default="toxigen", help="Name of the dataset"
@@ -94,7 +97,7 @@ def get_args():
     parser.add_argument(
         "--output_dir",
         type=str,
-        default='RESULTS_DIR / "MinimalSubset"',
+        default="MinimalSubset",
         help="Output directory",
     )
     args = parser.parse_args()
@@ -106,6 +109,10 @@ def get_args():
         # Overwrite args with config
         for key, value in config.items():
             setattr(args, key, value)
+
+        # Check if range is valid
+        if args.idx_end is not None:
+            assert int(args.idx_end) >= int(args.idx_start)
 
     return args
 
@@ -139,9 +146,9 @@ def load_embeddings(args: argparse.Namespace):
     )
 
     train_eval_embeddings = np.vstack([train_embeddings, eval_embeddings])
-
-    if args.do_debug:
-        test_embeddings = test_embeddings[: args.debug_examples, :]
+    test_embeddings = test_embeddings[
+        int(args.idx_start) : int(args.idx_end), :
+    ]
 
     return (
         train_embeddings,
@@ -263,5 +270,6 @@ if __name__ == "__main__":
             model_name=args.model,
             wrapper_name=args.wrapper_name,
             minimal_subset_indices=minimal_subset_indices,
+            offset=int(args.idx_start),
             output_dir=args.output_dir,
         )

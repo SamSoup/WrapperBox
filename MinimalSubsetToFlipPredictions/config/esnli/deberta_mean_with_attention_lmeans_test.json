@@ -6,6 +6,6 @@
     "layer": 24,
     "wrapper_name": "LMeans",
     "output_dir": "MinimalSubset",
-    "do_debug": true,
-    "debug_examples": 10
+    "idx_start": 10,
+    "idx_end": 15
 }

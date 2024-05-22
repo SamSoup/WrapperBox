@@ -7,5 +7,6 @@
     "wrapper_name": "SVM",
     "output_dir": "MinimalSubset",
     "iterative_threshold": 10,
-    "splits": 10
+    "splits": 10,
+    "idx_start": 0
 }

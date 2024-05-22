@@ -8,6 +8,6 @@
     "output_dir": "MinimalSubset/Test",
     "iterative_threshold": 10,
     "splits": 10,
-    "do_debug": true,
-    "debug_examples": 10
+    "idx_start": 20,
+    "idx_end": 25
 }
