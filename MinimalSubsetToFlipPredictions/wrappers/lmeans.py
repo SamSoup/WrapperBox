@@ -198,12 +198,13 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
 
             # Check for a prediction flip
             if prediction != new_prediction:
-                # Found, but need to split again
-                if reduced_indices.size <= self.ITERATIVE_THRESHOLD:
+                print(f"\nFound subset with size {reduced_indices.size}.\n")
+                # Found, but need to split again because very large
+                if reduced_indices.size >= self.ITERATIVE_THRESHOLD:
                     # check if subset_indices is reduced: if not, then we
                     # have a problem: must reduce iteratively, from the last
                     # chunk of len(reduced_indices) into `SPLITS` splits
-                    if indices_to_remove.shape[0] == reduced_indices.shape[0]:
+                    if indices_to_remove.size == reduced_indices.size:
                         print(
                             "Recursive refinement failed to identify a smaller"
                             " subset, initiating iterative refinement of the "
@@ -229,7 +230,6 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
                         )
                     else:
                         print(
-                            f"\nFound subset with size {reduced_indices.size}.\n"
                             f"It is above the threshold {self.ITERATIVE_THRESHOLD}\n",
                             "initiating recursive call to further refine...\n",
                         )
@@ -244,7 +244,6 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
                 else:
                     # iteratively refine, small enough
                     print(
-                        f"\nFound subset with size {reduced_indices.size}.\n"
                         f"It is below the threshold {self.ITERATIVE_THRESHOLD}\n",
                         "initiating iterative call to further refine...\n",
                     )
