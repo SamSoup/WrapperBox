@@ -112,7 +112,7 @@ def get_args():
 
         # Check if range is valid
         if args.idx_end is not None:
-            assert int(args.idx_end) >= int(args.idx_start)
+            assert args.idx_end >= args.idx_start
 
     return args
 
@@ -146,9 +146,7 @@ def load_embeddings(args: argparse.Namespace):
     )
 
     train_eval_embeddings = np.vstack([train_embeddings, eval_embeddings])
-    test_embeddings = test_embeddings[
-        int(args.idx_start) : int(args.idx_end), :
-    ]
+    test_embeddings = test_embeddings[args.idx_start : args.idx_end, :]
 
     return (
         train_embeddings,
@@ -169,10 +167,10 @@ def load_dataset_and_labels(args: argparse.Namespace):
         [dataset_dict["train"], dataset_dict["eval"]]
     )
     test_dataset = dataset_dict["test"]
-    test_dataset = test_dataset.select(
-        range(int(args.idx_start), int(args.idx_end))
-    )
-    test_labels = test_labels[int(args.idx_start) : int(args.idx_end)]
+    if args.idx_end is None:
+        last = test_dataset.num_rows
+    test_dataset = test_dataset.select(range(args.idx_start, last))
+    test_labels = test_labels[args.idx_start : args.idx_end]
     dataset_dict["test"] = test_dataset
 
     train_eval_dataset_dict = DatasetDict(
@@ -271,6 +269,6 @@ if __name__ == "__main__":
             model_name=args.model,
             wrapper_name=args.wrapper_name,
             minimal_subset_indices=minimal_subset_indices,
-            offset=int(args.idx_start),
+            offset=args.idx_start,
             output_dir=args.output_dir,
         )
