@@ -9,6 +9,8 @@ OR: pass in all other arguments
 
 from cgi import test
 import sys
+
+from xgboost import train
 from MinimalSubsetToFlipPredictions.Yang2023.interface import (
     compute_minimal_subset_to_flip_predictions,
 )
@@ -114,6 +116,11 @@ def get_args():
         if args.idx_end is not None:
             assert args.idx_end >= args.idx_start
 
+    # Print arguments
+    print("Arguments passed:")
+    for arg, value in vars(args).items():
+        print(f"{arg}: {value}")
+
     return args
 
 
@@ -147,6 +154,11 @@ def load_embeddings(args: argparse.Namespace):
 
     train_eval_embeddings = np.vstack([train_embeddings, eval_embeddings])
     test_embeddings = test_embeddings[args.idx_start : args.idx_end, :]
+
+    # Print summary of embeddings
+    print(f"Loaded train embeddings with {train_embeddings.shape} shape")
+    print(f"Loaded eval embeddings with {eval_embeddings.shape} shape")
+    print(f"Loaded test embeddings with {test_embeddings.shape} shape")
 
     return (
         train_embeddings,
