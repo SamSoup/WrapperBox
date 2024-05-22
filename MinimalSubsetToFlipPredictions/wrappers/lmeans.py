@@ -199,7 +199,7 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
             # Check for a prediction flip
             if prediction != new_prediction:
                 # Found, but need to split again
-                if reduced_indices.size >= self.ITERATIVE_THRESHOLD:
+                if reduced_indices.size <= self.ITERATIVE_THRESHOLD:
                     # check if subset_indices is reduced: if not, then we
                     # have a problem: must reduce iteratively, from the last
                     # chunk of len(reduced_indices) into `SPLITS` splits
