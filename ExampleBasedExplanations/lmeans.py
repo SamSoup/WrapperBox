@@ -24,6 +24,9 @@ class LMeansExampleBasedExplanation(ExampleBasedExplanation):
         """
         cluster_ids_train = clf.kmeans_.labels_
         centroids = clf.kmeans_.cluster_centers_
+        # assume we want all exs of each cluster when M is None, otherwise
+        # just get M closest centroid exs
+        want_all_exs = True if M is None else False
         # for each cluster, compute the indices of the
         # closest M training examples to the cluster centroids
         cluster_idx_to_explanation = {}
@@ -42,7 +45,7 @@ class LMeansExampleBasedExplanation(ExampleBasedExplanation):
             )
             print(dist_mat.shape)
             input()
-            if M is None:
+            if want_all_exs:
                 # assume we want all examples
                 M = train_indices_subset.size
             top_k = np.argsort(dist_mat, axis=1)[:, :M].flatten()
