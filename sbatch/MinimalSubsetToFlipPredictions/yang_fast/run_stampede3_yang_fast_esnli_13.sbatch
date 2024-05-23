@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH -J esnli_yang_fast_7200_7650
-#SBATCH -o esnli_yang_fast_7200_7650.o%j
-#SBATCH -e esnli_yang_fast_7200_7650.e%j
+#SBATCH -J esnli_yang_fast_4550_4900
+#SBATCH -o esnli_yang_fast_4550_4900.o%j
+#SBATCH -e esnli_yang_fast_4550_4900.e%j
 #SBATCH -p skx
 #SBATCH -N 1
 #SBATCH -n 1
@@ -12,4 +12,4 @@
 source /work/06782/ysu707/ls6/conda/etc/profile.d/conda.sh
 conda activate wrapperbox
 cd /work/06782/ysu707/ls6/WrapperBox/MinimalSubsetToFlipPredictions
-python3 main.py --config config/esnli/yang_fast/deberta_mean_with_attention_yang_fast_7200_7650.json
+python3 main.py --config config/esnli/yang_fast/deberta_mean_with_attention_yang_fast_4550_4900.json
