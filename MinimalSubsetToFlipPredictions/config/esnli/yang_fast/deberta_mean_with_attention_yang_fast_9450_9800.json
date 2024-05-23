@@ -6,7 +6,7 @@
     "layer": 24,
     "do_yang2023": true,
     "algorithm_type": "fast",
-    "output_dir": "MinimalSubset/yang_fast/900to1350",
-    "idx_start": 900,
-    "idx_end": 1350
+    "output_dir": "MinimalSubset/yang_fast/9450to9800",
+    "idx_start": 9450,
+    "idx_end": 9800
 }

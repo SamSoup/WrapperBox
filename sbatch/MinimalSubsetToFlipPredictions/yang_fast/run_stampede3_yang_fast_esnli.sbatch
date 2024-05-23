@@ -3,17 +3,17 @@
 #SBATCH -o esnli_yang_fast_multinode.o%j
 #SBATCH -e esnli_yang_fast_multinode.e%j
 #SBATCH -p skx
-#SBATCH -N 22
-#SBATCH -n 22
+#SBATCH -N 29
+#SBATCH -n 29
 #SBATCH -t 24:00:00
 #SBATCH --mail-user=sam.su@utexas.edu
 #SBATCH --mail-type=ALL
 #SBATCH -A CCR24018
 
 # Run the tasks
-for i in {0..21}; do
-  start=$((450 * i))  # Calculate start as 450 times i
-  end=$((start + 450)) # Calculate end as start + 450
+for i in {0..28}; do
+  start=$((350 * i))  # Calculate start as 450 times i
+  end=$((start + 350)) # Calculate end as start + 450
   srun --nodes=1 --ntasks=1 --exclusive --job-name=task$i bash -c "
     source /work/06782/ysu707/ls6/conda/etc/profile.d/conda.sh
     conda activate wrapperbox
