@@ -34,28 +34,18 @@ class LMeansExampleBasedExplanation(ExampleBasedExplanation):
             # filter down the training set to only those in the cluster
             train_indices = np.arange(train_embeddings.shape[0])
             train_mask = cluster_ids_train == cluster_idx
-            print(np.sum(train_mask))
-            input()
             train_indices_subset = train_indices[train_mask]
-            print(train_indices_subset.size)
-            input()
             dist_mat = cdist(
                 centroids[cluster_idx].reshape(1, -1),
                 train_embeddings[train_mask],
             )
-            print(dist_mat.shape)
-            input()
             if want_all_exs:
                 # assume we want all examples
                 M = train_indices_subset.size
             top_k = np.argsort(dist_mat, axis=1)[:, :M].flatten()
-            print(top_k.shape)
-            input()
             cluster_idx_to_explanation[cluster_idx] = train_indices_subset[
                 top_k
             ]
-            print(cluster_idx_to_explanation[cluster_idx])
-            input()
 
         return cluster_idx_to_explanation
 
