@@ -27,6 +27,7 @@ class LMeansExampleBasedExplanation(ExampleBasedExplanation):
         # for each cluster, compute the indices of the
         # closest M training examples to the cluster centroids
         cluster_idx_to_explanation = {}
+        print(cluster_ids_train, centroids, clf.kmeans_.n_clusters)
         for cluster_idx in range(clf.kmeans_.n_clusters):
             # filter down the training set to only those in the cluster
             train_indices = np.arange(train_embeddings.shape[0])
@@ -44,6 +45,7 @@ class LMeansExampleBasedExplanation(ExampleBasedExplanation):
                 top_k
             ]
 
+        print(cluster_idx_to_explanation)
         return cluster_idx_to_explanation
 
     def get_explanation_indices(
