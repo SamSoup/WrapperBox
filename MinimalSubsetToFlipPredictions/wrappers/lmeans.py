@@ -44,7 +44,7 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
         cluster_ids_test = clf.kmeans_.predict(test_embeddings)
         print(f"First 5 Cluster IDs for test examples: {cluster_ids_test[:5]}")
         predictions = clf.predict(test_embeddings)
-        print(f"Original predictions: {predictions}")
+        print(f"First 5 Original predictions: {predictions[:5]}")
         cluster_idx_to_test_idx = defaultdict(list)
         for i, value in enumerate(cluster_ids_test):
             cluster_idx_to_test_idx[value].append(i)

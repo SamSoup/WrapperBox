@@ -24,11 +24,10 @@ class LMeansExampleBasedExplanation(ExampleBasedExplanation):
         """
         cluster_ids_train = clf.kmeans_.labels_
         centroids = clf.kmeans_.cluster_centers_
-        cluster_indices_to_label_ = clf.cluster_indices_to_label_
         # for each cluster, compute the indices of the
         # closest M training examples to the cluster centroids
         cluster_idx_to_explanation = {}
-        for cluster_idx in cluster_indices_to_label_:
+        for cluster_idx in range(clf.kmeans_.n_clusters):
             # filter down the training set to only those in the cluster
             train_indices = np.arange(train_embeddings.shape[0])
             train_mask = cluster_ids_train == cluster_idx
