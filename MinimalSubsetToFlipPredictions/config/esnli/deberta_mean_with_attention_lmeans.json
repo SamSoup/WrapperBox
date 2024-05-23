@@ -6,5 +6,5 @@
     "layer": 24,
     "wrapper_name": "LMeans",
     "output_dir": "MinimalSubset",
-    "idx_start": 5
+    "idx_start": 0
 }
