@@ -186,7 +186,7 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
                     [indices_to_always_remove, reduced_indices]
                 )
             print(
-                f"\nBatching removing the first {section_idx} closest centroid exs"
+                f"\nBatching removing the first {section_idx} closest centroid exs\n"
                 f"After having removed examples {indices_to_always_remove}\n"
             )
             # print("Reduced indices:", reduced_indices)
