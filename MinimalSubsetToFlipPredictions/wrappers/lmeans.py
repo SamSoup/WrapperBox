@@ -31,12 +31,15 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
         # not easily parallelizable when clusters are few and big
 
         handler = LMeansExampleBasedExplanation()
-        indices_per_cluster_idx = handler._get_cluster_idx_to_explanation(
+        cluster_idx_to_explanation = handler._get_cluster_idx_to_explanation(
             M=None,  # want all examples
             clf=clf,
             train_embeddings=train_embeddings,
         )
-        for cluster_idx, indices in indices_per_cluster_idx.items():
+        print("HERE!")
+        print(cluster_idx_to_explanation)
+        input()
+        for cluster_idx, indices in cluster_idx_to_explanation.items():
             print(
                 f"Found {len(indices)} train examples for cluster {cluster_idx}"
             )
