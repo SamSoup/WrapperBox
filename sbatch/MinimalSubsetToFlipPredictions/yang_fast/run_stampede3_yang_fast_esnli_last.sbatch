@@ -8,7 +8,7 @@
 #SBATCH -t 24:00:00
 #SBATCH --mail-user=sam.su@utexas.edu
 #SBATCH --mail-type=ALL
-#SBATCH -A CCR2401
+#SBATCH -A CCR24018
 source /work/06782/ysu707/ls6/conda/etc/profile.d/conda.sh
 conda activate wrapperbox
 cd /work/06782/ysu707/ls6/WrapperBox/MinimalSubsetToFlipPredictions
