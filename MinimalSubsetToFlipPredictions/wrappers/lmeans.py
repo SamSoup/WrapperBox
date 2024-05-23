@@ -36,13 +36,22 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
             clf=clf,
             train_embeddings=train_embeddings,
         )
+        for cluster_idx, indices in indices_per_cluster_idx.items():
+            print(
+                f"Found {len(indices)} train examples for cluster {cluster_idx}"
+            )
         # construct a dict mapping cluster_idx: test_example_idx
         cluster_ids_test = clf.kmeans_.predict(test_embeddings)
+        print(f"First 5 Cluster IDs for test examples: {cluster_ids_test[:5]}")
         predictions = clf.predict(test_embeddings)
         print(f"Original predictions: {predictions}")
         cluster_idx_to_test_idx = defaultdict(list)
         for i, value in enumerate(cluster_ids_test):
             cluster_idx_to_test_idx[value].append(i)
+        for cluster_idx, indices in cluster_idx_to_test_idx.items():
+            print(
+                f"Found {len(indices)} test examples for cluster {cluster_idx}"
+            )
         # procedure: iteratively remove cluster examples and recluster,
         # then, check if predictions are flipped for the example
         # in that cluster only (because other examples would have a
