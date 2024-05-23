@@ -63,7 +63,7 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
             [] for _ in range(test_embeddings.shape[0])
         ]
         num_classes = len(np.unique(train_labels))
-        for cluster_idx, indices in indices_per_cluster_idx.items():
+        for cluster_idx, indices in cluster_idx_to_explanation.items():
             # convert numpy array to int for storage
             indices = indices.astype(int).tolist()
             print(f"Start example removal for cluster {cluster_idx}")
