@@ -36,9 +36,6 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
             clf=clf,
             train_embeddings=train_embeddings,
         )
-        print("HERE!")
-        print(cluster_idx_to_explanation)
-        input()
         for cluster_idx in cluster_idx_to_explanation:
             print(
                 f"Found {len(cluster_idx_to_explanation[cluster_idx])} "
