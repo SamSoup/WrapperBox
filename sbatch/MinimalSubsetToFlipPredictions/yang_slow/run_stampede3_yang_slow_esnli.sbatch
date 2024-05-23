@@ -5,7 +5,7 @@
 #SBATCH -p skx
 #SBATCH -N 22
 #SBATCH -n 22
-#SBATCH -t 48:00:00
+#SBATCH -t 24:00:00
 #SBATCH --mail-user=sam.su@utexas.edu
 #SBATCH --mail-type=ALL
 #SBATCH -A CCR24018
