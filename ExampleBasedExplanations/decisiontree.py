@@ -1,3 +1,4 @@
+from math import inf
 from sklearn.tree import DecisionTreeClassifier
 from tqdm import tqdm
 from utils.models.dt import get_leaf_ids
@@ -9,9 +10,10 @@ import numpy as np
 
 
 class DecisionTreeExampleBasedExplanation(ExampleBasedExplanation):
-    def __init__(self, ITERATIVE_THRESHOLD: int) -> None:
+    def __init__(self, ITERATIVE_THRESHOLD: int = None) -> None:
         super().__init__()
-        self.ITERATIVE_THRESHOLD = ITERATIVE_THRESHOLD
+        if ITERATIVE_THRESHOLD is None:
+            self.ITERATIVE_THRESHOLD = inf
 
     def _get_explanation_indices_leaf_batched(
         self,
