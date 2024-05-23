@@ -6,6 +6,6 @@
     "layer": 24,
     "wrapper_name": "KNN",
     "output_dir": "MinimalSubset/Test",
-    "do_debug": true,
-    "debug_examples": 10
+    "idx_start": 100,
+    "idx_end": 110
 }
