@@ -2,10 +2,10 @@
 #SBATCH -J esnli_lmeans_multinode
 #SBATCH -o esnli_lmeans_multinode.o%j
 #SBATCH -e esnli_lmeans_multinode.e%j
-#SBATCH -p skx
+#SBATCH -p normal
 #SBATCH -N 50
 #SBATCH -n 50
-#SBATCH -t 24:00:00
+#SBATCH -t 48:00:00
 #SBATCH --mail-user=sam.su@utexas.edu
 #SBATCH --mail-type=ALL
 #SBATCH -A CCR24018
