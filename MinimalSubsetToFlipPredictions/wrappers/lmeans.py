@@ -42,7 +42,7 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
         for cluster_idx in cluster_idx_to_explanation:
             print(
                 f"Found {len(cluster_idx_to_explanation[cluster_idx])} "
-                " train examples for cluster {cluster_idx}"
+                f" train examples for cluster {cluster_idx}"
             )
         # construct a dict mapping cluster_idx: test_example_idx
         cluster_ids_test = clf.kmeans_.predict(test_embeddings)

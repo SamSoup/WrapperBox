@@ -44,6 +44,8 @@ class LMeansExampleBasedExplanation(ExampleBasedExplanation):
                 top_k
             ]
 
+        print(cluster_idx_to_explanation[0].size)
+        print(cluster_idx_to_explanation[1].size)
         return cluster_idx_to_explanation
 
     def get_explanation_indices(
