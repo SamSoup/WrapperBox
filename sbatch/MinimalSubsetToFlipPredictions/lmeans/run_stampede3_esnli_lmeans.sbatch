@@ -18,7 +18,7 @@ for i in {0..63}; do
     source /work/06782/ysu707/ls6/conda/etc/profile.d/conda.sh
     conda activate wrapperbox
     cd /work/06782/ysu707/ls6/WrapperBox/MinimalSubsetToFlipPredictions
-    python3 main.py --config config/esnli/lmeans/deberta_mean_with_attention_LMeans_${start}_${end}.json
+    python3 main.py --config config/esnli/lmeans_less/deberta_mean_with_attention_LMeans_${start}_${end}.json
   " &
 done
 
