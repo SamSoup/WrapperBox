@@ -1,19 +1,19 @@
 #!/bin/bash
-#SBATCH -J esnli_lmeans_multinode
-#SBATCH -o esnli_lmeans_multinode.o%j
-#SBATCH -e esnli_lmeans_multinode.e%j
+#SBATCH -J esnli_lmeans_multinode_st3
+#SBATCH -o esnli_lmeans_multinode_st3.o%j
+#SBATCH -e esnli_lmeans_multinode_st3.e%j
 #SBATCH -p skx
-#SBATCH -N 50
-#SBATCH -n 50
+#SBATCH -N 64
+#SBATCH -n 64
 #SBATCH -t 24:00:00
 #SBATCH --mail-user=sam.su@utexas.edu
 #SBATCH --mail-type=ALL
 #SBATCH -A CCR24018
 
 # Run the tasks
-for i in {0..49}; do
-  start=$((200 * i))
-  end=$((start + 200))
+for i in {0..63}; do
+  start=$((155 * i))
+  end=$((start + 155))
   srun --nodes=1 --ntasks=1 --exclusive --job-name=task$i bash -c "
     source /work/06782/ysu707/ls6/conda/etc/profile.d/conda.sh
     conda activate wrapperbox
