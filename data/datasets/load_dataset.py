@@ -25,17 +25,16 @@ def load_dataset_from_hf(
     while attempt < retries:
         try:
             # Attempt to load the dataset
-            return load_dataset(f"Samsoup/{dataset}", cache_dir=CACHE_DIR)
-        except RepositoryNotFoundError as e:
-            if "401 Client Error" in str(e):
-                print(
-                    f"Attempt {attempt + 1} failed with 401 error.\n"
-                    "Retrying in {delay} seconds..."
-                )
-                attempt += 1
-                time.sleep(delay)
-            else:
-                raise e
+            return load_dataset(
+                f"Samsoup/{dataset}", cache_dir=CACHE_DIR, use_auth_token=True
+            )
+        except Exception as e:
+            print(
+                f"Attempt {attempt + 1} failed with error: \n"
+                f"{str(e)}. Retrying in {delay} seconds..."
+            )
+            attempt += 1
+            time.sleep(delay)
 
     raise Exception(
         "Failed to load dataset after multiple attempts due to 401 error"
