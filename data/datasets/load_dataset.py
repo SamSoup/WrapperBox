@@ -29,8 +29,8 @@ def load_dataset_from_hf(
         except RepositoryNotFoundError as e:
             if "401 Client Error" in str(e):
                 print(
-                    f"Attempt {attempt + 1} failed with 401 error. 
-                    Retrying in {delay} seconds..."
+                    f"Attempt {attempt + 1} failed with 401 error.\n"
+                    "Retrying in {delay} seconds..."
                 )
                 attempt += 1
                 time.sleep(delay)
