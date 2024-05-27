@@ -1,6 +1,8 @@
 # This script finds the minimal set of examples required to flip a lmeans pred
 
 from collections import defaultdict
+import gc
+import sys
 from typing import Iterable, List
 from sklearn.base import clone
 from tqdm import tqdm
@@ -18,6 +20,9 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
         super().__init__()
         self.SPLITS = SPLITS
         self.ITERATIVE_THRESHOLD = ITERATIVE_THRESHOLD
+        ## for internal use
+        self._last_seen_subset_size = None
+        self._refining_last_split_chunk = False
 
     def find_minimal_subset_cluster_batched(
         self,
@@ -178,6 +183,11 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
         sections_indices = partition_indices(
             N=indices_to_remove.shape[0], M=self.SPLITS
         )
+        print(
+            f"Initiating Batch Removal with {indices_to_remove.size} exs total "
+            f"across {self.SPLITS} splits",
+            file=sys.stderr,
+        )
         # Iteratively remove sections and check for a prediction flip
         for section_idx in tqdm(sections_indices, "Batch Removel"):
             reduced_indices = indices_to_remove[:section_idx]
@@ -212,6 +222,9 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
                     f"New prediction: {new_prediction}\n"
                     f"Old Prediction: {prediction}\n"
                 )
+                # Do not need the new clf anymore: call gc
+                del new_clf
+                gc.collect()
             else:
                 print("Not enough data points for all unique classes")
                 new_prediction = -1  # assume auto-flip when missing a label cls
@@ -219,6 +232,15 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
             # Check for a prediction flip
             if prediction != new_prediction:
                 print(f"\nFound subset with size {reduced_indices.size}.\n")
+                if (
+                    self._last_seen_subset_size is not None
+                    and self._last_seen_subset_size == reduced_indices.size
+                    and self._refining_last_split_chunk
+                ):
+                    # break out early, recursive refining of last chunk
+                    # has failed to identify a smaller subset
+                    return reduced_indices
+                self._last_seen_subset_size = reduced_indices.size
                 # Found, but need to split again because very large
                 if reduced_indices.size >= self.ITERATIVE_THRESHOLD:
                     # check if subset_indices is reduced: if not, then we
@@ -227,9 +249,9 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
                     if indices_to_remove.size == reduced_indices.size:
                         print(
                             "Recursive refinement failed to identify a smaller"
-                            " subset, initiating recursive refinement of the "
-                            "last split chunk"
+                            " subset. Initiating refinement of the last split chunk"
                         )
+                        self._refining_last_split_chunk = True
                         second_last_chunk_end_idx = partition_indices(
                             N=reduced_indices.shape[0], M=self.SPLITS
                         )[-2]
@@ -240,7 +262,10 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
                             second_last_chunk_end_idx : reduced_indices.shape[0]
                         ]
                         if last_chunk_indices.size >= self.ITERATIVE_THRESHOLD:
-                            print("Recursively refining last chunk")
+                            print(
+                                f"Above thresold {self.ITERATIVE_THRESHOLD}.\n"
+                                "Recursively refining last chunk"
+                            )
                             subset_indices = self._batched_remove_and_refit(
                                 x=x,
                                 prediction=prediction,
@@ -251,7 +276,10 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
                                 indices_to_always_remove=prior_chunk,
                             )
                         else:
-                            print("Iteratively refining last chunk")
+                            print(
+                                f"Below thresold {self.ITERATIVE_THRESHOLD}.\n"
+                                "Iteratively refining last chunk"
+                            )
                             subset_indices = self._iterative_remove_and_refit(
                                 x=x,
                                 prediction=prediction,
@@ -262,9 +290,10 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
                                 indices_to_always_remove=prior_chunk,
                             )
                     else:
+                        self._refining_last_split_chunk = False
                         print(
-                            f"It is above the threshold {self.ITERATIVE_THRESHOLD}\n",
-                            "initiating recursive call to further refine...\n",
+                            f"Found subset is above the threshold {self.ITERATIVE_THRESHOLD}.\n",
+                            "Initiating recursive call to further refine...\n",
                         )
                         subset_indices = self._batched_remove_and_refit(
                             x=x,
@@ -275,9 +304,10 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
                             train_labels=train_labels,
                         )
                 else:
+                    self._refining_last_split_chunk = False
                     # iteratively refine, small enough
                     print(
-                        f"It is below the threshold {self.ITERATIVE_THRESHOLD}\n",
+                        f"Found subset is below the threshold {self.ITERATIVE_THRESHOLD}\n",
                         "initiating iterative call to further refine...\n",
                     )
                     subset_indices = self._iterative_remove_and_refit(
@@ -326,15 +356,18 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
         for i in tqdm(
             range(1, indices_to_remove.shape[0] + 1), "Iterative Removal"
         ):
-            print(
-                f"\nIteratively removing the first {i} centroid examples.\n"
-                f"After having removed examples {indices_to_always_remove}\n"
-            )
-            reduced_indices = indices_to_remove[:i]
+            size = 0
             if indices_to_always_remove is not None:
                 reduced_indices = np.concatenate(
                     [indices_to_always_remove, reduced_indices]
                 )
+                size = indices_to_always_remove.size
+            print(
+                f"\nIteratively removing the first {i} centroid examples.\n"
+                f"After having removed {size} examples\n"
+            )
+            reduced_indices = indices_to_remove[:i]
+
             # mask to keep track of which training examples to keep
             train_mask = np.ones(train_embeddings.shape[0], dtype=bool)
             # Exclude selected examples from the training set
@@ -396,6 +429,9 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
             )
         ):
             pbar.set_description(f"Finding Minimal Set for Example {i}\n")
+            # reset globals for each input
+            self._last_seen_subset_size = None
+            self._refining_last_split_chunk = False
             # if total training set less than threshold, just go to iterative
             if train_embeddings.shape[0] <= self.ITERATIVE_THRESHOLD:
                 subset_indices = self._iterative_remove_and_refit(
