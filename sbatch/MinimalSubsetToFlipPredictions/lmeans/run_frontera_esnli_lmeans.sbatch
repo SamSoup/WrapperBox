@@ -1,8 +1,8 @@
 #!/bin/bash
-#SBATCH -J esnli_lmeans_multinode_ls6
-#SBATCH -o esnli_lmeans_multinode_ls6.o%j
-#SBATCH -e esnli_lmeans_multinode_ls6.e%j
-#SBATCH -p large
+#SBATCH -J esnli_lmeans_multinode_frontera
+#SBATCH -o esnli_lmeans_multinode_frontera.o%j
+#SBATCH -e esnli_lmeans_multinode_frontera.e%j
+#SBATCH -p normal
 #SBATCH -N 99
 #SBATCH -n 99
 #SBATCH -t 48:00:00
