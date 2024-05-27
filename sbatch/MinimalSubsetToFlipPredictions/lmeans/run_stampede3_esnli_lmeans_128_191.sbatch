@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH -J esnli_lmeans_multinode_st3
-#SBATCH -o esnli_lmeans_multinode_st3.o%j
-#SBATCH -e esnli_lmeans_multinode_st3.e%j
+#SBATCH -J esnli_lmeans_multinode_st3_third_batch
+#SBATCH -o esnli_lmeans_multinode_st3_third_batch.o%j
+#SBATCH -e esnli_lmeans_multinode_st3_third_batch.e%j
 #SBATCH -p skx
 #SBATCH -N 64
 #SBATCH -n 64
