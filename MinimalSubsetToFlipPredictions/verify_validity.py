@@ -287,7 +287,7 @@ if __name__ == "__main__":
     total = ex_indices_to_check.size
     print(
         f"Checking subsets for test examples {args.idx_start} to {args.idx_end}."
-        f"Total: {total} examples."
+        f"\nTotal: {total} examples."
     )
     is_subset_valid = evaluate_predictions(
         clf=clf,

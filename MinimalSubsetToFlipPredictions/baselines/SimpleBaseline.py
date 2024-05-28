@@ -26,12 +26,18 @@ class FindMinimalSubsetSimpleBaseline(FindMinimalSubset):
         # num_samples >> num_classes
         unique_predictions = np.unique(predictions)
 
-        # reduced_indices = indices_to_remove[:section_idx]
-        # # print("Reduced indices:", reduced_indices)
-        # train_mask = np.ones(train_embeddings.shape[0], dtype=bool)
-        # train_mask[reduced_indices] = False
+        # Cache the indices to remove per unique prediction
+        removal_indices_cache = {}
 
-        # # Create a reduced training set without the current section
-        # reduced_embeddings = train_embeddings[train_mask]
-        # reduced_labels = train_labels[train_mask]
-        pass
+        for pred in unique_predictions:
+            # Find training examples with matching labels as prediction
+            indices_to_remove = np.where(train_labels == pred)[0]
+            removal_indices_cache[pred] = indices_to_remove.tolist()
+
+        # For each test example, record the indices to remove based on its prediction
+        indices_to_remove_per_test = []
+
+        for pred in predictions:
+            indices_to_remove_per_test.append(removal_indices_cache[pred])
+
+        return indices_to_remove_per_test
