@@ -7,14 +7,10 @@ python3 main.py --config conig/<X>
 OR: pass in all other arguments
 """
 
-from cgi import test
-import sys
-
-from xgboost import train
 from MinimalSubsetToFlipPredictions.Yang2023.interface import (
     compute_minimal_subset_to_flip_predictions,
 )
-from MinimalSubsetToFlipPredictions.wrappers.factory import (
+from MinimalSubsetToFlipPredictions.models.factory import (
     FindMinimalSubsetFactory,
 )
 from utils.constants.directory import RESULTS_DIR
