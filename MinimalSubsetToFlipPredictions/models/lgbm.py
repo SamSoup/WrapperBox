@@ -1,142 +1,32 @@
-# This script finds the minimal set of examples required to flip a lmeans pred
-
-from collections import defaultdict
+# This script finds the minimal set of examples required to flip a Light
+# Gradient Boost Machine model
 import gc
 import sys
-from typing import Iterable, List
-from sklearn.base import clone
-from tqdm import tqdm
+from lightgbm import LGBMModel
+from MinimalSubsetToFlipPredictions.models.interface import FindMinimalSubset
+from ExampleBasedExplanations.lgbm import (
+    LGBMExampleBasedExplanation,
+)
+from utils.models import get_predictions
 from utils.partition import partition_indices
-from ExampleBasedExplanations.lmeans import LMeansExampleBasedExplanation
-from MinimalSubsetToFlipPredictions.interface import FindMinimalSubset
-from classifiers.KMeansClassifier import KMeansClassifier
+from typing import Iterable, List
+from tqdm import tqdm
 import numpy as np
 
 
-class FindMinimalSubsetLMeans(FindMinimalSubset):
-    def __init__(
-        self, ITERATIVE_THRESHOLD: int = None, SPLITS: int = None
-    ) -> None:
+class FindMinimalSubsetLGBM(FindMinimalSubset):
+    def __init__(self, ITERATIVE_THRESHOLD: int, SPLITS: int) -> None:
         super().__init__()
+        # Parameters for batched removal
         self.SPLITS = SPLITS
         self.ITERATIVE_THRESHOLD = ITERATIVE_THRESHOLD
-        ## for internal use
-        self._last_seen_subset_size = None
-        self._refining_last_split_chunk = False
-
-    def find_minimal_subset_cluster_batched(
-        self,
-        clf: KMeansClassifier,
-        train_embeddings: np.ndarray,
-        test_embeddings: np.ndarray,
-        train_labels: np.ndarray,
-    ) -> List[List[int]]:
-        # Find minimal subsets by iteratively removing examples from each
-        # cluster; This is good when clusters themeselves are small but are
-        # not easily parallelizable when clusters are few and big
-
-        handler = LMeansExampleBasedExplanation()
-        cluster_idx_to_explanation = handler._get_cluster_idx_to_explanation(
-            M=None,  # want all examples
-            clf=clf,
-            train_embeddings=train_embeddings,
-        )
-        for cluster_idx in cluster_idx_to_explanation:
-            print(
-                f"Found {len(cluster_idx_to_explanation[cluster_idx])} "
-                f" train examples for cluster {cluster_idx}"
-            )
-        # construct a dict mapping cluster_idx: test_example_idx
-        cluster_ids_test = clf.kmeans_.predict(test_embeddings)
-        print(f"First 5 Cluster IDs for test examples: {cluster_ids_test[:5]}")
-        predictions = clf.predict(test_embeddings)
-        print(f"First 5 Original predictions: {predictions[:5]}")
-        cluster_idx_to_test_idx = defaultdict(list)
-        for i, value in enumerate(cluster_ids_test):
-            cluster_idx_to_test_idx[value].append(i)
-        for cluster_idx, indices in cluster_idx_to_test_idx.items():
-            print(
-                f"Found {len(indices)} test examples for cluster {cluster_idx}"
-            )
-        # procedure: iteratively remove cluster examples and recluster,
-        # then, check if predictions are flipped for the example
-        # in that cluster only (because other examples would have a
-        # different removal order)
-        subset_indices_per_example = [
-            [] for _ in range(test_embeddings.shape[0])
-        ]
-        num_classes = len(np.unique(train_labels))
-        for cluster_idx, indices in cluster_idx_to_explanation.items():
-            # convert numpy array to int for storage
-            indices = indices.astype(int).tolist()
-            print(f"Start example removal for cluster {cluster_idx}")
-            removed_indices = []
-            test_idx_to_check = cluster_idx_to_test_idx[cluster_idx]
-            train_mask = np.ones(train_embeddings.shape[0], dtype=bool)
-            cluster_idx_pred = clf.cluster_indices_to_label_[cluster_idx]
-            print(
-                f"For cluster {cluster_idx}, "
-                f"LMeans always predicted label {cluster_idx_pred}"
-            )
-            for train_idx in tqdm(indices):
-                print(f"Removing training example {train_idx}")
-                # accum removed examples + get remaining items to check
-                removed_indices.append(train_idx)
-                test_embeddings_subset = test_embeddings[test_idx_to_check]
-
-                # Exclude selected examples from the training set
-                train_mask[train_idx] = False
-                X_train = train_embeddings[train_mask]
-                y_train = train_labels[train_mask]
-                print(f"Train subset shapes: {X_train.shape}, {y_train.shape}")
-                if len(np.unique(y_train)) == num_classes:
-                    new_clf = clone(clf)
-                    new_clf.fit(X_train, y_train)
-                    new_predictions = new_clf.predict(test_embeddings_subset)
-                    new_old_eq = np.all(new_predictions == cluster_idx_pred)
-                    print(
-                        f"New cluster indices to label {new_clf.cluster_indices_to_label_}"
-                    )
-                    print(f"New centroids: {new_clf.kmeans_.cluster_centers_}")
-                    print(
-                        f"{new_predictions}, is all equal to {cluster_idx_pred}: {new_old_eq} "
-                    )
-                else:
-                    print("Not enough data points for all unique classes")
-                    new_predictions = [
-                        -1 for _ in range(len(test_idx_to_check))
-                    ]
-
-                # check if a prediction flip has been reached, for
-                # all of the examples
-                remaining_test_idx_to_check = []
-                for test_idx, new_pred in zip(
-                    test_idx_to_check, new_predictions
-                ):
-                    if cluster_idx_pred != new_pred:
-                        print(
-                            f"\nIterative removal of train examples "
-                            f"{removed_indices} lead to flipped pred for "
-                            f"test example {test_idx}.\n"
-                        )
-                        subset_indices_per_example[test_idx].extend(
-                            removed_indices
-                        )
-                    else:
-                        remaining_test_idx_to_check.append(test_idx)
-                # update remaining params as needed
-                # when remaining_test_idx_to_check is empty: we have done our job
-                if not remaining_test_idx_to_check:
-                    break
-                test_idx_to_check = remaining_test_idx_to_check
-        return subset_indices_per_example
 
     def _batched_remove_and_refit(
         self,
         x: np.ndarray,
         prediction: int,
         indices_to_remove: np.ndarray,
-        clf: KMeansClassifier,
+        clf: LGBMModel,
         train_embeddings: np.ndarray,
         train_labels: np.ndarray,
         indices_to_always_remove: np.ndarray = None,
@@ -167,7 +57,7 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
             x (np.ndarray): (hidden_size), an test input
             prediction (int): the model's prediction for that test input
             indices_per_test_to_remove (np.ndarray): (num_examples_to_remove)
-            clf (KMeansClassifier): the original model
+            clf (LGBMModel): the original model
             train_embeddings (np.ndarray): (num_train_examples, hidden_size)
             train_labels (np.ndarray): (num_train_examples)
             indices_to_always_remove (np.ndarray, optional): the only difference
@@ -213,9 +103,9 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
             # if after removal there is only one/less class, then obv flipped
             if len(np.unique(reduced_labels)) == num_classes:
                 # Retrain the classifier on the reduced dataset
-                new_clf = clone(clf)
+                new_clf = LGBMModel(**clf.get_params())
                 new_clf.fit(reduced_embeddings, reduced_labels)
-                new_prediction = new_clf.predict(x.reshape(1, -1))[0]
+                new_prediction = get_predictions(new_clf, x.reshape(1, -1))[0]
                 # new_prediction = new_clf.predict(x.reshape(1, -1))[0]
                 print(
                     f"\nRemoved {reduced_indices.size} examples\n"
@@ -326,7 +216,7 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
         x: np.ndarray,
         prediction: int,
         indices_to_remove: np.ndarray,
-        clf: KMeansClassifier,
+        clf: LGBMModel,
         train_embeddings: np.ndarray,
         train_labels: np.ndarray,
         indices_to_always_remove: np.ndarray = None,
@@ -339,7 +229,7 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
             x (np.ndarray):
             prediction (int):
             indices_to_remove (np.ndarray):
-            clf (KMeansClassifier):
+            clf (LGBMModel):
             train_embeddings (np.ndarray):
             train_labels (np.ndarray):
             indices_to_always_remove (np.ndarray, optional): the only difference
@@ -378,10 +268,10 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
             # Clone the original model and retrain, unless there is not enough
             # labels per unique class
             if len(np.unique(y_train)) == num_classes:
-                new_clf = clone(clf)
+                new_clf = LGBMModel(**clf.get_params())
                 new_clf.fit(X_train, y_train)
-                new_prediction = new_clf.predict(x.reshape(1, -1))[0]
                 # new_prediction = new_clf.predict(x.reshape(1, -1))[0]
+                new_prediction = get_predictions(new_clf, x.reshape(1, -1))[0]
             else:
                 print("Not enough data points for all unique classes")
                 new_prediction = -1
@@ -395,27 +285,24 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
                 return reduced_indices
         return []  # no subset can flip
 
-    def find_minimal_subset_brute_force(
+    def find_minimal_subset(
         self,
-        clf: KMeansClassifier,
+        clf: LGBMModel,
         train_embeddings: np.ndarray,
         test_embeddings: np.ndarray,
         train_labels: np.ndarray,
-    ):
-        # Find subsets through a brute force, searching fashion
-        # This is good because examples can be chunked to be embarassingly
-        # parallel
+    ) -> List[List[int]]:
         # preprocessing is equivalent to finding example-based explanations
-        handler = LMeansExampleBasedExplanation()
+        handler = LGBMExampleBasedExplanation()
         sorted_indices_per_test_example = handler.get_explanation_indices(
-            M=None,  # want indices for all centroid examples
+            M=None,  # want indices for all leaf examples
             clf=clf,
             train_embeddings=train_embeddings,
             test_embeddings=test_embeddings,
         )
 
         subset_indices_per_example = []
-        predictions = clf.predict(test_embeddings)
+        predictions = get_predictions(clf, test_embeddings)
         for i, (x, prediction, indices_to_remove) in (
             pbar := tqdm(
                 enumerate(
@@ -429,9 +316,6 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
             )
         ):
             pbar.set_description(f"Finding Minimal Set for Example {i}\n")
-            # reset globals for each input
-            self._last_seen_subset_size = None
-            self._refining_last_split_chunk = False
             # if total training set less than threshold, just go to iterative
             if train_embeddings.shape[0] <= self.ITERATIVE_THRESHOLD:
                 subset_indices = self._iterative_remove_and_refit(
@@ -457,25 +341,3 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
             subset_indices_per_example.append(subset_indices)
 
         return subset_indices_per_example
-
-    def find_minimal_subset(
-        self,
-        clf: KMeansClassifier,
-        train_embeddings: np.ndarray,
-        test_embeddings: np.ndarray,
-        train_labels: np.ndarray,
-    ):
-        if self.SPLITS is not None and self.ITERATIVE_THRESHOLD is not None:
-            return self.find_minimal_subset_brute_force(
-                clf=clf,
-                train_embeddings=train_embeddings,
-                test_embeddings=test_embeddings,
-                train_labels=train_labels,
-            )
-        else:
-            return self.find_minimal_subset_cluster_batched(
-                clf=clf,
-                train_embeddings=train_embeddings,
-                test_embeddings=test_embeddings,
-                train_labels=train_labels,
-            )

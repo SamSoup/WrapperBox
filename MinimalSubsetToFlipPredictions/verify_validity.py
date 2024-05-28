@@ -9,7 +9,7 @@ import pickle
 from typing import List
 
 import numpy as np
-from MinimalSubsetToFlipPredictions.evaluate import (
+from MinimalSubsetToFlipPredictions.evaluate.evaluate import (
     compute_subset_metrics,
     evaluate_predictions,
 )

@@ -1,6 +1,6 @@
 # This script finds the minimal set of neighbors for a svm
 from typing import List
-from MinimalSubsetToFlipPredictions.interface import FindMinimalSubset
+from MinimalSubsetToFlipPredictions.models.interface import FindMinimalSubset
 from sklearn.neighbors import KNeighborsClassifier
 from utils.inference import find_majority_batched
 from tqdm import tqdm

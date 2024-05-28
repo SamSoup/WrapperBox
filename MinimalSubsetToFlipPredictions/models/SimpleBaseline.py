@@ -9,7 +9,7 @@ from typing import Any, List
 from lightgbm import LGBMModel
 import numpy as np
 from sklearn.base import BaseEstimator
-from MinimalSubsetToFlipPredictions.interface import FindMinimalSubset
+from MinimalSubsetToFlipPredictions.models.interface import FindMinimalSubset
 from utils.models import get_predictions
 
 
