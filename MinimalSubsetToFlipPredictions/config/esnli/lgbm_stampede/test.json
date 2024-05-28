@@ -8,6 +8,6 @@
     "output_dir": "MinimalSubset",
     "iterative_threshold": 10,
     "splits": 10,
-    "idx_start": 5390,
-    "idx_end": 5467
+    "idx_start": 0,
+    "idx_end": 5
 }

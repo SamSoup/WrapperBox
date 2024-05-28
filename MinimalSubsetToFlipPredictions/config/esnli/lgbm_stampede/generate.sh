@@ -5,7 +5,7 @@ num_samples=$2
 # Base JSON configuration
 base_config='{
     "dataset": "esnli",
-    "model": "deberta-large",
+    "model": "deberta_large",
     "seed": 42,
     "pooler": "mean_with_attention",
     "layer": 24,

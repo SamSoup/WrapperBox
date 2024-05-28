@@ -1,6 +1,6 @@
 {
     "dataset": "esnli",
-    "model": "deberta-large",
+    "model": "deberta_large",
     "seed": 42,
     "pooler": "mean_with_attention",
     "layer": 24,
