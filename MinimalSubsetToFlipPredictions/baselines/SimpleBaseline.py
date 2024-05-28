@@ -6,9 +6,11 @@
 import sys
 from typing import Any, List
 
+from lightgbm import LGBMModel
 import numpy as np
 from sklearn.base import BaseEstimator
 from MinimalSubsetToFlipPredictions.interface import FindMinimalSubset
+from utils.models import get_predictions
 
 
 class FindMinimalSubsetSimpleBaseline(FindMinimalSubset):
@@ -19,7 +21,7 @@ class FindMinimalSubsetSimpleBaseline(FindMinimalSubset):
         test_embeddings: np.ndarray,
         train_labels: np.ndarray,
     ) -> List[List[int]]:
-        predictions = clf.predict(test_embeddings)
+        predictions = get_predictions(clf, test_embeddings)
 
         # for each prediction value, cache the example indices to remove
         # and then simply assign: this is beneficial because
