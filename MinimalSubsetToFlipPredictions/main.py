@@ -21,11 +21,14 @@ from utils.constants.directory import RESULTS_DIR
 from utils.constants.models import (
     WRAPPER_BOXES_NEEDING_BATCHED_MINIMAL_SUBET_SEARCH,
 )
-from utils.io import mkdir_if_not_exists
+from utils.io import (
+    mkdir_if_not_exists,
+    load_embeddings,
+    load_wrapperbox,
+    load_dataset_from_hf,
+    load_labels_at_split,
+)
 from datasets import concatenate_datasets, DatasetDict
-from data.embeddings.load_embeddings import load_saved_embeddings
-from data.models import load_saved_wrapperbox_model
-from data.datasets import load_dataset_from_hf, load_labels_at_split
 import numpy as np
 import argparse
 import json
@@ -125,7 +128,7 @@ def get_args():
 
 
 def load_embeddings(args: argparse.Namespace):
-    train_embeddings = load_saved_embeddings(
+    train_embeddings = load_embeddings(
         dataset=args.dataset,
         model=args.model,
         seed=args.seed,
@@ -134,7 +137,7 @@ def load_embeddings(args: argparse.Namespace):
         layer=args.layer,
     )
 
-    eval_embeddings = load_saved_embeddings(
+    eval_embeddings = load_embeddings(
         dataset=args.dataset,
         model=args.model,
         seed=args.seed,
@@ -143,7 +146,7 @@ def load_embeddings(args: argparse.Namespace):
         layer=args.layer,
     )
 
-    test_embeddings = load_saved_embeddings(
+    test_embeddings = load_embeddings(
         dataset=args.dataset,
         model=args.model,
         seed=args.seed,
@@ -258,7 +261,7 @@ if __name__ == "__main__":
             handler = handler_class()
 
         # Load Wrapper box
-        clf = load_saved_wrapperbox_model(
+        clf = load_wrapperbox(
             dataset=args.dataset,
             model=args.model,
             seed=args.seed,

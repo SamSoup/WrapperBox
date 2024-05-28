@@ -15,14 +15,13 @@ from sklearn.linear_model import LogisticRegression
 from sympy import false
 from tqdm import tqdm
 
-from data.datasets.load_dataset import (
+from utils.io import (
     load_dataset_from_hf,
     load_labels_at_split,
+    load_embeddings,
+    load_wrapperbox,
 )
 from datasets import concatenate_datasets, DatasetDict
-
-from data.embeddings.load_embeddings import load_saved_embeddings
-from data.models.load_saved_models import load_saved_wrapperbox_model
 
 
 def parse_args():
@@ -37,7 +36,7 @@ def parse_args():
     parser.add_argument(
         "--subsets_filename",
         type=str,
-        required=True,
+        default=None,
         help="Name of the file that contains the subset sizes.",
     )
     parser.add_argument(
@@ -114,7 +113,7 @@ def parse_args():
 
 
 def load_embeddings(args: argparse.Namespace):
-    train_embeddings = load_saved_embeddings(
+    train_embeddings = load_embeddings(
         dataset=args.dataset,
         model=args.model,
         seed=args.seed,
@@ -123,7 +122,7 @@ def load_embeddings(args: argparse.Namespace):
         layer=args.layer,
     )
 
-    eval_embeddings = load_saved_embeddings(
+    eval_embeddings = load_embeddings(
         dataset=args.dataset,
         model=args.model,
         seed=args.seed,
@@ -132,7 +131,7 @@ def load_embeddings(args: argparse.Namespace):
         layer=args.layer,
     )
 
-    test_embeddings = load_saved_embeddings(
+    test_embeddings = load_embeddings(
         dataset=args.dataset,
         model=args.model,
         seed=args.seed,
@@ -256,17 +255,18 @@ if __name__ == "__main__":
         test_labels,
     ) = load_dataset_and_labels(args=args)
 
-    # read in subset file
-    with open(filename, "rb") as handle:
-        flip_list = pickle.load(handle)
-
-    # load classifiers
+    # Load pre-trained classifiers
     if args.do_yang2023:
-        clf = LogisticRegression(penalty="l2", C=1 / 500)
-        clf.fit(train_eval_embeddings, train_eval_labels)
+        clf = load_wrapperbox(
+            dataset=args.dataset,
+            model=args.model,
+            seed=args.seed,
+            pooler=args.pooler,
+            wrapperbox="LogisticRegression",
+        )
         save_name = f"yang_{args.algorithm_type}"
     else:
-        clf = load_saved_wrapperbox_model(
+        clf = load_wrapperbox(
             dataset=args.dataset,
             model=args.model,
             seed=args.seed,
@@ -274,6 +274,13 @@ if __name__ == "__main__":
             wrapperbox=args.wrapper_name,
         )
         save_name = args.wrapper_name
+
+    # Load pre-computed subsets
+    fname = args.subsets_filename
+    if fname is None:
+        fname = f"{args.dataset}_{args.model}_{save_name}.pickle"
+    with open(fname, "rb") as handle:
+        flip_list = pickle.load(handle)
 
     # Finally: evaluate and retrain
     ex_indices_to_check = np.arange(args.idx_start, args.idx_end)
