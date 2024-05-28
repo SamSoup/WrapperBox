@@ -1,0 +1,13 @@
+{
+    "dataset": "esnli",
+    "subsets_filename": "results/esnli/esnli_deberta_large_yang_slow_baseline.pickle",
+    "model": "deberta_large",
+    "seed": 42,
+    "pooler": "mean_with_attention",
+    "layer": 24,
+    "do_yang2023": true,
+    "algorithm_type": "slow",
+    "output_dir": "MinimalSubset/evaluate/yang_slow_baseline/",
+    "idx_start": 2079,
+    "idx_end": 2156
+}
