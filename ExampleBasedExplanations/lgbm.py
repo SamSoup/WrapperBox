@@ -84,7 +84,7 @@ class LGBMExampleBasedExplanation(ExampleBasedExplanation):
     #             ex_indices[test_idx] = expl_ind
     #     return ex_indices
 
-    def _get_explanation_indices_brute_force(
+    def _get_explanation_indices_brute_force_multiclass(
         self,
         M: int,
         clf: LGBMModel,
@@ -159,6 +159,65 @@ class LGBMExampleBasedExplanation(ExampleBasedExplanation):
 
         return indices
 
+    def _get_explanation_indices_brute_force_binary(
+        self,
+        M: int,
+        clf: LGBMModel,
+        train_embeddings: np.ndarray,
+        test_embeddings: np.ndarray,
+    ) -> List[List[int]]:
+        """
+        Return the closest leaf examples for the Light Gradient Boosting Machine
+        using manual, brute force search for each test example.
+
+        This method is suitable for when number of test examples ~= number of
+        leaf nodes.
+
+        Args:
+            clf (LGBMModel):
+            M (int): number of examples to return for explanation, = K here
+            dataset (DatasetDict): must have at least {
+                "train": ['text', 'label'...]
+                "test": ['text', 'label'...]
+            }
+            train_embeddings (np.ndarray): (num_train_examples, hidden_size)
+            test_embeddings (np.ndarray): (num_test_examples, hidden_size)
+
+        Returns:
+            np.ndarray: The M closest leaf example indices for each test example,
+                (num_test_examples, M)
+        """
+        # In binary, the leaf ids are just given in 1d array
+        leaf_ids_test = get_leaf_ids(clf, test_embeddings)
+        leaf_ids_train = get_leaf_ids(clf, train_embeddings)
+
+        indices = []
+        for i in tqdm(
+            range(test_embeddings.shape[0]),
+            "Getting Expl Indices for DT Manually",
+        ):
+            # [0, num_train_examples)
+            train_indices = np.arange(leaf_ids_train.shape[0])
+            leaf_idx = leaf_ids_test[i]
+            # only obtain the training examples in the same leaf
+            # as the test example
+            train_leaf_neighbor_mask = leaf_ids_train == leaf_idx
+            train_indices_subset = train_indices[train_leaf_neighbor_mask]
+            # unforunately, the set of examples to compute the distance is
+            # different per input examples, and thus is not easily paralleled
+            # TODO: could simply group test examples by leaf, then compute
+            # all in parallel to save some time?
+            dist_mat = cdist(
+                test_embeddings[i].reshape(1, -1),
+                train_embeddings[train_leaf_neighbor_mask],
+            )
+            # one potential complications here is that there may not be M
+            # examples in a leaf, if that leaf is particularly small
+            top_k = np.argsort(dist_mat, axis=1)[:, :M].flatten()
+            indices.append(train_indices_subset[top_k])
+
+        return indices
+
     def get_explanation_indices(
         self,
         M: int,
@@ -166,9 +225,17 @@ class LGBMExampleBasedExplanation(ExampleBasedExplanation):
         train_embeddings: np.ndarray,
         test_embeddings: np.ndarray,
     ) -> List[List[int]]:
-        return self._get_explanation_indices_brute_force(
-            M=M,
-            clf=clf,
-            train_embeddings=train_embeddings,
-            test_embeddings=test_embeddings,
-        )
+        if clf.objective == "multiclass":
+            return self._get_explanation_indices_brute_force_multiclass(
+                M=M,
+                clf=clf,
+                train_embeddings=train_embeddings,
+                test_embeddings=test_embeddings,
+            )
+        elif clf.objective == "binary":
+            return self._get_explanation_indices_brute_force_binary(
+                M=M,
+                clf=clf,
+                train_embeddings=train_embeddings,
+                test_embeddings=test_embeddings,
+            )
