@@ -17,7 +17,7 @@ for i in {64..127}; do
   srun --nodes=1 --ntasks=1 --exclusive --job-name=task$i bash -c "
     source /work/06782/ysu707/ls6/conda/etc/profile.d/conda.sh
     conda activate wrapperbox
-    cd /work/06782/ysu707/ls6/WrapperBox/MinimalSubsetToFlipPredictions/results/esnli
+    cd /work/06782/ysu707/ls6/WrapperBox/MinimalSubsetToFlipPredictions
     python3 verify_validity.py --config config/esnli/evaluate_yang_fast/${start}_${end}.json
   " &
 done
