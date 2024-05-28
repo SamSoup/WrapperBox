@@ -10,8 +10,9 @@ base_config='{
     "seed": 42,
     "pooler": "mean_with_attention",
     "layer": 24,
-    "do_yang2023": true,
+    "do_yang2023": false,
     "algorithm_type": "fast",
+    "wrapper_name": "LMeans",
     "output_dir": "MinimalSubset/evaluate/lmeans/",
     "idx_start": __START__,
     "idx_end": __END__
