@@ -16,6 +16,7 @@ from sklearn.linear_model import LogisticRegression
 from sympy import false
 from tqdm import tqdm
 
+from utils.constants.directory import RESULTS_DIR
 from utils.io import (
     load_dataset_from_hf,
     load_labels_at_split,
@@ -262,6 +263,9 @@ if __name__ == "__main__":
     # save to disk
     prefix = f"{args.dataset}_{args.model}_{save_name}_{args.idx_start}to{args.idx_end}"
     fname = f"{prefix}_is_valid_subsets.json"
+    # Check output dir is absolute path; if not, append RESULTS_DIR
+    if not os.path.isabs(args.output_dir):
+        args.output_dir = RESULTS_DIR / args.output_dir
     mkdir_if_not_exists(args.output_dir)
     output_file_path = os.path.join(args.output_dir, fname)
 
