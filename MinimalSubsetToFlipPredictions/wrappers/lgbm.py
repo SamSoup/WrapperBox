@@ -1,14 +1,15 @@
 # This script finds the minimal set of examples required to flip a Light
 # Gradient Boost Machine model
+import gc
+import sys
 from lightgbm import LGBMModel
 from MinimalSubsetToFlipPredictions.interface import FindMinimalSubset
 from ExampleBasedExplanations.lgbm import (
     LGBMExampleBasedExplanation,
 )
-from utils.models.dt import get_predictions
+from utils.models import get_predictions
 from utils.partition import partition_indices
 from typing import Iterable, List
-from sklearn.base import clone
 from tqdm import tqdm
 import numpy as np
 
@@ -28,6 +29,7 @@ class FindMinimalSubsetLGBM(FindMinimalSubset):
         clf: LGBMModel,
         train_embeddings: np.ndarray,
         train_labels: np.ndarray,
+        indices_to_always_remove: np.ndarray = None,
     ) -> Iterable[int]:
         """
         Splits the dataset into K batches for removal, iteratively removing
@@ -58,6 +60,10 @@ class FindMinimalSubsetLGBM(FindMinimalSubset):
             clf (LGBMModel): the original model
             train_embeddings (np.ndarray): (num_train_examples, hidden_size)
             train_labels (np.ndarray): (num_train_examples)
+            indices_to_always_remove (np.ndarray, optional): the only difference
+                from batched removal. Sometimes we want to iteratively remove
+                examples having always removing some set (e.g., in bet. chunks)
+                Defaults to None.
 
         Returns:
             Iterable[int]: empty, or the list of indices that compose a subset
@@ -67,12 +73,22 @@ class FindMinimalSubsetLGBM(FindMinimalSubset):
         sections_indices = partition_indices(
             N=indices_to_remove.shape[0], M=self.SPLITS
         )
+        print(
+            f"Initiating Batch Removal with {indices_to_remove.size} exs total "
+            f"across {self.SPLITS} splits",
+            file=sys.stderr,
+        )
         # Iteratively remove sections and check for a prediction flip
         for section_idx in tqdm(sections_indices, "Batch Removel"):
-            print(
-                f"\nBatching removing the first {section_idx} closest leaf exs"
-            )
             reduced_indices = indices_to_remove[:section_idx]
+            if indices_to_always_remove is not None:
+                reduced_indices = np.concatenate(
+                    [indices_to_always_remove, reduced_indices]
+                )
+            print(
+                f"\nBatching removing the first {section_idx} closest centroid exs\n"
+                f"After having removed examples {indices_to_always_remove}\n"
+            )
             # print("Reduced indices:", reduced_indices)
             train_mask = np.ones(train_embeddings.shape[0], dtype=bool)
             train_mask[reduced_indices] = False
@@ -96,23 +112,36 @@ class FindMinimalSubsetLGBM(FindMinimalSubset):
                     f"New prediction: {new_prediction}\n"
                     f"Old Prediction: {prediction}\n"
                 )
+                # Do not need the new clf anymore: call gc
+                del new_clf
+                gc.collect()
             else:
                 print("Not enough data points for all unique classes")
                 new_prediction = -1  # assume auto-flip when missing a label cls
 
             # Check for a prediction flip
             if prediction != new_prediction:
-                # Found, but need to split again
+                print(f"\nFound subset with size {reduced_indices.size}.\n")
+                if (
+                    self._last_seen_subset_size is not None
+                    and self._last_seen_subset_size == reduced_indices.size
+                    and self._refining_last_split_chunk
+                ):
+                    # break out early, recursive refining of last chunk
+                    # has failed to identify a smaller subset
+                    return reduced_indices
+                self._last_seen_subset_size = reduced_indices.size
+                # Found, but need to split again because very large
                 if reduced_indices.size >= self.ITERATIVE_THRESHOLD:
                     # check if subset_indices is reduced: if not, then we
-                    # have a problem: must reduce iteratively, from the last
+                    # have a problem: must reduce again, from the last
                     # chunk of len(reduced_indices) into `SPLITS` splits
-                    if indices_to_remove.shape[0] == reduced_indices.shape[0]:
+                    if indices_to_remove.size == reduced_indices.size:
                         print(
                             "Recursive refinement failed to identify a smaller"
-                            " subset, initiating iterative refinement of the "
-                            "last split chunk"
+                            " subset. Initiating refinement of the last split chunk"
                         )
+                        self._refining_last_split_chunk = True
                         second_last_chunk_end_idx = partition_indices(
                             N=reduced_indices.shape[0], M=self.SPLITS
                         )[-2]
@@ -122,20 +151,39 @@ class FindMinimalSubsetLGBM(FindMinimalSubset):
                         last_chunk_indices = reduced_indices[
                             second_last_chunk_end_idx : reduced_indices.shape[0]
                         ]
-                        subset_indices = self._iterative_remove_and_refit(
-                            x=x,
-                            prediction=prediction,
-                            indices_to_remove=last_chunk_indices,
-                            clf=clf,
-                            train_embeddings=train_embeddings,
-                            train_labels=train_labels,
-                            indices_to_always_remove=prior_chunk,
-                        )
+                        if last_chunk_indices.size >= self.ITERATIVE_THRESHOLD:
+                            print(
+                                f"Above thresold {self.ITERATIVE_THRESHOLD}.\n"
+                                "Recursively refining last chunk"
+                            )
+                            subset_indices = self._batched_remove_and_refit(
+                                x=x,
+                                prediction=prediction,
+                                indices_to_remove=last_chunk_indices,
+                                clf=clf,
+                                train_embeddings=train_embeddings,
+                                train_labels=train_labels,
+                                indices_to_always_remove=prior_chunk,
+                            )
+                        else:
+                            print(
+                                f"Below thresold {self.ITERATIVE_THRESHOLD}.\n"
+                                "Iteratively refining last chunk"
+                            )
+                            subset_indices = self._iterative_remove_and_refit(
+                                x=x,
+                                prediction=prediction,
+                                indices_to_remove=last_chunk_indices,
+                                clf=clf,
+                                train_embeddings=train_embeddings,
+                                train_labels=train_labels,
+                                indices_to_always_remove=prior_chunk,
+                            )
                     else:
+                        self._refining_last_split_chunk = False
                         print(
-                            f"\nFound subset with size {reduced_indices.size}.\n"
-                            f"It is above the threshold {self.ITERATIVE_THRESHOLD}\n",
-                            "initiating recursive call to further refine...\n",
+                            f"Found subset is above the threshold {self.ITERATIVE_THRESHOLD}.\n",
+                            "Initiating recursive call to further refine...\n",
                         )
                         subset_indices = self._batched_remove_and_refit(
                             x=x,
@@ -146,10 +194,10 @@ class FindMinimalSubsetLGBM(FindMinimalSubset):
                             train_labels=train_labels,
                         )
                 else:
+                    self._refining_last_split_chunk = False
                     # iteratively refine, small enough
                     print(
-                        f"\nFound subset with size {reduced_indices.size}.\n"
-                        f"It is below the threshold {self.ITERATIVE_THRESHOLD}\n",
+                        f"Found subset is below the threshold {self.ITERATIVE_THRESHOLD}\n",
                         "initiating iterative call to further refine...\n",
                     )
                     subset_indices = self._iterative_remove_and_refit(
@@ -198,15 +246,18 @@ class FindMinimalSubsetLGBM(FindMinimalSubset):
         for i in tqdm(
             range(1, indices_to_remove.shape[0] + 1), "Iterative Removal"
         ):
-            print(
-                f"\nIteratively removing the first {i} examples.\n"
-                f"After having removed examples {indices_to_always_remove}\n"
-            )
-            reduced_indices = indices_to_remove[:i]
+            size = 0
             if indices_to_always_remove is not None:
                 reduced_indices = np.concatenate(
                     [indices_to_always_remove, reduced_indices]
                 )
+                size = indices_to_always_remove.size
+            print(
+                f"\nIteratively removing the first {i} centroid examples.\n"
+                f"After having removed {size} examples\n"
+            )
+            reduced_indices = indices_to_remove[:i]
+
             # mask to keep track of which training examples to keep
             train_mask = np.ones(train_embeddings.shape[0], dtype=bool)
             # Exclude selected examples from the training set
@@ -219,8 +270,8 @@ class FindMinimalSubsetLGBM(FindMinimalSubset):
             if len(np.unique(y_train)) == num_classes:
                 new_clf = LGBMModel(**clf.get_params())
                 new_clf.fit(X_train, y_train)
-                new_prediction = get_predictions(new_clf, x.reshape(1, -1))[0]
                 # new_prediction = new_clf.predict(x.reshape(1, -1))[0]
+                new_prediction = get_predictions(new_clf, x.reshape(1, -1))[0]
             else:
                 print("Not enough data points for all unique classes")
                 new_prediction = -1
