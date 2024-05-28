@@ -4,6 +4,8 @@ from sklearn import clone
 from sklearn.base import BaseEstimator
 from tqdm import tqdm
 
+from utils.models import get_predictions
+
 
 def retrain_and_evaluate_validity(
     clf: BaseEstimator,
@@ -16,10 +18,10 @@ def retrain_and_evaluate_validity(
     train_mask[indices_to_exclude] = False
     reduced_embeddings = train_embeddings[train_mask]
     reduced_labels = train_labels[train_mask]
-    old_pred = clf.predict(x_test.reshape(1, -1))[0]
+    old_pred = get_predictions(clf, x_test.reshape(1, -1))[0]
     new_clf = clone(clf)
     new_clf.fit(reduced_embeddings, reduced_labels)
-    new_pred = new_clf.predict(x_test.reshape(1, -1))[0]
+    new_pred = get_predictions(new_clf, x_test.reshape(1, -1))[0]
     # this subset is valid only if new prediction does not equal old prediction
     return old_pred, new_pred, new_pred != old_pred
 

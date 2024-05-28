@@ -262,7 +262,7 @@ if __name__ == "__main__":
 
     # save to disk
     prefix = f"{args.dataset}_{args.model}_{save_name}_{args.idx_start}to{args.idx_end}"
-    fname = f"{prefix}_is_valid_subsets.json"
+    fname = f"{prefix}_is_valid_subsets.pickle"
     # Check output dir is absolute path; if not, append RESULTS_DIR
     if not os.path.isabs(args.output_dir):
         args.output_dir = RESULTS_DIR / args.output_dir
