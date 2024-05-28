@@ -247,6 +247,7 @@ class FindMinimalSubsetLGBM(FindMinimalSubset):
             range(1, indices_to_remove.shape[0] + 1), "Iterative Removal"
         ):
             size = 0
+            reduced_indices = indices_to_remove[:i]
             if indices_to_always_remove is not None:
                 reduced_indices = np.concatenate(
                     [indices_to_always_remove, reduced_indices]
@@ -256,8 +257,6 @@ class FindMinimalSubsetLGBM(FindMinimalSubset):
                 f"\nIteratively removing the first {i} centroid examples.\n"
                 f"After having removed {size} examples\n"
             )
-            reduced_indices = indices_to_remove[:i]
-
             # mask to keep track of which training examples to keep
             train_mask = np.ones(train_embeddings.shape[0], dtype=bool)
             # Exclude selected examples from the training set
