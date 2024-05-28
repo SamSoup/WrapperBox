@@ -27,6 +27,13 @@ def load_json(filename: str):
     return data
 
 
+def load_pickle(filename: str):
+    with open(filename, "rb") as handle:
+        data = pickle.load(handle)
+
+    return data
+
+
 def load_embeddings(
     dataset: str,
     model: str,

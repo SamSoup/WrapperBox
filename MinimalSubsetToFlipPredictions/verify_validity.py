@@ -9,6 +9,7 @@ import pickle
 from typing import List
 
 import numpy as np
+from MinimalSubsetToFlipPredictions.evaluate import evaluate_predictions
 from sklearn import clone
 from sklearn.base import BaseEstimator
 from sklearn.linear_model import LogisticRegression
@@ -20,6 +21,7 @@ from utils.io import (
     load_labels_at_split,
     load_embeddings,
     load_wrapperbox,
+    mkdir_if_not_exists,
 )
 from datasets import concatenate_datasets, DatasetDict
 
@@ -191,52 +193,6 @@ def load_dataset_and_labels(args: argparse.Namespace):
     )
 
 
-def retrain_and_evaluate_validity(
-    clf: BaseEstimator,
-    train_embeddings: np.ndarray,
-    train_labels: np.ndarray,
-    x_test: np.ndarray,
-    indices_to_exclude: np.ndarray,
-):
-    train_mask = np.ones(train_embeddings.shape[0], dtype=bool)
-    train_mask[indices_to_exclude] = False
-    reduced_embeddings = train_embeddings[train_mask]
-    reduced_labels = train_labels[train_mask]
-    old_pred = clf.predict(x_test.reshape(1, -1))[0]
-    new_clf = clone(clf)
-    new_clf.fit(reduced_embeddings, reduced_labels)
-    new_pred = new_clf.predict(x_test.reshape(1, -1))[0]
-    # this subset is valid only if new prediction does not equal old prediction
-    return old_pred, new_pred, new_pred != old_pred
-
-
-def evaluate_predictions(
-    clf: BaseEstimator,
-    flip_list: List[List[int]],
-    train_embeddings: np.ndarray,
-    train_labels: np.ndarray,
-    test_embeddings: np.ndarray,
-    ex_indices_to_check: List[int],
-):
-    is_valid_subsets = []
-    for test_ex_idx in tqdm(ex_indices_to_check):
-        f_list = flip_list[test_ex_idx]
-        # if flip list is empty: then it is obviously false
-        if f_list is None or len(f_list) == 0:
-            is_valid_subsets.append(False)
-            continue
-        _, _, is_valid_subset = retrain_and_evaluate_validity(
-            clf=clf,
-            train_embeddings=train_embeddings,
-            train_labels=train_labels,
-            x_test=test_embeddings[test_ex_idx],
-            indices_to_exclude=f_list,
-        )
-        is_valid_subsets.append(is_valid_subset)
-
-    return is_valid_subsets
-
-
 if __name__ == "__main__":
     # Get arguments from command line
     args = parse_args()
@@ -303,9 +259,11 @@ if __name__ == "__main__":
     acc = total_valid / total * 100
     print(f"Validity of checked subsets: {acc:.2f}%")
 
+    # save to disk
     prefix = f"{args.dataset}_{args.model}_{save_name}_{args.idx_start}to{args.idx_end}"
-    output_file_path = os.path.join(
-        args.output_dir, f"{prefix}_is_valid_subsets.json"
-    )
-    with open(output_file_path, "w") as output_file:
-        json.dump(is_subset_valid, output_file)
+    fname = f"{prefix}_is_valid_subsets.json"
+    mkdir_if_not_exists(args.output_dir)
+    output_file_path = os.path.join(args.output_dir, fname)
+
+    with open(output_file_path, "wb") as f:
+        pickle.dump(is_subset_valid, f)
