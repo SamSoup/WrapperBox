@@ -1,6 +1,6 @@
 {
     "dataset": "esnli",
-    "subsets_filename": "esnli_deberta_large_yang2023_fast.pickle",
+    "subsets_filename": "results/esnli/esnli_deberta_large_yang2023_fast.pickle",
     "model": "deberta_large",
     "seed": 42,
     "pooler": "mean_with_attention",

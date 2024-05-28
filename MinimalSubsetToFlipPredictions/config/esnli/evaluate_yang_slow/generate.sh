@@ -4,7 +4,7 @@ incre=$1
 # Base JSON configuration
 base_config='{
     "dataset": "esnli",
-    "subsets_filename": "esnli_deberta_large_yang2023_slow.pickle",
+    "subsets_filename": "results/esnli/esnli_deberta_large_yang2023_slow.pickle",
     "model": "deberta_large",
     "seed": 42,
     "pooler": "mean_with_attention",
