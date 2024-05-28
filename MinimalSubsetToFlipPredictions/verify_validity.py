@@ -9,7 +9,10 @@ import pickle
 from typing import List
 
 import numpy as np
-from MinimalSubsetToFlipPredictions.evaluate import evaluate_predictions
+from MinimalSubsetToFlipPredictions.evaluate import (
+    compute_subset_metrics,
+    evaluate_predictions,
+)
 from sklearn import clone
 from sklearn.base import BaseEstimator
 from sklearn.linear_model import LogisticRegression
@@ -255,19 +258,18 @@ if __name__ == "__main__":
         ex_indices_to_check=ex_indices_to_check,
     )
 
-    total_valid = np.sum(is_subset_valid)
-    print(f"Of the {total} checked subsets, only {total_valid} is valid")
-    acc = total_valid / total * 100
-    print(f"Validity of checked subsets: {acc:.2f}%")
+    metrics = compute_subset_metrics(
+        flip_list=flip_list, is_valid=is_subset_valid
+    )
 
-    # save to disk
-    prefix = f"{args.dataset}_{args.model}_{save_name}_{args.idx_start}to{args.idx_end}"
-    fname = f"{prefix}_is_valid_subsets.pickle"
     # Check output dir is absolute path; if not, append RESULTS_DIR
     if not os.path.isabs(args.output_dir):
         args.output_dir = RESULTS_DIR / args.output_dir
     mkdir_if_not_exists(args.output_dir)
-    output_file_path = os.path.join(args.output_dir, fname)
 
+    # Save is subset to disk
+    prefix = f"{args.dataset}_{args.model}_{save_name}_{args.idx_start}to{args.idx_end}"
+    fname = f"{prefix}_is_valid_subsets.pickle"
+    output_file_path = os.path.join(args.output_dir, fname)
     with open(output_file_path, "wb") as f:
         pickle.dump(is_subset_valid, f)

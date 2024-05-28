@@ -51,3 +51,69 @@ def evaluate_predictions(
         is_valid_subsets.append(is_valid_subset)
 
     return is_valid_subsets
+
+
+def compute_coverage(flip_list: List[List[int]]):
+    total = len(flip_list)
+    identified_subset = 0
+    for l in flip_list:
+        if l is not None and len(l) > 0:
+            identified_subset += 1
+
+    coverage = round(identified_subset / total * 100, 2)
+
+    print(f"Identified {identified_subset}/{total} subsets.")
+    print(f"Coverage: {coverage}%")
+
+    return coverage
+
+
+def compute_validity(flip_list: List[List[int]], is_valid: List[bool]):
+    total = len(flip_list)
+    valid = 0
+    identified_subset = 0
+    subset_sizes = []
+    for i, l in enumerate(flip_list):
+        if l is not None and len(l) > 0:
+            identified_subset += 1
+            if is_valid[i]:
+                valid += 1
+                subset_sizes.append(len(l))
+
+    # NOTE: this computes valid / total; can also compute precision
+    total_validity = round(valid / total * 100, 2)
+    precision = round(valid / identified_subset * 100, 2)
+
+    print(f"{valid}/{identified_subset} identified subsets are valid")
+    print(f"Overall validity is {valid}/{total}, or {total_validity}%")
+    print(f"Precision validity is {valid}/{identified_subset}, or {precision}%")
+
+    return total_validity, precision
+
+
+def compute_median_sizes(flip_list: List[List[int]], is_valid: List[bool]):
+    subset_sizes = []
+    for l, val in zip(flip_list, is_valid):
+        if l is not None and len(l) > 0 and val:
+            subset_sizes.append(len(l))
+
+    med_size = np.median(np.array(subset_sizes))
+
+    print(
+        f"Median Valid Subset Sizes is {med_size}, out of {len(subset_sizes)} valid subsets"
+    )
+
+    return med_size
+
+
+# check of the non_empty sets, how many are actually valid
+def compute_subset_metrics(flip_list: List[List[int]], is_valid: List[bool]):
+    overall_validity, precision_validity = compute_validity(flip_list, is_valid)
+    metrics = {
+        "Coverage": compute_coverage(flip_list),
+        "Overall Validity": overall_validity,
+        "Precision Validity": precision_validity,
+        "Median Size": compute_median_sizes(flip_list, is_valid),
+    }
+
+    return metrics
