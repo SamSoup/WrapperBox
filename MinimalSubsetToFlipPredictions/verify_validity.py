@@ -258,10 +258,6 @@ if __name__ == "__main__":
         ex_indices_to_check=ex_indices_to_check,
     )
 
-    metrics = compute_subset_metrics(
-        flip_list=flip_list, is_valid=is_subset_valid
-    )
-
     # Check output dir is absolute path; if not, append RESULTS_DIR
     if not os.path.isabs(args.output_dir):
         args.output_dir = RESULTS_DIR / args.output_dir
