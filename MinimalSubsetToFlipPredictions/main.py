@@ -182,6 +182,7 @@ def load_dataset_and_labels(args: argparse.Namespace):
         [dataset_dict["train"], dataset_dict["eval"]]
     )
     test_dataset = dataset_dict["test"]
+    test_dataset.num_rows = test_labels.size
     last = test_dataset.num_rows if args.idx_end is None else args.idx_end
     last = min(test_dataset.num_rows, args.idx_end)
     test_dataset = test_dataset.select(range(args.idx_start, last))
