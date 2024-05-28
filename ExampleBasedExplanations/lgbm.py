@@ -4,11 +4,11 @@
 # class, and it is much faster than sklearn's implementation
 from lightgbm import LGBMModel
 from tqdm import tqdm
-from utils.models.dt import get_leaf_ids, get_predictions
-from utils.partition import get_partition_X
+from utils.models.dt import get_leaf_ids
+from utils.models import get_predictions
 from ExampleBasedExplanations.interface import ExampleBasedExplanation
 from scipy.spatial.distance import cdist
-from typing import List, Union
+from typing import List
 import numpy as np
 
 
