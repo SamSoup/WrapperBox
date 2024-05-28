@@ -315,6 +315,8 @@ class FindMinimalSubsetLGBM(FindMinimalSubset):
                 total=predictions.size,
             )
         ):
+            # Set some shared variables here
+            self._last_seen_subset_size = None
             pbar.set_description(f"Finding Minimal Set for Example {i}\n")
             # if total training set less than threshold, just go to iterative
             if train_embeddings.shape[0] <= self.ITERATIVE_THRESHOLD:
