@@ -9,7 +9,7 @@ from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.utils.validation import check_array, check_is_fitted
 
 
-class RandomClassiifer(BaseEstimator, ClassifierMixin):
+class RandomClassifier(BaseEstimator, ClassifierMixin):
     def __init__(self, seed: int = 42):
         self.seed = seed
         self.classes_ = None
