@@ -112,7 +112,7 @@ def parse_args():
     return args
 
 
-def load_embeddings(args: argparse.Namespace):
+def load_embeddings_from_disk(args: argparse.Namespace):
     train_embeddings = load_embeddings(
         dataset=args.dataset,
         model=args.model,
@@ -245,7 +245,7 @@ if __name__ == "__main__":
         eval_embeddings,
         train_eval_embeddings,
         test_embeddings,
-    ) = load_embeddings(args=args)
+    ) = load_embeddings_from_disk(args=args)
     (
         dataset_dict,
         train_eval_dataset_dict,
