@@ -1,7 +1,7 @@
 # This script finds the minimal set of examples required to flip a svm pred
 from sklearn.tree import DecisionTreeClassifier
 from sympy import reduced
-from MinimalSubsetToFlipPredictions.wrappers.interface import FindMinimalSubset
+from MinimalSubsetToFlipPredictions.interface import FindMinimalSubset
 from ExampleBasedExplanations.decisiontree import (
     DecisionTreeExampleBasedExplanation,
 )

@@ -1,6 +1,6 @@
 # This script finds the minimal set of examples required to flip a svm pred
 from sympy import reduced
-from MinimalSubsetToFlipPredictions.wrappers.interface import FindMinimalSubset
+from MinimalSubsetToFlipPredictions.interface import FindMinimalSubset
 from ExampleBasedExplanations.svm import SVMExampleBasedExplanation
 from utils.models.svm import get_support_vectors, project_inputs
 from utils.partition import partition_indices

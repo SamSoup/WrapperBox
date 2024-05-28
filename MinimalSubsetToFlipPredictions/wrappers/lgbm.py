@@ -1,7 +1,7 @@
 # This script finds the minimal set of examples required to flip a Light
 # Gradient Boost Machine model
 from lightgbm import LGBMModel
-from MinimalSubsetToFlipPredictions.wrappers.interface import FindMinimalSubset
+from MinimalSubsetToFlipPredictions.interface import FindMinimalSubset
 from ExampleBasedExplanations.lgbm import (
     LGBMExampleBasedExplanation,
 )

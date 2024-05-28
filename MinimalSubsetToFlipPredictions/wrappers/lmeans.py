@@ -8,7 +8,7 @@ from sklearn.base import clone
 from tqdm import tqdm
 from utils.partition import partition_indices
 from ExampleBasedExplanations.lmeans import LMeansExampleBasedExplanation
-from MinimalSubsetToFlipPredictions.wrappers.interface import FindMinimalSubset
+from MinimalSubsetToFlipPredictions.interface import FindMinimalSubset
 from classifiers.KMeansClassifier import KMeansClassifier
 import numpy as np
 

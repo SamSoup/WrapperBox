@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from sklearn.base import BaseEstimator
-from datasets import DatasetDict, concatenate_datasets
+from datasets import DatasetDict
 from typing import List
 from tqdm import tqdm
 import os
