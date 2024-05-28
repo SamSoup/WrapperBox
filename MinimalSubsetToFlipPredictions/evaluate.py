@@ -91,11 +91,19 @@ def compute_validity(flip_list: List[List[int]], is_valid: List[bool]):
     return total_validity, precision
 
 
-def compute_median_sizes(flip_list: List[List[int]], is_valid: List[bool]):
+def compute_valid_subset_sizes(
+    flip_list: List[List[int]], is_valid: List[bool]
+):
     subset_sizes = []
     for l, val in zip(flip_list, is_valid):
         if l is not None and len(l) > 0 and val:
             subset_sizes.append(len(l))
+
+    return subset_sizes
+
+
+def compute_median_sizes(flip_list: List[List[int]], is_valid: List[bool]):
+    subset_sizes = compute_valid_subset_sizes(flip_list, is_valid)
 
     med_size = np.median(np.array(subset_sizes))
 
