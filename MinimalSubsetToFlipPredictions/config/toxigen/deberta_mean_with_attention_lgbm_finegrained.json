@@ -7,6 +7,6 @@
     "wrapper_name": "LGBM",
     "output_dir": "MinimalSubset/lgbm_finegrained",
     "iterative_threshold": 100,
-    "splits": 10,
+    "splits": 100,
     "idx_start": 0
 }
