@@ -1,8 +1,10 @@
 from typing import Union
 from huggingface_hub import login
+import pandas as pd
 from sklearn.base import BaseEstimator
 from datasets import load_dataset
 from utils.constants.directory import (
+    PREDICTIONS_DIR,
     SAVED_MODELS_DIR,
     EMBEDDINGS_DIR,
     CACHE_DIR,
@@ -109,3 +111,20 @@ def load_labels_at_split(dataset: Union[str, datasets.DatasetDict], split: str):
     if isinstance(dataset, str):
         dataset = load_dataset_from_hf(dataset)
     return np.array(dataset[split]["label"])
+
+
+def load_neural_predictions(
+    dataset: str,
+    model: str,
+    seed: Union[str, int],
+):
+    path_to_predictions = os.path.join(
+        PREDICTIONS_DIR,
+        dataset,
+        f"{model}_seed_{seed}",
+        "predict_results.txt",
+    )
+    return pd.read_csv(
+        path_to_predictions,
+        sep="\t",
+    )["prediction"].to_list()
