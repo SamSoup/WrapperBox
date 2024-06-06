@@ -22,6 +22,7 @@ class FindMinimalSubsetSimpleBaseline(FindMinimalSubset):
         train_labels: np.ndarray,
     ) -> List[List[int]]:
         predictions = get_predictions(clf, test_embeddings)
+        print(predictions[:5])
 
         # for each prediction value, cache the example indices to remove
         # and then simply assign: this is beneficial because

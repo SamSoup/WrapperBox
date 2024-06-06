@@ -4,8 +4,10 @@
     "seed": 42,
     "pooler": "mean_with_attention",
     "layer": 24,
-    "do_yang2023": true,
-    "algorithm_type": "slow",
+    "wrapper_name": "LMeans",
     "output_dir": "MinimalSubset",
-    "idx_start": 0
+    "iterative_threshold": 100,
+    "splits": 10,
+    "idx_start": 1000,
+    "idx_end": 1100
 }

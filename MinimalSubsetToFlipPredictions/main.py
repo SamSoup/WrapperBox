@@ -72,6 +72,18 @@ def get_args():
         help="If true, run minimal subset algorithm" " from yang et. al. 2023",
     )
     parser.add_argument(
+        "--thresh",
+        type=float,
+        default=0.5,
+        help="For yang's approach, set threshold to cutoff predictions",
+    )
+    parser.add_argument(
+        "--l2",
+        type=int,
+        default=1,
+        help="For yang's approach, set l2 penalty magnitude",
+    )
+    parser.add_argument(
         "--algorithm_type",
         type=str,
         default="fast",
@@ -223,23 +235,33 @@ if __name__ == "__main__":
         test_labels,
     ) = load_dataset_and_labels(args=args)
 
-    if args.do_yang2023:
-        # Check output dir is absolute path; if not, append RESULTS_DIR
-        if not os.path.isabs(args.output_dir):
-            args.output_dir = RESULTS_DIR / args.output_dir
+    # Check output dir is absolute path; if not, append RESULTS_DIR
+    if not os.path.isabs(args.output_dir):
+        args.output_dir = RESULTS_DIR / args.output_dir
+    mkdir_if_not_exists(args.output_dir)
 
-        mkdir_if_not_exists(args.output_dir)
+    # Load Wrapper box
+    clf = load_wrapperbox(
+        dataset=args.dataset,
+        model=args.model,
+        seed=args.seed,
+        pooler=args.pooler,
+        wrapperbox=args.wrapper_name,
+    )
+
+    if args.do_yang2023:
         # Running Yang et al
         compute_minimal_subset_to_flip_predictions(
-            dataset_name=args.dataset,
+            model=clf,
+            dataset_name=f"{args.dataset}_{args.idx_start}to{args.idx_end}",
             train_embeddings=train_embeddings,
             eval_embeddings=eval_embeddings,
             test_embeddings=test_embeddings,
             train_labels=train_labels,
             eval_labels=eval_labels,
             test_labels=test_labels,
-            thresh=0.5,
-            l2=500,
+            thresh=args.thresh,
+            l2=args.l2,
             output_dir=args.output_dir,
             algorithm=args.algorithm_type,
         )
@@ -259,27 +281,12 @@ if __name__ == "__main__":
         else:
             handler = handler_class()
 
-        # Load Wrapper box
-        clf = load_wrapperbox(
-            dataset=args.dataset,
-            model=args.model,
-            seed=args.seed,
-            pooler=args.pooler,
-            wrapperbox=args.wrapper_name,
-        )
-
         minimal_subset_indices = handler.find_minimal_subset(
             clf=clf,
             train_embeddings=train_eval_embeddings,
             test_embeddings=test_embeddings,
             train_labels=train_eval_labels,
         )
-
-        # Check output dir is absolute path; if not, append RESULTS_DIR
-        if not os.path.isabs(args.output_dir):
-            args.output_dir = RESULTS_DIR / args.output_dir
-
-        mkdir_if_not_exists(args.output_dir)
 
         handler.persist_to_disk(
             dataset=dataset_dict,

@@ -1,0 +1,12 @@
+{
+    "dataset": "esnli",
+    "model": "deberta-large",
+    "seed": 42,
+    "pooler": "mean_with_attention",
+    "layer": 24,
+    "do_yang2023": true,
+    "algorithm_type": "slow",
+    "output_dir": "MinimalSubset/yang_slow/4081to4158",
+    "idx_start": 4081,
+    "idx_end": 4158
+}

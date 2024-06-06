@@ -1,10 +1,50 @@
+import copy
 from typing import List
 import numpy as np
-from sklearn import clone
-from sklearn.base import BaseEstimator
+from sklearn.base import BaseEstimator, clone
 from tqdm import tqdm
 
 from utils.models import get_predictions
+
+
+def retrain_and_evaluate_validity_flip_variant(
+    clf: BaseEstimator,
+    train_embeddings: np.ndarray,
+    train_labels: np.ndarray,
+    x_test: np.ndarray,
+    indices_to_flip: np.ndarray,
+):
+    """
+    Retrains the classifier after flipping the label of certain indices
+    from the training data, and evaluates the validity of the new predictions.
+
+    Parameters:
+    - clf: BaseEstimator
+        The classifier to be retrained.
+    - train_embeddings: np.ndarray
+        The training data embeddings.
+    - train_labels: np.ndarray
+        The training data labels.
+    - x_test: np.ndarray
+        The test sample for which to evaluate predictions.
+    - indices_to_flip: np.ndarray
+        The indices of the training data to flip their labels.
+
+    Returns:
+    - old_pred: The prediction of the original classifier.
+    - new_pred: The prediction of the new classifier.
+    - is_valid: Boolean indicating if the new prediction is different from the old prediction.
+    """
+
+    train_mask = np.zeros(train_embeddings.shape[0], dtype=int)
+    train_mask[indices_to_flip] = 1
+    new_labels = train_labels.astype(int) ^ train_mask
+    old_pred = get_predictions(clf, x_test.reshape(1, -1))[0]
+    new_clf = clone(clf)
+    new_clf.fit(train_embeddings, new_labels)
+    new_pred = get_predictions(new_clf, x_test.reshape(1, -1))[0]
+    # this subset is valid only if new prediction does not equal old prediction
+    return old_pred, new_pred, new_pred != old_pred
 
 
 def retrain_and_evaluate_validity(
@@ -14,6 +54,28 @@ def retrain_and_evaluate_validity(
     x_test: np.ndarray,
     indices_to_exclude: np.ndarray,
 ):
+    """
+    Retrains the classifier after excluding certain indices from the training data,
+    and evaluates the validity of the new predictions.
+
+    Parameters:
+    - clf: BaseEstimator
+        The classifier to be retrained.
+    - train_embeddings: np.ndarray
+        The training data embeddings.
+    - train_labels: np.ndarray
+        The training data labels.
+    - x_test: np.ndarray
+        The test sample for which to evaluate predictions.
+    - indices_to_exclude: np.ndarray
+        The indices of the training data to be excluded.
+
+    Returns:
+    - old_pred: The prediction of the original classifier.
+    - new_pred: The prediction of the new classifier.
+    - is_valid: Boolean indicating if the new prediction is different from the old prediction.
+    """
+
     train_mask = np.ones(train_embeddings.shape[0], dtype=bool)
     train_mask[indices_to_exclude] = False
     reduced_embeddings = train_embeddings[train_mask]
@@ -24,6 +86,33 @@ def retrain_and_evaluate_validity(
     new_pred = get_predictions(new_clf, x_test.reshape(1, -1))[0]
     # this subset is valid only if new prediction does not equal old prediction
     return old_pred, new_pred, new_pred != old_pred
+
+
+def evaluate_predictions_flip_variant(
+    clf: BaseEstimator,
+    flip_list: List[List[int]],
+    train_embeddings: np.ndarray,
+    train_labels: np.ndarray,
+    test_embeddings: np.ndarray,
+    ex_indices_to_check: List[int],
+):
+    is_valid_subsets = []
+    for test_ex_idx in tqdm(ex_indices_to_check):
+        f_list = flip_list[test_ex_idx]
+        # if flip list is empty: then it is obviously false
+        if f_list is None or len(f_list) == 0:
+            is_valid_subsets.append(False)
+            continue
+        _, _, is_valid_subset = retrain_and_evaluate_validity_flip_variant(
+            clf=clf,
+            train_embeddings=train_embeddings,
+            train_labels=train_labels,
+            x_test=test_embeddings[test_ex_idx],
+            indices_to_flip=f_list,
+        )
+        is_valid_subsets.append(is_valid_subset)
+
+    return is_valid_subsets
 
 
 def evaluate_predictions(

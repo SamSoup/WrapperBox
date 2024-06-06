@@ -1,6 +1,7 @@
-from tqdm import tqdm
 import pickle
 import warnings
+
+from sklearn.base import clone
 
 warnings.filterwarnings("ignore")
 import numpy as np
@@ -57,10 +58,6 @@ def inverse_hessian(H):
 
 
 def Remove(X, y, k, scores, test_idx, pred, thresh):
-    # print("test_idx", test_idx)
-    # print("old")
-    # print(pred[test_idx])
-
     if pred[test_idx] > thresh:
         top_k_index = scores[test_idx].argsort()[-k:]
     else:
@@ -80,7 +77,7 @@ def Remove(X, y, k, scores, test_idx, pred, thresh):
 # In[3]:
 
 
-def new_train(X, y, l2, k, dev_index, scores, thresh, pred):
+def new_train(model, X, y, l2, k, dev_index, scores, thresh, pred):
     X_k, y_k, prediction, x_r, y_r = Remove(
         X, y, k, scores, dev_index, pred, thresh
     )
@@ -91,7 +88,8 @@ def new_train(X, y, l2, k, dev_index, scores, thresh, pred):
         return None
 
     # Fit the model again
-    model_k = LogisticRegression(penalty="l2", C=l2)
+    model_k = clone(model)
+    # model_k = LogisticRegression(penalty="l2", C=l2)
     model_k.fit(X_k, y_k)
 
     # predictthe probaility with test point
@@ -100,12 +98,6 @@ def new_train(X, y, l2, k, dev_index, scores, thresh, pred):
 
     new = model_k.predict_proba(test_point)[0][1]
     return new
-
-
-# In[4]:
-
-
-# In[60]:
 
 
 def recursive_NT(
@@ -145,8 +137,6 @@ def recursive_NT(
             predicted_change = -np.sum(delta_pred[top_k_index])
 
             if (old < thresh) != (old + predicted_change < thresh):
-                # print("K", k)
-
                 diff = K_new - k
                 K_new = k
                 predicted_change_new = predicted_change
@@ -189,30 +179,22 @@ def recursive_NT(
 
 
 def IP_iterative(
+    model: LogisticRegression,
     dataname: str,
     X: np.ndarray,
     y: np.ndarray,
-    l2: int,
-    thresh: int,
+    l2: int = 1,
+    thresh: float = 0.5,
     output_dir: str = "./results",
 ):
-    model = LogisticRegression(penalty="l2", C=l2)
+    assert l2 == int(1 / model.C)
     # model = LogisticRegression(penalty="l2", C=1 / l2)
-    model.fit(X["train"], y["train"])
-    model.score(X["dev"], y["dev"])
+    # model.fit(X["train"], y["train"])
+    # model.score(X["dev"], y["dev"])
 
     # compute IP for new train
-    from sklearn.preprocessing import normalize
-
-    # Modified line to handle multi-class:
-    if np.unique(y["dev"]).size > 2:
-        print("Multiclassification detected, reshaping...")
-        intercept_reshaped = model.intercept_[
-            :, None
-        ]  # Reshape intercept to have the same second dimension as coef_
-        w = np.concatenate((model.coef_, intercept_reshaped), axis=1)
-    else:
-        w = np.concatenate((model.coef_, model.intercept_[None, :]), axis=1)
+    # from sklearn.preprocessing import normalize
+    w = np.concatenate((model.coef_, model.intercept_[None, :]), axis=1)
     F_train = np.concatenate(
         [X["train"], np.ones((X["train"].shape[0], 1))], axis=1
     )  # Concatenating one to calculate the gradient with respect to intercept
@@ -224,31 +206,11 @@ def IP_iterative(
     gradient_train = F_train * error_train[:, None]
     gradient_dev = F_dev * error_dev[:, None]
 
-    from scipy import sparse
-
     probs = model.predict_proba(X["train"])[:, 1]
-    if probs.size > 10000:
-        # Calculate the element-wise weights for the Hessian
-        weights = probs * (1 - probs)  # Element-wise multiplication
-
-        # Efficiently calculate the weighted part of H
-        weighted_F_train = (
-            F_train * weights[:, np.newaxis]
-        )  # Apply weights along each feature
-        hessian_part = (
-            np.dot(weighted_F_train.T, F_train) / X["train"].shape[0]
-        )  # Outer product and average
-
-        # Add the regularization term directly to the diagonal elements
-        H = hessian_part + np.eye(F_train.shape[1]) / X["train"].shape[0]
-    else:
-        H = (
-            F_train.T
-            @ np.diag(probs * (1 - probs))
-            @ F_train
-            / X["train"].shape[0]
-            + 1 * np.eye(F_train.shape[1]) / X["train"].shape[0]
-        )
+    H = (
+        F_train.T @ np.diag(probs * (1 - probs)) @ F_train / X["train"].shape[0]
+        + l2 * np.eye(F_train.shape[1]) / X["train"].shape[0]
+    )
     H_inv = np.linalg.inv(H)
 
     eps = 1 / X["train"].shape[0]
@@ -270,59 +232,56 @@ def IP_iterative(
     diffs = []
     order_lists = []
 
-    for i in tqdm(range(X["dev"].shape[0])):
+    for i in range(X["dev"].shape[0]):
         test_idx = i
-        # print("test_idx", test_idx)
+        print("test_idx", test_idx)
 
         old = pred[test_idx].item()
-        # print("old", old)
+        print("old", old)
         K_nt, pred_change_nt, ite, diff, order = recursive_NT(
-            test_idx,
-            old,
-            X,
-            y,
-            model,
-            l2,
-            thresh,
-            X_dist,
-            I=100,
-            D=1,
+            test_idx, old, X, y, model, l2, thresh, X_dist, I=100, D=1
         )
 
         if pred_change_nt != None:
             new_nt = new_train(
-                X, y, l2, K_nt, test_idx, delta_pred, thresh, pred
+                model, X, y, l2, K_nt, test_idx, delta_pred, thresh, pred
             )
         else:
             new_nt = None
 
-        # print("K_nt, pred_change_nt, ite, diff")
-        # print(K_nt, pred_change_nt, ite, diff)
-        # print("new", new_nt)
-        print("Number of examples required to flip", len(order))
-        # print()
+        print("K_nt, pred_change_nt, ite, diff")
+        print(K_nt, pred_change_nt, ite, diff)
+        print("new", new_nt)
+        print("order", len(order))
+        print()
         NT_app_k.append(K_nt)
         new_predictions.append(new_nt)
         iterations.append(ite)
         diffs.append(diff)
         order_lists.append(order)
 
-    print(f"Wrote results to {output_dir}")
     np.save(
-        f"{output_dir}/NT_app_k_alg2_{dataname}{str(l2)}_LR_I_D1.npy", NT_app_k
+        f"{output_dir}/{dataname}_yang_slow_NT_app_k.npy",
+        NT_app_k,
     )
     np.save(
-        f"{output_dir}/new_predictions_alg2_{dataname}{str(l2)}_LR_I_D1.npy",
+        f"{output_dir}/{dataname}_yang_slow_new_predictions.npy",
         new_predictions,
     )
     np.save(
-        f"{output_dir}/iterations_alg2_{dataname}{str(l2)}_LR_I_D1.npy",
+        f"{output_dir}/{dataname}_yang_slow_old_predictions.npy",
+        pred,
+    )
+    np.save(
+        f"{output_dir}/{dataname}_yang_slow_iterations.npy",
         iterations,
     )
-    np.save(f"{output_dir}/diffs_alg2_{dataname}{str(l2)}_LR_I_D1.npy", diffs)
-    # flip list is a list of indices (np.array or none)
+    np.save(
+        f"{output_dir}/{dataname}_yang_slow_diffs.npy",
+        diffs,
+    )
     with open(
-        f"{output_dir}/yang2023_alg2_{dataname}{str(l2)}_LR_I_D1.pickle",
+        f"{output_dir}/{dataname}_yang_slow.pkl",
         "wb",
     ) as handle:
         pickle.dump(order_lists, handle)
