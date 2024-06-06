@@ -1,0 +1,15 @@
+{
+    "dataset": "esnli",
+    "model": "deberta_large",
+    "seed": 42,
+    "pooler": "mean_with_attention",
+    "layer": 24,
+    "thresh": 0.5,
+    "l2": 1,
+    "do_yang2023": true,
+    "wrapper_name": "LogisticRegression",
+    "algorithm_type": "slow",
+    "output_dir": "MinimalSubset/yang_fast/3627to3666",
+    "idx_start": 3627,
+    "idx_end": 3666
+}
