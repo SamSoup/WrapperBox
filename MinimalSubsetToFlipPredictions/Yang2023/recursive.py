@@ -2,6 +2,7 @@ import pickle
 import warnings
 
 from sklearn.base import clone
+from tqdm import tqdm
 
 warnings.filterwarnings("ignore")
 import numpy as np
@@ -194,7 +195,17 @@ def IP_iterative(
 
     # compute IP for new train
     # from sklearn.preprocessing import normalize
-    w = np.concatenate((model.coef_, model.intercept_[None, :]), axis=1)
+
+    # Modified line to handle multi-class:
+
+    if np.unique(y["dev"]).size > 2:
+        print("Multiclassification detected, reshaped weights")
+        intercept_reshaped = model.intercept_[
+            :, None
+        ]  # Reshape intercept to have the same second dimension as coef_
+        w = np.concatenate((model.coef_, intercept_reshaped), axis=1)
+    else:
+        w = np.concatenate((model.coef_, model.intercept_[None, :]), axis=1)
     F_train = np.concatenate(
         [X["train"], np.ones((X["train"].shape[0], 1))], axis=1
     )  # Concatenating one to calculate the gradient with respect to intercept
@@ -207,10 +218,31 @@ def IP_iterative(
     gradient_dev = F_dev * error_dev[:, None]
 
     probs = model.predict_proba(X["train"])[:, 1]
-    H = (
-        F_train.T @ np.diag(probs * (1 - probs)) @ F_train / X["train"].shape[0]
-        + l2 * np.eye(F_train.shape[1]) / X["train"].shape[0]
-    )
+
+    if probs.size > 10000:
+        # Calculate the element-wise weights for the Hessian
+        weights = probs * (1 - probs)  # Element-wise multiplication
+        # Efficiently calculate the weighted part of H
+        weighted_F_train = (
+            F_train * weights[:, np.newaxis]
+        )  # Apply weights along each feature
+        hessian_part = (
+            np.dot(weighted_F_train.T, F_train) / X["train"].shape[0]
+        )  # Outer product and average
+        # Add the regularization term directly to the diagonal elements
+        H = hessian_part + np.eye(F_train.shape[1]) / X["train"].shape[0]
+    else:
+        H = (
+            F_train.T
+            @ np.diag(probs * (1 - probs))
+            @ F_train
+            / X["train"].shape[0]
+            + 1 * np.eye(F_train.shape[1]) / X["train"].shape[0]
+        )
+    # H = (
+    #     F_train.T @ np.diag(probs * (1 - probs)) @ F_train / X["train"].shape[0]
+    #     + l2 * np.eye(F_train.shape[1]) / X["train"].shape[0]
+    # )
     H_inv = np.linalg.inv(H)
 
     eps = 1 / X["train"].shape[0]
@@ -232,7 +264,7 @@ def IP_iterative(
     diffs = []
     order_lists = []
 
-    for i in range(X["dev"].shape[0]):
+    for i in tqdm(range(X["dev"].shape[0])):
         test_idx = i
         print("test_idx", test_idx)
 
