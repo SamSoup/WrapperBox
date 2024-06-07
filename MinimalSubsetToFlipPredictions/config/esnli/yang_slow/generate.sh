@@ -20,7 +20,7 @@ base_config='{
     "do_yang2023": true,
     "wrapper_name": "LogisticRegression",
     "algorithm_type": "slow",
-    "output_dir": "MinimalSubset/yang_fast/__START__to__END__",
+    "output_dir": "MinimalSubset/yang_slow/__START__to__END__",
     "idx_start": __START__,
     "idx_end": __END__
 }'

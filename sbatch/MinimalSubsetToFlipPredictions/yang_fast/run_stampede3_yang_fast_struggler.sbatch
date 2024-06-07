@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH -J esnli_yang_fast_last
-#SBATCH -o esnli_yang_fast_last.o%j
-#SBATCH -e esnli_yang_fast_last.e%j
+#SBATCH -J esnli_yang_fast_struggler
+#SBATCH -o esnli_yang_fast_struggler.o%j
+#SBATCH -e esnli_yang_fast_struggler.e%j
 #SBATCH -p icx
 #SBATCH -N 1
 #SBATCH -n 1
@@ -13,4 +13,4 @@
 source /work/06782/ysu707/ls6/conda/etc/profile.d/conda.sh
 conda activate wrapperbox
 cd /work/06782/ysu707/ls6/WrapperBox/MinimalSubsetToFlipPredictions
-python3 main.py --config config/esnli/yang_fast/9828_9842.json
+python3 main.py --config config/esnli/yang_fast/3861_3900.json

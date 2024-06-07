@@ -9,7 +9,7 @@
     "do_yang2023": true,
     "wrapper_name": "LogisticRegression",
     "algorithm_type": "slow",
-    "output_dir": "MinimalSubset/yang_fast/8736to8775",
+    "output_dir": "MinimalSubset/yang_slow/8736to8775",
     "idx_start": 8736,
     "idx_end": 8775
 }
