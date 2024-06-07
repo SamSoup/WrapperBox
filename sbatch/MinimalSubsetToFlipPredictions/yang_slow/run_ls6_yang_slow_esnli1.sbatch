@@ -2,7 +2,7 @@
 #SBATCH -J esnli_yang_slow_multinode1
 #SBATCH -o esnli_yang_slow_multinode1.o%j
 #SBATCH -e esnli_yang_slow_multinode1.e%j
-#SBATCH -p normal
+#SBATCH -p skx
 #SBATCH -N 64
 #SBATCH -n 64
 #SBATCH -t 24:00:00

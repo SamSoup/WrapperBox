@@ -1,5 +1,8 @@
 # Default target
-.PHONY: showJob sshToMachine showQueue showDir taccinfo clean
+.PHONY: showMyJobs showJob sshToMachine showQueue showDir taccinfo clean
+
+showMyJobs:
+	squeue -u ysu707
 
 showJob:
 	@if [ -z "$(job_id)" ]; then \

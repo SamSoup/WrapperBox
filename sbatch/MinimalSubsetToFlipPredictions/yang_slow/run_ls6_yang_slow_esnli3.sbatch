@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH -J esnli_yang_slow_multinode1
-#SBATCH -o esnli_yang_slow_multinode1.o%j
-#SBATCH -e esnli_yang_slow_multinode1.e%j
+#SBATCH -J esnli_yang_slow_multinode3
+#SBATCH -o esnli_yang_slow_multinode3.o%j
+#SBATCH -e esnli_yang_slow_multinode3.e%j
 #SBATCH -p normal
 #SBATCH -N 64
 #SBATCH -n 64
@@ -11,7 +11,7 @@
 #SBATCH -A CCR24018
 
 # Run the tasks
-for i in {0..63}; do
+for i in {128..191}; do
   start=$((39 * i))
   end=$((start + 39))
   srun --nodes=1 --ntasks=1 --exclusive --job-name=task$i bash -c "
