@@ -1,11 +1,17 @@
 #!/bin/bash
-incre=$1
-num_samples=$2
+nodes=$1
+total=$2
+# Calculate the ceiling of total / nodes
+if [ $((total % nodes)) -ne 0 ]; then
+  incre=$((total / nodes + 1))
+else
+  incre=$((total / nodes))
+fi
 
 # Base JSON configuration
 base_config='{
     "dataset": "esnli",
-    "subsets_filename": "results/esnli/esnli_deberta_large_yang2023_fast.pickle",
+    "subsets_filename": "MinimalSubsetToFlipPredictions/results/esnli/esnli_deberta_large_yang_fast.pickle",
     "model": "deberta_large",
     "seed": 42,
     "pooler": "mean_with_attention",
@@ -21,15 +27,13 @@ base_config='{
 generate_config() {
   start=$1
   end=$((start + $incre))
-  if [ $num_samples -lt $end ]; then
-      end=$num_samples
-  fi
   filename="${start}_${end}.json"
 
   echo "$base_config" | sed -e "s/__START__/${start}/" -e "s/__END__/${end}/" > $filename
 }
 
 # Generate config files
-for ((i = 0; i < $num_samples; i += $incre)); do
+for ((i = 0; i < $total; i += $incre)); do
   generate_config $i
 done
+
