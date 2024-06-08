@@ -3,15 +3,15 @@
 #SBATCH -o esnli_evaluate_yang_fast_multinode4.o%j
 #SBATCH -e esnli_evaluate_yang_fast_multinode4.e%j
 #SBATCH -p skx
-#SBATCH -N 64
-#SBATCH -n 64
+#SBATCH -N 60
+#SBATCH -n 60
 #SBATCH -t 24:00:00
 #SBATCH --mail-user=sam.su@utexas.edu
 #SBATCH --mail-type=ALL
 #SBATCH -A CCR24018
 
 # Run the tasks
-for i in {192..255}; do
+for i in {192..251}; do
   start=$((39 * i))
   end=$((start + 39))
   srun --nodes=1 --ntasks=1 --exclusive --job-name=task$i bash -c "
