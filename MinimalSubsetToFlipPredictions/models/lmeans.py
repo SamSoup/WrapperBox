@@ -432,6 +432,18 @@ class FindMinimalSubsetLMeans(FindMinimalSubset):
             # reset globals for each input
             self._last_seen_subset_size = None
             self._refining_last_split_chunk = False
+
+            ## Further fine the indices_to_remove, s.t.
+            ## only the examples with the same labels as the prediction is kept
+            ## and considered for removal
+            indices_to_remove = np.array(
+                [
+                    idx
+                    for idx in indices_to_remove
+                    if train_labels[idx] == prediction
+                ]
+            )
+
             # if total training set less than threshold, just go to iterative
             if train_embeddings.shape[0] <= self.ITERATIVE_THRESHOLD:
                 subset_indices = self._iterative_remove_and_refit(

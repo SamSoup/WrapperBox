@@ -1,0 +1,2545 @@
+Token has not been saved to git credential helper. Pass `add_to_git_credential=True` if you want to set the git credential as well.
+Token is valid (permission: read).
+Your token has been saved to /home/samsoup/.cache/huggingface/token
+Login successful
+Batching removing the first 107 closest SVs
+
+Nem SVM has 977support vectors
+
+
+Removed 107 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 881support vectors
+
+
+Removed 214 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 786support vectors
+
+
+Removed 321 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 692support vectors
+
+
+Removed 428 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 662support vectors
+
+
+Removed 535 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 559support vectors
+
+
+Removed 642 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 497support vectors
+
+
+Removed 749 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 404support vectors
+
+
+Removed 856 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 268support vectors
+
+
+Removed 963 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 975support vectors
+
+
+Removed 107 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 883support vectors
+
+
+Removed 214 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 799support vectors
+
+
+Removed 321 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 703support vectors
+
+
+Removed 428 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 610support vectors
+
+
+Removed 535 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 559support vectors
+
+
+Removed 642 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 493support vectors
+
+
+Removed 749 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 380support vectors
+
+
+Removed 856 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 294support vectors
+
+
+Removed 963 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 955support vectors
+
+
+Removed 107 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 862support vectors
+
+
+Removed 214 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 798support vectors
+
+
+Removed 321 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 716support vectors
+
+
+Removed 428 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 606support vectors
+
+
+Removed 535 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 553support vectors
+
+
+Removed 642 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 481support vectors
+
+
+Removed 749 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 400support vectors
+
+
+Removed 856 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 269support vectors
+
+
+Removed 963 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 962support vectors
+
+
+Removed 107 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 885support vectors
+
+
+Removed 214 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 813support vectors
+
+
+Removed 321 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 718support vectors
+
+
+Removed 428 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 613support vectors
+
+
+Removed 535 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 541support vectors
+
+
+Removed 642 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 494support vectors
+
+
+Removed 749 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 405support vectors
+
+
+Removed 856 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 283support vectors
+
+
+Removed 963 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 968support vectors
+
+
+Removed 107 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 851support vectors
+
+
+Removed 214 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 747support vectors
+
+
+Removed 321 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 657support vectors
+
+
+Removed 428 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 549support vectors
+
+
+Removed 535 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 464support vectors
+
+
+Removed 642 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 377support vectors
+
+
+Removed 749 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 303support vectors
+
+
+Removed 856 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 228support vectors
+
+
+Removed 963 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 949support vectors
+
+
+Removed 107 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 895support vectors
+
+
+Removed 214 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 795support vectors
+
+
+Removed 321 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 690support vectors
+
+
+Removed 428 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 610support vectors
+
+
+Removed 535 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 548support vectors
+
+
+Removed 642 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 485support vectors
+
+
+Removed 749 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 386support vectors
+
+
+Removed 856 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 265support vectors
+
+
+Removed 963 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 947support vectors
+
+
+Removed 107 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 864support vectors
+
+
+Removed 214 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 752support vectors
+
+
+Removed 321 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 659support vectors
+
+
+Removed 428 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 561support vectors
+
+
+Removed 535 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 456support vectors
+
+
+Removed 642 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 392support vectors
+
+
+Removed 749 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 297support vectors
+
+
+Removed 856 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 193support vectors
+
+
+Removed 963 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 962support vectors
+
+
+Removed 107 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 847support vectors
+
+
+Removed 214 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 763support vectors
+
+
+Removed 321 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 659support vectors
+
+
+Removed 428 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 564support vectors
+
+
+Removed 535 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 476support vectors
+
+
+Removed 642 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 388support vectors
+
+
+Removed 749 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 307support vectors
+
+
+Removed 856 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 208support vectors
+
+
+Removed 963 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 983support vectors
+
+
+Removed 107 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 860support vectors
+
+
+Removed 214 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 810support vectors
+
+
+Removed 321 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 706support vectors
+
+
+Removed 428 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 603support vectors
+
+
+Removed 535 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 553support vectors
+
+
+Removed 642 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 481support vectors
+
+
+Removed 749 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 389support vectors
+
+
+Removed 856 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 268support vectors
+
+
+Removed 963 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 964support vectors
+
+
+Removed 107 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 868support vectors
+
+
+Removed 214 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 828support vectors
+
+
+Removed 321 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 688support vectors
+
+
+Removed 428 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 610support vectors
+
+
+Removed 535 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 556support vectors
+
+
+Removed 642 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 483support vectors
+
+
+Removed 749 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 405support vectors
+
+
+Removed 856 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 277support vectors
+
+
+Removed 963 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 950support vectors
+
+
+Removed 107 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 883support vectors
+
+
+Removed 214 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 793support vectors
+
+
+Removed 321 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 706support vectors
+
+
+Removed 428 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 611support vectors
+
+
+Removed 535 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 554support vectors
+
+
+Removed 642 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 471support vectors
+
+
+Removed 749 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 386support vectors
+
+
+Removed 856 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 268support vectors
+
+
+Removed 963 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 974support vectors
+
+
+Removed 107 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 863support vectors
+
+
+Removed 214 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 771support vectors
+
+
+Removed 321 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 673support vectors
+
+
+Removed 428 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 584support vectors
+
+
+Removed 535 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 474support vectors
+
+
+Removed 642 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 381support vectors
+
+
+Removed 749 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 305support vectors
+
+
+Removed 856 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 215support vectors
+
+
+Removed 963 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 989support vectors
+
+
+Removed 107 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 877support vectors
+
+
+Removed 214 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 789support vectors
+
+
+Removed 321 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 691support vectors
+
+
+Removed 428 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 603support vectors
+
+
+Removed 535 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 490support vectors
+
+
+Removed 642 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 384support vectors
+
+
+Removed 749 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 299support vectors
+
+
+Removed 856 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 216support vectors
+
+
+Removed 963 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 943support vectors
+
+
+Removed 107 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 867support vectors
+
+
+Removed 214 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 796support vectors
+
+
+Removed 321 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 719support vectors
+
+
+Removed 428 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 603support vectors
+
+
+Removed 535 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 552support vectors
+
+
+Removed 642 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 482support vectors
+
+
+Removed 749 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 382support vectors
+
+
+Removed 856 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 295support vectors
+
+
+Removed 963 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 983support vectors
+
+
+Removed 107 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 852support vectors
+
+
+Removed 214 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 797support vectors
+
+
+Removed 321 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 733support vectors
+
+
+Removed 428 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 613support vectors
+
+
+Removed 535 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 568support vectors
+
+
+Removed 642 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 493support vectors
+
+
+Removed 749 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 405support vectors
+
+
+Removed 856 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 287support vectors
+
+
+Removed 963 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 970support vectors
+
+
+Removed 107 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 880support vectors
+
+
+Removed 214 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 770support vectors
+
+
+Removed 321 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 665support vectors
+
+
+Removed 428 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 558support vectors
+
+
+Removed 535 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 468support vectors
+
+
+Removed 642 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 387support vectors
+
+
+Removed 749 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 295support vectors
+
+
+Removed 856 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 208support vectors
+
+
+Removed 963 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 956support vectors
+
+
+Removed 107 examples
+New prediction: 0
+Old Prediction: 1
+
+
+Found subset with size 107.
+It is above the threshold 10
+ initiating recursive call to further refine...
+
+Batching removing the first 10 closest SVs
+
+Nem SVM has 1060support vectors
+
+
+Removed 10 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 20 closest SVs
+
+Nem SVM has 1026support vectors
+
+
+Removed 20 examples
+New prediction: 0
+Old Prediction: 1
+
+
+Found subset with size 20.
+It is above the threshold 10
+ initiating recursive call to further refine...
+
+Batching removing the first 2 closest SVs
+
+Nem SVM has 1077support vectors
+
+
+Removed 2 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 4 closest SVs
+
+Nem SVM has 1075support vectors
+
+
+Removed 4 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 6 closest SVs
+
+Nem SVM has 1072support vectors
+
+
+Removed 6 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 8 closest SVs
+
+Nem SVM has 1062support vectors
+
+
+Removed 8 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 10 closest SVs
+
+Nem SVM has 1060support vectors
+
+
+Removed 10 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 12 closest SVs
+
+Nem SVM has 1052support vectors
+
+
+Removed 12 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 14 closest SVs
+
+Nem SVM has 1041support vectors
+
+
+Removed 14 examples
+New prediction: 0
+Old Prediction: 1
+
+
+Found subset with size 14.
+It is above the threshold 10
+ initiating recursive call to further refine...
+
+Batching removing the first 1 closest SVs
+
+Nem SVM has 1079support vectors
+
+
+Removed 1 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 2 closest SVs
+
+Nem SVM has 1077support vectors
+
+
+Removed 2 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 3 closest SVs
+
+Nem SVM has 1076support vectors
+
+
+Removed 3 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 4 closest SVs
+
+Nem SVM has 1075support vectors
+
+
+Removed 4 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 5 closest SVs
+
+Nem SVM has 1073support vectors
+
+
+Removed 5 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 6 closest SVs
+
+Nem SVM has 1072support vectors
+
+
+Removed 6 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 7 closest SVs
+
+Nem SVM has 1069support vectors
+
+
+Removed 7 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 8 closest SVs
+
+Nem SVM has 1062support vectors
+
+
+Removed 8 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 9 closest SVs
+
+Nem SVM has 1059support vectors
+
+
+Removed 9 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 14 closest SVs
+
+Nem SVM has 1041support vectors
+
+
+Removed 14 examples
+New prediction: 0
+Old Prediction: 1
+
+Recursive refinement failed to identify a smaller subset, initiating iterative refinement of the last split chunk
+Iteratively removing the first 1 examples.
+After having removed examples [7292 3668 8563 5288  501 7699 8659 8137 5052]
+
+Iteratively removing the first 2 examples.
+After having removed examples [7292 3668 8563 5288  501 7699 8659 8137 5052]
+
+Iteratively removing the first 3 examples.
+After having removed examples [7292 3668 8563 5288  501 7699 8659 8137 5052]
+
+Iteratively removing the first 4 examples.
+After having removed examples [7292 3668 8563 5288  501 7699 8659 8137 5052]
+
+Iteratively removing the first 5 examples.
+After having removed examples [7292 3668 8563 5288  501 7699 8659 8137 5052]
+
+
+Iterative removal of examples [7292 3668 8563 5288  501 7699 8659 8137 5052 8008 1353 7055 8625 7497] lead to flipped prediction.
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 996support vectors
+
+
+Removed 107 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 878support vectors
+
+
+Removed 214 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 812support vectors
+
+
+Removed 321 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 700support vectors
+
+
+Removed 428 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 602support vectors
+
+
+Removed 535 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 545support vectors
+
+
+Removed 642 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 479support vectors
+
+
+Removed 749 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 385support vectors
+
+
+Removed 856 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 277support vectors
+
+
+Removed 963 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 977support vectors
+
+
+Removed 107 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 898support vectors
+
+
+Removed 214 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 780support vectors
+
+
+Removed 321 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 731support vectors
+
+
+Removed 428 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 612support vectors
+
+
+Removed 535 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 555support vectors
+
+
+Removed 642 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 491support vectors
+
+
+Removed 749 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 391support vectors
+
+
+Removed 856 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 281support vectors
+
+
+Removed 963 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 984support vectors
+
+
+Removed 107 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 897support vectors
+
+
+Removed 214 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 798support vectors
+
+
+Removed 321 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 712support vectors
+
+
+Removed 428 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 655support vectors
+
+
+Removed 535 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 562support vectors
+
+
+Removed 642 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 497support vectors
+
+
+Removed 749 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 412support vectors
+
+
+Removed 856 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 278support vectors
+
+
+Removed 963 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 972support vectors
+
+
+Removed 107 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 859support vectors
+
+
+Removed 214 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 786support vectors
+
+
+Removed 321 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 690support vectors
+
+
+Removed 428 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 606support vectors
+
+
+Removed 535 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 552support vectors
+
+
+Removed 642 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 481support vectors
+
+
+Removed 749 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 392support vectors
+
+
+Removed 856 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 273support vectors
+
+
+Removed 963 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 967support vectors
+
+
+Removed 107 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 869support vectors
+
+
+Removed 214 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 774support vectors
+
+
+Removed 321 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 661support vectors
+
+
+Removed 428 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 556support vectors
+
+
+Removed 535 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 457support vectors
+
+
+Removed 642 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 384support vectors
+
+
+Removed 749 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 291support vectors
+
+
+Removed 856 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 196support vectors
+
+
+Removed 963 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 968support vectors
+
+
+Removed 107 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 879support vectors
+
+
+Removed 214 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 786support vectors
+
+
+Removed 321 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 738support vectors
+
+
+Removed 428 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 612support vectors
+
+
+Removed 535 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 548support vectors
+
+
+Removed 642 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 494support vectors
+
+
+Removed 749 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 387support vectors
+
+
+Removed 856 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 262support vectors
+
+
+Removed 963 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 999support vectors
+
+
+Removed 107 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 906support vectors
+
+
+Removed 214 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 827support vectors
+
+
+Removed 321 examples
+New prediction: 0
+Old Prediction: 1
+
+
+Found subset with size 321.
+It is above the threshold 10
+ initiating recursive call to further refine...
+
+Batching removing the first 32 closest SVs
+
+Nem SVM has 1048support vectors
+
+
+Removed 32 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 64 closest SVs
+
+Nem SVM has 1019support vectors
+
+
+Removed 64 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 96 closest SVs
+
+Nem SVM has 993support vectors
+
+
+Removed 96 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 128 closest SVs
+
+Nem SVM has 984support vectors
+
+
+Removed 128 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 160 closest SVs
+
+Nem SVM has 961support vectors
+
+
+Removed 160 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 192 closest SVs
+
+Nem SVM has 906support vectors
+
+
+Removed 192 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 224 closest SVs
+
+Nem SVM has 867support vectors
+
+
+Removed 224 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 256 closest SVs
+
+Nem SVM has 846support vectors
+
+
+Removed 256 examples
+New prediction: 0
+Old Prediction: 1
+
+
+Found subset with size 256.
+It is above the threshold 10
+ initiating recursive call to further refine...
+
+Batching removing the first 25 closest SVs
+
+Nem SVM has 1055support vectors
+
+
+Removed 25 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 50 closest SVs
+
+Nem SVM has 1027support vectors
+
+
+Removed 50 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 75 closest SVs
+
+Nem SVM has 1015support vectors
+
+
+Removed 75 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 100 closest SVs
+
+Nem SVM has 997support vectors
+
+
+Removed 100 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 125 closest SVs
+
+Nem SVM has 986support vectors
+
+
+Removed 125 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 150 closest SVs
+
+Nem SVM has 959support vectors
+
+
+Removed 150 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 175 closest SVs
+
+Nem SVM has 932support vectors
+
+
+Removed 175 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 200 closest SVs
+
+Nem SVM has 918support vectors
+
+
+Removed 200 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 225 closest SVs
+
+Nem SVM has 873support vectors
+
+
+Removed 225 examples
+New prediction: 1
+Old Prediction: 1
+
+Batching removing the first 256 closest SVs
+
+Nem SVM has 846support vectors
+
+
+Removed 256 examples
+New prediction: 0
+Old Prediction: 1
+
+Recursive refinement failed to identify a smaller subset, initiating iterative refinement of the last split chunk
+Iteratively removing the first 1 examples.
+After having removed examples [8700 8250  601 7665 8303  254 7972 8830 7305 8645 1323 8041 8358 2303
+ 8286 8924  501 7523 7270 3297 5327 6816 8875 4181 7049 3621 2634 7188
+ 7756 7571  750 8137 3885 6162 7245  995 7304 1358 7582 8782 8680 7806
+ 7723 6644 7689 3385 8838 7381 7062 8675 7860 7295 8896 8577 8128 1996
+ 5261 8563  431 3975 7452 8910 7031 7606 7390 8397 7920 7832 8066 8884
+ 8015 3545 1015 8504 6563 7774 5028 6736 7542 7310 2980 8296 8325 2011
+ 5612 2140 8248 3097 8592 7585 3668 7369 7809 3461 7006 8865 7721 7589
+ 7222 8200 5625 1509 4632 1954 8386 5063 5684 4803 7867 4449 3323 7727
+  239 3862 8820 4672 7113 3180 1968 1106 2467 2286 8293  110 5168 1102
+ 7817 5568 7333 8217 1953 2073  840 7576 8333 7847 8322 8395 3344 7547
+ 8628 3596 1942 7708 7116 7705  428 4605 8290   52 6728 8603 8488 4903
+ 7123 8679 1353 1101 3808 8905 6078 5835 7237 3016 7981 7699 8513 8625
+ 4821 7497 7120 7984 1777 2709 7166 8737  871  573 8945 4451 4535 4522
+ 7186 8406 3285 1919 6690 5572 1409 2637 7104 7750 1619 7504 1984 3195
+ 2766 8343 4559 8097 5322 2505 1712  839 5825 4528 3169 1111 6862 3128
+ 8022 8787 8756 7170 7544 6236 8935 1843 7680 6310 7741 8178 7916 8885
+ 6155]
+
+Iteratively removing the first 2 examples.
+After having removed examples [8700 8250  601 7665 8303  254 7972 8830 7305 8645 1323 8041 8358 2303
+ 8286 8924  501 7523 7270 3297 5327 6816 8875 4181 7049 3621 2634 7188
+ 7756 7571  750 8137 3885 6162 7245  995 7304 1358 7582 8782 8680 7806
+ 7723 6644 7689 3385 8838 7381 7062 8675 7860 7295 8896 8577 8128 1996
+ 5261 8563  431 3975 7452 8910 7031 7606 7390 8397 7920 7832 8066 8884
+ 8015 3545 1015 8504 6563 7774 5028 6736 7542 7310 2980 8296 8325 2011
+ 5612 2140 8248 3097 8592 7585 3668 7369 7809 3461 7006 8865 7721 7589
+ 7222 8200 5625 1509 4632 1954 8386 5063 5684 4803 7867 4449 3323 7727
+  239 3862 8820 4672 7113 3180 1968 1106 2467 2286 8293  110 5168 1102
+ 7817 5568 7333 8217 1953 2073  840 7576 8333 7847 8322 8395 3344 7547
+ 8628 3596 1942 7708 7116 7705  428 4605 8290   52 6728 8603 8488 4903
+ 7123 8679 1353 1101 3808 8905 6078 5835 7237 3016 7981 7699 8513 8625
+ 4821 7497 7120 7984 1777 2709 7166 8737  871  573 8945 4451 4535 4522
+ 7186 8406 3285 1919 6690 5572 1409 2637 7104 7750 1619 7504 1984 3195
+ 2766 8343 4559 8097 5322 2505 1712  839 5825 4528 3169 1111 6862 3128
+ 8022 8787 8756 7170 7544 6236 8935 1843 7680 6310 7741 8178 7916 8885
+ 6155]
+
+
+Iterative removal of examples [8700 8250  601 7665 8303  254 7972 8830 7305 8645 1323 8041 8358 2303
+ 8286 8924  501 7523 7270 3297 5327 6816 8875 4181 7049 3621 2634 7188
+ 7756 7571  750 8137 3885 6162 7245  995 7304 1358 7582 8782 8680 7806
+ 7723 6644 7689 3385 8838 7381 7062 8675 7860 7295 8896 8577 8128 1996
+ 5261 8563  431 3975 7452 8910 7031 7606 7390 8397 7920 7832 8066 8884
+ 8015 3545 1015 8504 6563 7774 5028 6736 7542 7310 2980 8296 8325 2011
+ 5612 2140 8248 3097 8592 7585 3668 7369 7809 3461 7006 8865 7721 7589
+ 7222 8200 5625 1509 4632 1954 8386 5063 5684 4803 7867 4449 3323 7727
+  239 3862 8820 4672 7113 3180 1968 1106 2467 2286 8293  110 5168 1102
+ 7817 5568 7333 8217 1953 2073  840 7576 8333 7847 8322 8395 3344 7547
+ 8628 3596 1942 7708 7116 7705  428 4605 8290   52 6728 8603 8488 4903
+ 7123 8679 1353 1101 3808 8905 6078 5835 7237 3016 7981 7699 8513 8625
+ 4821 7497 7120 7984 1777 2709 7166 8737  871  573 8945 4451 4535 4522
+ 7186 8406 3285 1919 6690 5572 1409 2637 7104 7750 1619 7504 1984 3195
+ 2766 8343 4559 8097 5322 2505 1712  839 5825 4528 3169 1111 6862 3128
+ 8022 8787 8756 7170 7544 6236 8935 1843 7680 6310 7741 8178 7916 8885
+ 6155 7206 2570] lead to flipped prediction.
+
+Batching removing the first 107 closest SVs
+
+Nem SVM has 979support vectors
+
+
+Removed 107 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 214 closest SVs
+
+Nem SVM has 893support vectors
+
+
+Removed 214 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 321 closest SVs
+
+Nem SVM has 816support vectors
+
+
+Removed 321 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 428 closest SVs
+
+Nem SVM has 704support vectors
+
+
+Removed 428 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 535 closest SVs
+
+Nem SVM has 597support vectors
+
+
+Removed 535 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 642 closest SVs
+
+Nem SVM has 552support vectors
+
+
+Removed 642 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 749 closest SVs
+
+Nem SVM has 482support vectors
+
+
+Removed 749 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 856 closest SVs
+
+Nem SVM has 380support vectors
+
+
+Removed 856 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 963 closest SVs
+
+Nem SVM has 274support vectors
+
+
+Removed 963 examples
+New prediction: 0
+Old Prediction: 0
+
+Batching removing the first 1075 closest SVs
+
+Nem SVM has 34support vectors
+
+
+Removed 1075 examples
+New prediction: 0
+Old Prediction: 0
+
