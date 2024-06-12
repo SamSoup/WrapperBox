@@ -13,7 +13,8 @@ from MinimalSubsetToFlipPredictions.Yang2023.interface import (
 from MinimalSubsetToFlipPredictions.models.factory import (
     FindMinimalSubsetFactory,
 )
-from utils.constants.directory import RESULTS_DIR
+from classifiers import KNeighborsClassifierDummy
+from utils.constants.directory import RESULTS_DIR, SAVED_MODELS_DIR
 from utils.constants.models import (
     WRAPPER_BOXES_NEEDING_BATCHED_MINIMAL_SUBET_SEARCH,
 )
@@ -65,6 +66,30 @@ def get_args():
         help="Type of pooler",
     )
     parser.add_argument("--layer", type=int, default=24, help="Layer number")
+    parser.add_argument(
+        "--read_cached_KNN",
+        type=bool,
+        default=False,
+        help="If true, try to load cached KNN results from disk",
+    )
+    parser.add_argument(
+        "--cached_KNN_predictions_path",
+        type=str,
+        default=None,
+        help="Path to find cached KNN prediction pickle file",
+    )
+    parser.add_argument(
+        "--cached_KNN_neighbor_indices_path",
+        type=str,
+        default=None,
+        help="Path to find cached KNN neighbor distances pickle file",
+    )
+    parser.add_argument(
+        "--cached_KNN_neighbor_dists_path",
+        type=str,
+        default=None,
+        help="Path to find cached KNN neighbor indices pickle file",
+    )
     parser.add_argument(
         "--do_yang2023",
         type=bool,
@@ -240,14 +265,56 @@ if __name__ == "__main__":
         args.output_dir = RESULTS_DIR / args.output_dir
     mkdir_if_not_exists(args.output_dir)
 
-    # Load Wrapper box
-    clf = load_wrapperbox(
-        dataset=args.dataset,
-        model=args.model,
-        seed=args.seed,
-        pooler=args.pooler,
-        wrapperbox=args.wrapper_name,
-    )
+    # Load Wrapper box, unless we are doing cached KNN
+    if args.read_cached_KNN:
+        # Process the file paths, if None
+        path_to_cached_files = os.path.join(
+            SAVED_MODELS_DIR,
+            args.dataset,
+            f"{args.model}_seed_{args.seed}",
+            args.pooler,
+        )
+
+        if args.cached_KNN_predictions_path is None:
+            predictions_path = os.path.join(
+                path_to_cached_files, "KNN_predictions.pickle"
+            )
+        else:
+            predictions_path = os.path.join(
+                path_to_cached_files, args.cached_KNN_predictions_path
+            )
+
+        if args.cached_KNN_neighbor_indices_path is None:
+            neigh_inds_path = os.path.join(
+                path_to_cached_files, "KNN_neigh_inds.pickle"
+            )
+        else:
+            neigh_inds_path = os.path.join(
+                path_to_cached_files, args.cached_KNN_neighbor_indices_path
+            )
+
+        if args.cached_KNN_neighbor_dists_path is None:
+            neigh_dists_path = os.path.join(
+                path_to_cached_files, "KNN_neigh_dists.pickle"
+            )
+        else:
+            neigh_dists_path = os.path.join(
+                path_to_cached_files, args.cached_KNN_neighbor_indices_path
+            )
+
+        clf = KNeighborsClassifierDummy(
+            predictions_path=predictions_path,
+            neigh_dists_path=neigh_dists_path,
+            neigh_inds_path=neigh_inds_path,
+        )
+    else:
+        clf = load_wrapperbox(
+            dataset=args.dataset,
+            model=args.model,
+            seed=args.seed,
+            pooler=args.pooler,
+            wrapperbox=args.wrapper_name,
+        )
 
     if args.do_yang2023:
         # Running Yang et al
