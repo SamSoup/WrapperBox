@@ -1,5 +1,12 @@
 #!/bin/bash
-incre=$1
+nodes=$1
+total=$2
+# Calculate the ceiling of total / nodes
+if [ $((total % nodes)) -ne 0 ]; then
+  incre=$((total / nodes + 1))
+else
+  incre=$((total / nodes))
+fi
 
 # Base JSON configuration
 base_config='{
@@ -20,12 +27,12 @@ base_config='{
 generate_config() {
   start=$1
   end=$((start + $incre))
-  filename="deberta_mean_with_attention_LMeans_${start}_${end}.json"
+  filename="${start}_${end}.json"
 
   echo "$base_config" | sed -e "s/__START__/${start}/" -e "s/__END__/${end}/" > $filename
 }
 
 # Generate config files
-for ((i = 0; i < 9900; i += $incre)); do
+for ((i = 0; i < $total; i += $incre)); do
   generate_config $i
 done
