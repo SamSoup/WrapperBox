@@ -1,5 +1,7 @@
 # This script finds the minimal set of neighbors for a svm
 from typing import Iterable, List
+
+from sympy import substitution
 from MinimalSubsetToFlipPredictions.models.interface import FindMinimalSubset
 from sklearn.neighbors import KNeighborsClassifier
 from utils.inference import find_majority, find_majority_batched
@@ -108,6 +110,38 @@ class FindMinimalSubsetKNN(FindMinimalSubset):
             )
         return results
 
+    def _find_subset_brute_force(
+        self, predictions: Iterable[int], neighbors_matrix: np.ndarray, K: int
+    ) -> List[List[int]]:
+        """
+        Finds subsets of neighbors one-by-one for multiple test inputs,
+        such that their removal leads to prediction flips.
+
+        Args:
+            predictions (Iterable[int]): The initial predicted labels of
+                the test inputs.
+            neighbors_matrix (np.ndarray): A 2D array where each row contains
+                the labels of the neighbors for each test input, sorted by proximity.
+            K (int): The number of nearest neighbors to consider in the sliding
+                window.
+
+        Returns:
+            List[List[int]]: A list of lists, where each inner list contains
+                the subset of neighbor indices that cause the prediction to
+                flip for each test input.
+        """
+        subset_indices = []
+        for prediction, neighbors in tqdm(
+            zip(predictions, neighbors_matrix), total=len(predictions)
+        ):
+            subset_indices.append(
+                self._find_subset_single(
+                    prediction=prediction, neighbors=neighbors, K=K
+                )
+            )
+
+        return subset_indices
+
     def _compute_movement(
         self, labels: np.ndarray, predictions: np.ndarray, window_size: int = 5
     ) -> np.ndarray:
@@ -182,11 +216,21 @@ class FindMinimalSubsetKNN(FindMinimalSubset):
         # for indices, end in tqdm(zip(neigh_ind, movement)):
         #     subset_indices.append(indices[:end].tolist())
 
-        label_indices_to_remove = self._find_subset_parallel(
-            predictions=predictions,
-            neighbors_matrix=neigh_labels,
-            K=clf.n_neighbors,
-        )
+        # do parallel versus do iterative, due to memory constraints
+        if predictions.size < 1000:
+            print("Samll Sample Size, Finding St via Parallel Processes")
+            label_indices_to_remove = self._find_subset_parallel(
+                predictions=predictions,
+                neighbors_matrix=neigh_labels,
+                K=clf.n_neighbors,
+            )
+        else:
+            print("Large Sample Size, Finding St via Brute Force")
+            label_indices_to_remove = self._find_subset_brute_force(
+                predictions=predictions,
+                neighbors_matrix=neigh_labels,
+                K=clf.n_neighbors,
+            )
 
         # need to convert label indices to example indices
         subset_indices = []
