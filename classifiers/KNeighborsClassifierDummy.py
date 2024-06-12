@@ -35,7 +35,7 @@ class KNeighborsClassifierDummy:
 
     def kneighbors(self, X, n_neighbors=5, return_distance=True):
         K = self._K if n_neighbors is None else n_neighbors
-        neigh_inds = self._neigh_inds[:, K]
+        neigh_inds = self._neigh_inds[:, :K]
 
         if return_distance:
             neigh_dists = self._neigh_dists[:, :K]

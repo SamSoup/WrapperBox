@@ -310,6 +310,7 @@ if __name__ == "__main__":
             neigh_inds_path=neigh_inds_path,
             neigh_dists_path=neigh_dists_path,
         )
+        print("Loaded Cached KNN predictions and neighbors from disk")
     else:
         clf = load_wrapperbox(
             dataset=args.dataset,
