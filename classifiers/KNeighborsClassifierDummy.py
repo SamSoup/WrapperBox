@@ -15,7 +15,7 @@ class KNeighborsClassifierDummy:
         neigh_dists_path: str = None,
         n_neighbors: int = 5,
     ):
-        self._K = n_neighbors
+        self.n_neighbors = n_neighbors
 
         with open(predictions_path, "rb") as f:
             self._predictions = pickle.load(f)
@@ -34,7 +34,7 @@ class KNeighborsClassifierDummy:
         return self._predictions
 
     def kneighbors(self, X, n_neighbors=5, return_distance=True):
-        K = self._K if n_neighbors is None else n_neighbors
+        K = self.n_neighbors if n_neighbors is None else n_neighbors
         neigh_inds = self._neigh_inds[:, :K]
 
         if return_distance:
