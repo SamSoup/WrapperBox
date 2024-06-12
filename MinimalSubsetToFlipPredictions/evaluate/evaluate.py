@@ -1,5 +1,5 @@
 import copy
-from typing import List
+from typing import Iterable, List
 import numpy as np
 from sklearn.base import BaseEstimator, clone
 from tqdm import tqdm
@@ -214,3 +214,25 @@ def compute_subset_metrics(flip_list: List[List[int]], is_valid: List[bool]):
     }
 
     return metrics
+
+
+# Custom evaluate function using Yang's prediction probability outputs
+# Takes in new predictions and old predictions
+def evaluate_by_prediction_probas(
+    old_predictions: Iterable[float],
+    new_predictions: Iterable[float],
+    thresh: float = 0.5,
+) -> Iterable[bool]:
+    is_valid = []
+    for po, pn in zip(old_predictions, new_predictions):
+        if pn is None:
+            is_valid.append(False)
+            continue
+        old_p = po >= thresh
+        new_p = pn >= thresh
+        if old_p != new_p:
+            is_valid.append(True)
+        else:
+            is_valid.append(False)
+
+    return is_valid

@@ -1,9 +1,9 @@
 {
     "dataset": "toxigen",
-    "model": "deberta-large",
+    "model": "deberta_large",
     "seed": 42,
     "pooler": "mean_with_attention",
     "layer": 24,
     "wrapper_name": "KNN",
-    "output_dir": "MinimalSubset"
+    "output_dir": "MinimalSubset/KNN_New"
 }

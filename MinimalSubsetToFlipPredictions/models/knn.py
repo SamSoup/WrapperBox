@@ -1,13 +1,113 @@
 # This script finds the minimal set of neighbors for a svm
-from typing import List
+from typing import Iterable, List
 from MinimalSubsetToFlipPredictions.models.interface import FindMinimalSubset
 from sklearn.neighbors import KNeighborsClassifier
-from utils.inference import find_majority_batched
+from utils.inference import find_majority, find_majority_batched
+from collections import Counter, deque
 from tqdm import tqdm
 import numpy as np
+import multiprocessing
 
 
 class FindMinimalSubsetKNN(FindMinimalSubset):
+    def _find_subset_single(
+        self, prediction: int, neighbors: Iterable[int], K: int
+    ) -> List[int]:
+        """
+        Finds the indices of neighbors such that their removal leads to a
+            prediction flip for a k-nearest neighbors model.
+
+        Args:
+            prediction (int): The initial predicted label of the test input.
+            neighbors (Iterable[int]): The labels of the neighbors of the
+                test input, sorted by proximity.
+            K (int): The number of nearest neighbors to consider in the
+                sliding window.
+
+        Returns:
+            List[int]: A list of indices of neighbor labels that, when removed,
+                cause the prediction to flip.
+        """
+        k_neighbors = deque(neighbors[:K])  # Initial K neighbors
+        remaining_neighbors = deque(neighbors[K:])  # Remaining neighbors
+
+        # Initialize vote counter for the K-window
+        vote_counter = Counter(k_neighbors)
+
+        # To keep track of the indices of neighbors to remove
+        indices_to_remove = []
+
+        # Iterate through the neighbors
+        for idx, neighbor in tqdm(enumerate(neighbors)):
+            if neighbor == prediction:
+                # Temporarily remove the neighbor from the K-window and update the counter
+                if neighbor in k_neighbors:
+                    k_neighbors.remove(neighbor)
+                    indices_to_remove.append(idx)
+                    vote_counter[neighbor] -= 1
+                    if vote_counter[neighbor] == 0:
+                        del vote_counter[neighbor]
+
+                    # Add the next neighbor from the remaining list to maintain the window size
+                    if remaining_neighbors:
+                        next_neighbor = remaining_neighbors.popleft()
+                        k_neighbors.append(next_neighbor)
+                        vote_counter[next_neighbor] += 1
+
+                    # Check the majority label in the current K-window
+                    majority_label = vote_counter.most_common(1)[0][0]
+
+                    # Check if the majority label has changed
+                    if majority_label != prediction:
+                        return indices_to_remove  # Return the indices that cause the flip
+
+        # If no flip occurred, return the indices list
+        return indices_to_remove
+
+    def _find_subset_parallel(
+        self, predictions: Iterable[int], neighbors_matrix: np.ndarray, K: int
+    ) -> List[List[int]]:
+        """
+        Finds subsets of neighbors in parallel for multiple test inputs,
+        such that their removal leads to prediction flips.
+
+        Args:
+            predictions (Iterable[int]): The initial predicted labels of
+                the test inputs.
+            neighbors_matrix (np.ndarray): A 2D array where each row contains
+                the labels of the neighbors for each test input, sorted by proximity.
+            K (int): The number of nearest neighbors to consider in the sliding
+                window.
+
+        Returns:
+            List[List[int]]: A list of lists, where each inner list contains
+                the subset of neighbor indices that cause the prediction to
+                flip for each test input.
+        """
+        # Use half of the available CPUs to prevent overload
+        max_processes = multiprocessing.cpu_count() // 2
+        chunk_size = max(1, len(predictions) // (max_processes * 2))
+
+        with multiprocessing.Pool(
+            processes=max_processes, maxtasksperchild=4
+        ) as pool:
+            results = list(
+                tqdm(
+                    pool.imap_unordered(
+                        self._find_subset_single,
+                        [
+                            (prediction, neighbors, K)
+                            for prediction, neighbors in zip(
+                                predictions, neighbors_matrix
+                            )
+                        ],
+                        chunksize=chunk_size,
+                    ),
+                    total=len(predictions),
+                )
+            )
+        return results
+
     def _compute_movement(
         self, labels: np.ndarray, predictions: np.ndarray, window_size: int = 5
     ) -> np.ndarray:
@@ -61,31 +161,36 @@ class FindMinimalSubsetKNN(FindMinimalSubset):
         test_embeddings: np.ndarray,
         train_labels: np.ndarray,
     ) -> List[List[int]]:
-        # knn has no learning: so use train and eval labels together
         predictions = clf.predict(test_embeddings)
         neigh_ind = clf.kneighbors(
             X=test_embeddings,
             n_neighbors=len(train_labels),
             return_distance=False,
         )
-        # use the neigh_ind to retrieve the indices of the neighbors
         neigh_labels = train_labels[neigh_ind]
-        # print(neigh_labels.shape)
-        # print(test_embeddings.shape)
-        # print(predictions.shape)
-        # input()
+
         # the task of finding the minimal set for the nearest neighbor approach
         # is just using a sliding window to see when the majority label changes
         # from the predictions
+        # movement = self._compute_movement(
+        #     labels=neigh_labels,
+        #     predictions=predictions,
+        #     window_size=clf.n_neighbors,
+        # )
+        # subset_indices = []
+        # # the train indices to remove is simply from 0:movement
+        # for indices, end in tqdm(zip(neigh_ind, movement)):
+        #     subset_indices.append(indices[:end].tolist())
 
-        movement = self._compute_movement(
-            labels=neigh_labels,
+        label_indices_to_remove = self._find_subset_parallel(
             predictions=predictions,
-            window_size=clf.n_neighbors,
+            neighbors_matrix=neigh_labels,
+            K=clf.n_neighbors,
         )
+
+        # need to convert label indices to example indices
         subset_indices = []
-        # the train indices to remove is simply from 0:movement
-        for indices, end in tqdm(zip(neigh_ind, movement)):
-            subset_indices.append(indices[:end].tolist())
+        for i, l_indices in enumerate(label_indices_to_remove):
+            subset_indices.append(neigh_ind[i][l_indices].tolist())
 
         return subset_indices
