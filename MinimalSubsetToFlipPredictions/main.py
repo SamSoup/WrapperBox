@@ -13,7 +13,7 @@ from MinimalSubsetToFlipPredictions.Yang2023.interface import (
 from MinimalSubsetToFlipPredictions.models.factory import (
     FindMinimalSubsetFactory,
 )
-from classifiers import KNeighborsClassifierDummy
+from classifiers.KNeighborsClassifierDummy import KNeighborsClassifierDummy
 from utils.constants.directory import RESULTS_DIR, SAVED_MODELS_DIR
 from utils.constants.models import (
     WRAPPER_BOXES_NEEDING_BATCHED_MINIMAL_SUBET_SEARCH,
@@ -299,13 +299,16 @@ if __name__ == "__main__":
             )
         else:
             neigh_dists_path = os.path.join(
-                path_to_cached_files, args.cached_KNN_neighbor_indices_path
+                path_to_cached_files, args.cached_KNN_neighbor_dists_path
             )
+        # dist path may not exist, if so set to None
+        if not os.path.exists(neigh_dists_path):
+            neigh_dists_path = None
 
         clf = KNeighborsClassifierDummy(
             predictions_path=predictions_path,
-            neigh_dists_path=neigh_dists_path,
             neigh_inds_path=neigh_inds_path,
+            neigh_dists_path=neigh_dists_path,
         )
     else:
         clf = load_wrapperbox(
