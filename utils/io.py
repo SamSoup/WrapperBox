@@ -53,7 +53,7 @@ def load_embeddings(
         pooler,
         f"layer_{layer}.csv",
     )
-    return pd.read_csv(path_to_wrapperbox).to_numpy()
+    return pd.read_csv(path_to_wrapperbox, header=None).to_numpy()
 
 
 def load_wrapperbox(
