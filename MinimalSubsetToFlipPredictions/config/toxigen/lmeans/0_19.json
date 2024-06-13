@@ -1,0 +1,13 @@
+{
+    "dataset": "toxigen",
+    "model": "deberta_large",
+    "seed": 42,
+    "pooler": "mean_with_attention",
+    "layer": 24,
+    "wrapper_name": "LMeans",
+    "output_dir": "MinimalSubset/Toxigen/LMeans",
+    "iterative_threshold": 100,
+    "splits": 100,
+    "idx_start": 0,
+    "idx_end": 19
+}

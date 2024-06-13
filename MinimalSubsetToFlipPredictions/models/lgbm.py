@@ -73,6 +73,7 @@ class FindMinimalSubsetLGBM(FindMinimalSubset):
         sections_indices = partition_indices(
             N=indices_to_remove.shape[0], M=self.SPLITS
         )
+
         print(
             f"Initiating Batch Removal with {indices_to_remove.size} exs total "
             f"across {self.SPLITS} splits",
@@ -86,7 +87,7 @@ class FindMinimalSubsetLGBM(FindMinimalSubset):
                     [indices_to_always_remove, reduced_indices]
                 )
             print(
-                f"\nBatching removing the first {section_idx} closest centroid exs\n"
+                f"\nBatch removing the first {section_idx} closest centroid exs\n"
                 f"After having removed examples {indices_to_always_remove}\n"
             )
             # print("Reduced indices:", reduced_indices)
@@ -278,7 +279,7 @@ class FindMinimalSubsetLGBM(FindMinimalSubset):
             # Check if the prediction has flipped
             if new_prediction != prediction:
                 print(
-                    f"\nIterative removal of examples {reduced_indices}"
+                    f"\nIterative removal of {reduced_indices.size} examples"
                     " lead to flipped prediction.\n"
                 )
                 return reduced_indices
@@ -317,6 +318,19 @@ class FindMinimalSubsetLGBM(FindMinimalSubset):
             # Set some shared variables here
             self._last_seen_subset_size = None
             pbar.set_description(f"Finding Minimal Set for Example {i}\n")
+
+            ## Further fine the indices_to_remove, s.t.
+            ## only the examples with the same labels as the prediction is kept
+            ## and considered for removal
+            indices_to_remove = np.array(
+                [
+                    idx
+                    for idx in indices_to_remove
+                    if train_labels[idx] == prediction
+                ],
+                dtype=int,
+            )
+
             # if total training set less than threshold, just go to iterative
             if train_embeddings.shape[0] <= self.ITERATIVE_THRESHOLD:
                 subset_indices = self._iterative_remove_and_refit(
