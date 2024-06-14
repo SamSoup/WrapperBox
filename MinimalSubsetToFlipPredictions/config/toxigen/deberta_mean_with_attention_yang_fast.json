@@ -1,5 +1,5 @@
 {
-    "dataset": "toxigen",
+    "dataset": "emotion",
     "model": "deberta_large",
     "seed": 42,
     "pooler": "mean_with_attention",

@@ -12,6 +12,7 @@ import numpy as np
 class DecisionTreeExampleBasedExplanation(ExampleBasedExplanation):
     def __init__(self, ITERATIVE_THRESHOLD: int = None) -> None:
         super().__init__()
+        self.ITERATIVE_THRESHOLD = ITERATIVE_THRESHOLD
         if ITERATIVE_THRESHOLD is None:
             self.ITERATIVE_THRESHOLD = inf
 
