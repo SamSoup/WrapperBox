@@ -75,6 +75,24 @@ def load_wrapperbox(
         return pickle.load(f)
 
 
+def load_wrapperbox_predictions(
+    dataset: str,
+    model: str,
+    seed: Union[str, int],
+    pooler: str,
+    wrapperbox: str,
+) -> BaseEstimator:
+
+    path_to_wrapperbox_preds = os.path.join(
+        SAVED_MODELS_DIR,
+        dataset,
+        f"{model}_seed_{seed}",
+        pooler,
+        f"{wrapperbox}_test_predictions.npy",
+    )
+    return np.load(path_to_wrapperbox_preds)
+
+
 def load_dataset_from_hf(
     dataset: str, retries: int = 3, delay: int = 5
 ) -> datasets.DatasetDict:
