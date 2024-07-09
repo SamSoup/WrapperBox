@@ -55,6 +55,12 @@ def get_args():
         for key, value in config.items():
             setattr(args, key, value)
 
+    print("Arguments passed:")
+    for arg, value in vars(args).items():
+        print(f"{arg}: {value}")
+
+    return args
+
 
 if __name__ == "__main__":
     args = get_args()
