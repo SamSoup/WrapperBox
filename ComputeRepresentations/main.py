@@ -6,12 +6,14 @@ Usage: python3 main.py --help
 
 import argparse
 import json
+import os
 import numpy as np
 from datasets import load_dataset
 from ComputeRepresentations.ModelForSentenceLevelRepresentation import (
     ModelForSentenceLevelRepresentation,
 )
 from utils.constants.directory import CACHE_DIR
+from utils.io import mkdir_if_not_exists
 
 
 def get_args():
@@ -69,6 +71,7 @@ def get_args():
 
 if __name__ == "__main__":
     args = get_args()
+    mkdir_if_not_exists(args.output_dir)
     datasets = load_dataset(
         args.dataset_name_or_path, use_auth_token=True, cache_dir=CACHE_DIR
     )
@@ -83,5 +86,6 @@ if __name__ == "__main__":
             batch_size=args.batch_size,
             max_length=args.max_length,
         )
+        save_path = os.path.join(args.output_dir, f"{split}.npy")
         # Save representations as numpy file
-        np.save(f"{split}.npy", representations.numpy())
+        np.save(save_path, representations.numpy())

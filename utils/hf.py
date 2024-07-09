@@ -36,6 +36,7 @@ def get_model_and_tokenizer(model_name: str) -> Tuple[AutoModel, AutoTokenizer]:
     Returns:
         Tuple[AutoModel, AutoTokenizer]: Loaded model and tokenizer.
     """
+    print(f"*** Caching to {CACHE_DIR} ***")
     init_distributed()
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=CACHE_DIR)

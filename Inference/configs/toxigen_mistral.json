@@ -1,0 +1,8 @@
+{
+    "prompt_prefix": "./prompts/toxigen_prompt.txt",
+    "dataset_name_or_path": "Samsoup/toxigen",
+    "model_name_or_path": "mistralai/Mistral-7B",
+    "batch_size": 32,
+    "is_classification": true,
+    "num_of_classes": 2
+}
