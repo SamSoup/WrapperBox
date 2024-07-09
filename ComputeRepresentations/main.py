@@ -45,6 +45,7 @@ def get_args():
         type=str,
         help="Output directory for resultant representations.",
     )
+    args = parser.parse_args()
 
     # If config argument is provided, load configuration from JSON file
     if args.config:
