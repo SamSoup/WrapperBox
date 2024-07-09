@@ -31,6 +31,11 @@ def get_args():
         help="Specify a path or a hub location to a HF model.",
     )
     parser.add_argument(
+        "--pooler",
+        type=str,
+        help="Name of pooler functions to sue. See `EmbeddingPooler` for options.",
+    )
+    parser.add_argument(
         "--batch_size",
         type=int,
         help="Batch size.",
@@ -67,7 +72,9 @@ if __name__ == "__main__":
     datasets = load_dataset(
         args.dataset_name_or_path, use_auth_token=True, cache_dir=CACHE_DIR
     )
-    model = ModelForSentenceLevelRepresentation(args.model_name_or_path)
+    model = ModelForSentenceLevelRepresentation(
+        args.model_name_or_path, args.pooler
+    )
     for split, dataset in datasets.items():
         # Assume that the column to compute representation is for is 'text'
         representations = model.extract_representations(

@@ -1,19 +1,19 @@
 import torch
-from torch.utils.data import DataLoader, Dataset
-from transformers import AutoTokenizer, AutoModel
+from torch.utils.data import DataLoader
 from typing import List, Iterable
+from ComputeRepresentations.EmbeddingPooler import EmbeddingPooler
 from utils.datasets import EmbeddingDataset
 from utils.hf import get_model_and_tokenizer
 
 
 class ModelForSentenceLevelRepresentation:
-    def __init__(self, model_name: str):
+    def __init__(self, model_name: str, pooler: str):
         """
         Initializes the model and tokenizer for sentence-level representation extraction.
 
         Args:
             model_name (str): Name of the model to load.
-            device (torch.device, optional): Device to perform computations on.
+            pooler (str): Name of the pooling function to use.
         """
         self.model_name = model_name
         self.device = torch.device(
@@ -22,6 +22,7 @@ class ModelForSentenceLevelRepresentation:
         self.model, self.tokenizer = get_model_and_tokenizer(model_name)
         self.model.to(self.device)
         self.model.eval()
+        self.pooler = EmbeddingPooler().get(pooler)
 
     def create_dataloader(
         self,
@@ -79,7 +80,9 @@ class ModelForSentenceLevelRepresentation:
                 )
                 last_hidden_states = outputs.last_hidden_state
 
-                averaged_representation = last_hidden_states.mean(dim=1)
-                representations.append(averaged_representation.cpu())
+                pooled_representation = self.pooler(
+                    last_hidden_states, attention_mask
+                )
+                representations.append(pooled_representation)
 
         return torch.cat(representations)
