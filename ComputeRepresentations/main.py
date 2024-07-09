@@ -76,6 +76,7 @@ if __name__ == "__main__":
         args.model_name_or_path, args.pooler
     )
     for split, dataset in datasets.items():
+        print(f"***** Computing Representations for {split} dataset *****")
         # Assume that the column to compute representation is for is 'text'
         representations = model.extract_representations(
             texts=dataset["text"],
@@ -83,4 +84,4 @@ if __name__ == "__main__":
             max_length=args.max_length,
         )
         # Save representations as numpy file
-        np.save(f"{split}.npy", representations.cpu().numpy())
+        np.save(f"{split}.npy", representations.numpy())

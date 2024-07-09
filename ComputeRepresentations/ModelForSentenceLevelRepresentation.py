@@ -4,6 +4,7 @@ from typing import List, Iterable
 from ComputeRepresentations.EmbeddingPooler import EmbeddingPooler
 from utils.datasets import EmbeddingDataset
 from utils.hf import get_model_and_tokenizer
+from tqdm import tqdm
 
 
 class ModelForSentenceLevelRepresentation:
@@ -71,7 +72,7 @@ class ModelForSentenceLevelRepresentation:
 
         representations = []
         with torch.no_grad():
-            for batch in dataloader:
+            for batch in tqdm(dataloader):
                 input_ids = batch["input_ids"].to(self.device)
                 attention_mask = batch["attention_mask"].to(self.device)
 
