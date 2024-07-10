@@ -28,6 +28,7 @@ class ModelForSentenceLevelRepresentation:
         )
         self.model.to(self.device)
         self.model.eval()
+        self.pooler_name = pooler
         self.pooler = EmbeddingPooler().get(pooler)
 
     def create_dataloader(
@@ -85,6 +86,8 @@ class ModelForSentenceLevelRepresentation:
                     input_ids=input_ids, attention_mask=attention_mask
                 )
 
+                if self.pooler_name == "mean_with_attention_head":
+                    attention_mask = outputs.attentions[-1]
                 pooled_representation = self.pooler(
                     outputs.last_hidden_state.cpu(), attention_mask.cpu()
                 )
