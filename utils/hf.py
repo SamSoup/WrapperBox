@@ -1,5 +1,10 @@
 from typing import Tuple
-from transformers import AutoModel, AutoTokenizer, AutoModelForCausalLM
+from transformers import (
+    AutoModel,
+    AutoTokenizer,
+    AutoModelForCausalLM,
+    LlamaConfig,
+)
 from utils.constants.directory import CACHE_DIR
 import torch
 import torch.distributed as dist
@@ -55,7 +60,7 @@ def get_model_and_tokenizer(
     # Check if the model is decoder-only
     print(f"*** Model configurations ***")
     print(model.config)
-    if model.config.is_decoder:
+    if model.config.is_decoder or isinstance(model.config, LlamaConfig):
         print("Model is a decoder-only architecture.")
         tokenizer.padding_side = "left"
     else:
