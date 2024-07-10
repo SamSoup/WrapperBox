@@ -155,8 +155,8 @@ def generate_responses(
                 tokenizer.decode(output, skip_special_tokens=True)
                 for output in outputs
             ]
-            pprint(decoded_outputs)
-            input()
+            # pprint(decoded_outputs)
+            # input()
 
             if args.is_classification:
                 predictions = extract_classification_output(

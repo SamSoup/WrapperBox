@@ -3,7 +3,7 @@
     "dataset_name_or_path": "Samsoup/toxigen",
     "model_name_or_path": "mistralai/Mistral-7B-Instruct-v0.3",
     "batch_size": 16,
-    "is_classification": false,
+    "is_classification": true,
     "num_classes": 2,
     "output_dir": "./results/toxigen/mistral_7B",
     "max_new_tokens": 50,
