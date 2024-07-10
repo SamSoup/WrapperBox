@@ -175,7 +175,7 @@ def extract_classification_output(decoded_outputs, num_of_classes):
     for outputs in decoded_outputs:
         # Only check the real output components with all white space removed
         output_start_idx = outputs.index(">>>")
-        output = re.sub(r"\s+", "", outputs[output_start_idx:])
+        output = re.sub(r"\s+", "", outputs[output_start_idx + 3 :])
         # Simplistic extraction assuming the first token is the answer
         try:
             decision = int(output.strip()[0])
