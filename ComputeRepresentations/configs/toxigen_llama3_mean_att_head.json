@@ -5,5 +5,7 @@
     "pooler": "mean_with_attention_heads",
     "batch_size": 4,
     "max_length": 512,
+    "do_train": false,
+    "do_test": false,
     "output_dir": "./toxigen/llama3_8B_instruct/mean_with_attention_heads"
 }
