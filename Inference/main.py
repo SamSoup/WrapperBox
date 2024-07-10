@@ -23,6 +23,7 @@ from utils.constants.directory import CACHE_DIR
 from utils.datasets import EmbeddingDataset
 from utils.hf import get_model_and_tokenizer
 from utils.io import mkdir_if_not_exists
+from pprint import pprint
 
 
 def get_args():
@@ -153,29 +154,32 @@ def generate_responses(
                 tokenizer.decode(output, skip_special_tokens=True)
                 for output in outputs
             ]
-            print(decoded_outputs)
+            pprint(decoded_outputs)
 
             if args.is_classification:
-                classification_output = extract_classification_output(
+                predictions = extract_classification_output(
                     decoded_outputs, args.num_classes
                 )
-                results.append(classification_output)
+                results.extend(predictions)
             else:
-                results.append(decoded_outputs)
+                results.extend(decoded_outputs)
 
     return results
 
 
 def extract_classification_output(decoded_outputs, num_of_classes):
+    predictions = []
     for outputs in decoded_outputs:
         # Simplistic extraction assuming the first token is the answer
         try:
             decision = int(outputs.strip()[0])
             if 0 <= decision < num_of_classes:
-                return decision
+                predictions.append(decision)
         except (ValueError, IndexError):
             print(f"For response, {outputs}, an decision was not clear.")
-        return random.randint(1, num_of_classes - 1)
+        predictions.append(random.randint(1, num_of_classes - 1))
+
+    return predictions
 
 
 def main():
@@ -208,9 +212,9 @@ def main():
 
     results = generate_responses(model, tokenizer, dataloader, args)
 
-    output_file = os.path.join(args.output_dir, "output.pkl")
-    with open(output_file, "wb") as f:
-        pickle.dump(results, f)
+    output_file = os.path.join(args.output_dir, "output.json")
+    with open(output_file, "w") as file:
+        json.dump(results, file)
 
 
 if __name__ == "__main__":
