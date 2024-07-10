@@ -19,6 +19,7 @@ from transformers import (
 )
 from torch.utils.data import DataLoader
 from utils.constants.directory import CACHE_DIR
+from utils.datasets import EmbeddingDataset
 from utils.hf import get_model_and_tokenizer
 from utils.io import mkdir_if_not_exists
 
@@ -83,11 +84,16 @@ def get_args():
 def prep_dataset(
     dataset: Dataset, tokenizer: AutoTokenizer, batch_size: int
 ) -> DataLoader:
+    embed_dataset = EmbeddingDataset(
+        texts=dataset["text"], tokenizer=tokenizer, max_length=512
+    )
     data_collator = DataCollatorForLanguageModeling(
         tokenizer=tokenizer,
         mlm=False,
     )
-    return DataLoader(dataset, batch_size=batch_size, collate_fn=data_collator)
+    return DataLoader(
+        embed_dataset, batch_size=batch_size, collate_fn=data_collator
+    )
 
 
 def generate_responses(
