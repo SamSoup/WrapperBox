@@ -61,7 +61,10 @@ def get_model_and_tokenizer(
         else:
             tokenizer.pad_token = tokenizer.eos_token
             tokenizer.pad_token_id = tokenizer.eos_token_id
-        if hasattr(model, "generation_config"):
+        if (
+            hasattr(model, "generation_config")
+            and model.generation_config is not None
+        ):
             model.generation_config.pad_token_id = tokenizer.pad_token_id
     print(f"eos_token_id: {tokenizer.eos_token}")
     print(f"eos_token: {tokenizer.eos_token_id}")
