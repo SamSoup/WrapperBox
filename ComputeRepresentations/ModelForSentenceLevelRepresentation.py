@@ -96,6 +96,7 @@ class ModelForSentenceLevelRepresentation:
                 if output_attentions:
                     # (batch_size, num_heads, sequence_length, sequence_length)
                     # attention_mask = outputs.attentions[:, -1]
+                    print(outputs)
                     print(outputs.attentions.shape)
                     print(outputs.attentions)
                     input()
