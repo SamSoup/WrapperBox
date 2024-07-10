@@ -9,6 +9,7 @@ Usage: see python3 main.py --help
 import argparse
 import json
 import pickle
+import re
 import os
 import random
 import torch
@@ -172,9 +173,9 @@ def generate_responses(
 def extract_classification_output(decoded_outputs, num_of_classes):
     predictions = []
     for outputs in decoded_outputs:
-        # Only check the real output components
+        # Only check the real output components with all white space removed
         output_start_idx = outputs.index(">>>")
-        output = outputs[output_start_idx:]
+        output = re.sub(r"\s+", "", outputs[output_start_idx:])
         # Simplistic extraction assuming the first token is the answer
         try:
             decision = int(output.strip()[0])
