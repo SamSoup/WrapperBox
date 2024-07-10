@@ -82,12 +82,20 @@ class ModelForSentenceLevelRepresentation:
                 input_ids = batch["input_ids"].to(self.device)
                 attention_mask = batch["attention_mask"].to(self.device)
 
+                output_attentions = (
+                    True
+                    if self.pooler_name == "mean_with_attention_head"
+                    else False
+                )
                 outputs = self.model(
-                    input_ids=input_ids, attention_mask=attention_mask
+                    input_ids=input_ids,
+                    attention_mask=attention_mask,
+                    output_attentions=output_attentions,
                 )
 
-                if self.pooler_name == "mean_with_attention_head":
-                    attention_mask = outputs.attentions[-1]
+                if output_attentions:
+                    # (batch_size, num_heads, sequence_length, sequence_length)
+                    # attention_mask = outputs.attentions[:, -1]
                     print(outputs.attentions.shape)
                     print(outputs.attentions)
                     input()
