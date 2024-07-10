@@ -169,7 +169,7 @@ def generate_responses(
     return results
 
 
-def extract_classification_output(output, num_of_classes, input_lengths):
+def extract_classification_output(output, num_of_classes):
     try:
         decision = int(output.strip()[0])
         if 0 <= decision < num_of_classes:
