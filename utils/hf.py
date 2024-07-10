@@ -10,8 +10,6 @@ from transformers import AutoModel, AutoTokenizer
 from typing import Tuple
 import os
 
-CACHE_DIR = "path/to/cache"  # Specify your cache directory here
-
 
 def init_distributed():
     """
