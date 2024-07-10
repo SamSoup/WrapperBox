@@ -62,9 +62,17 @@ def get_args():
         default=0.7,
         help="Temperature for randomness.",
     )
-    parser.add_argument("--top_k", type=int, default=2, help="")
     parser.add_argument(
-        "--top_p", type=float, default=0.95, help="Cumulative probability."
+        "--top_k",
+        type=int,
+        default=2,
+        help="Sample from the best k (number of) tokens. 0 means off (Default: 0, 0 ≤ top_k < 100000).",
+    )
+    parser.add_argument(
+        "--top_p",
+        type=float,
+        default=0.95,
+        help="Sample from the set of tokens with highest probability such that sum of probabilies is higher than p. Lower values focus on the most probable tokens.Higher values sample more low-probability tokens (Default: 0.9, 0 < top_p ≤ 1)",
     )
     parser.add_argument(
         "--is_classification",
