@@ -138,11 +138,10 @@ def generate_responses(
     results = []
     with torch.no_grad():
         for batch in tqdm(dataloader):
-            batch_texts = batch["text"]
             input_ids = batch["input_ids"].to(device)
             attention_mask = batch["attention_mask"].to(device)
 
-            outputs = model.generate(
+            output_ids = model.generate(
                 input_ids=input_ids,
                 attention_mask=attention_mask,
                 max_new_tokens=args.max_new_tokens,
@@ -154,18 +153,18 @@ def generate_responses(
                 pad_token_id=model.config.eos_token_id,
             )
 
-            for inp, out in zip(batch_texts, outputs):
-                # generated_text = tokenizer.decode(out, skip_special_tokens=True)
-                generated_text = tokenizer.decode(out)
-                new_tokens = generated_text[len(inp) :]
+            for inp, out in zip(input_ids, output_ids):
+                generated_text = tokenizer.decode(
+                    out[inp.size :], skip_special_tokens=True
+                )
 
                 if args.is_classification:
                     predictions = extract_classification_output(
-                        new_tokens, args.num_classes
+                        generated_text, args.num_classes
                     )
                     results.append(predictions)
                 else:
-                    results.append(new_tokens)
+                    results.append(generated_text)
 
     return results
 
