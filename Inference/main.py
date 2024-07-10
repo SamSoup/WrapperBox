@@ -138,18 +138,14 @@ def generate_responses(
     model.eval()
 
     results = []
-
     with torch.no_grad():
         for batch in tqdm(dataloader):
-            inputs = batch["input_ids"].to(device)
-            input_lengths = (batch["input_ids"] != tokenizer.pad_token_id).sum(
-                dim=1
-            )
-            print(batch.keys())
+            batch_texts = batch["text"]
+            input_ids = batch["input_ids"].to(device)
             attention_mask = batch["attention_mask"].to(device)
 
             outputs = model.generate(
-                input_ids=inputs,
+                input_ids=input_ids,
                 attention_mask=attention_mask,
                 max_new_tokens=args.max_new_tokens,
                 do_sample=True,
@@ -157,46 +153,33 @@ def generate_responses(
                 temperature=args.temperature,
                 top_k=args.top_k,
                 top_p=args.top_p,
+                pad_token_id=model.config.eos_token_id,
             )
 
-            decoded_outputs = [
-                tokenizer.decode(output, skip_special_tokens=True)
-                for output in outputs
-            ]
-            # pprint(decoded_outputs)
-            # input()
+            for inp, out in zip(batch_texts, outputs):
+                generated_text = tokenizer.decode(out, skip_special_tokens=True)
+                new_tokens = generated_text[len(inp) :]
 
-            if args.is_classification:
-                predictions = extract_classification_output(
-                    decoded_outputs, args.num_classes, input_lengths
-                )
-                results.extend(predictions)
-            else:
-                results.extend(decoded_outputs)
+                if args.is_classification:
+                    predictions = extract_classification_output(
+                        new_tokens, args.num_classes
+                    )
+                    results.append(predictions)
+                else:
+                    results.append(new_tokens)
 
     return results
 
 
-def extract_classification_output(
-    decoded_outputs, num_of_classes, input_lengths
-):
-    predictions = []
-    for outputs, l in zip(decoded_outputs, input_lengths):
-        # Only check the real output components with all white space removed
-        output = re.sub(r"\s+", "", outputs[l:])
-        # Simplistic extraction assuming the first token is the answer
-        try:
-            decision = int(output.strip()[0])
-            if 0 <= decision < num_of_classes:
-                predictions.append(decision)
-        except (ValueError, IndexError):
-            print(
-                f"For response: \n\n{outputs}\n\n ;An decision was not clear"
-                f" in segmented output {output}"
-            )
-        predictions.append(random.randint(1, num_of_classes - 1))
+def extract_classification_output(output, num_of_classes, input_lengths):
+    try:
+        decision = int(output.strip()[0])
+        if 0 <= decision < num_of_classes:
+            return decision
+    except (ValueError, IndexError):
+        print(f"An decision was not clear for:\n{output}")
 
-    return predictions
+    return random.randint(1, num_of_classes - 1)
 
 
 def main():

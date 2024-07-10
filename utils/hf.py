@@ -52,6 +52,15 @@ def get_model_and_tokenizer(
         if hasattr(model, "generation_config"):
             model.generation_config.pad_token_id = tokenizer.pad_token_id
 
+    # Check if the model is decoder-only
+    if model.config.is_decoder and not hasattr(
+        model.config, "is_encoder_decoder"
+    ):
+        print("Model is a decoder-only architecture.")
+        tokenizer.padding_side = "left"
+    else:
+        print("Model is not a decoder-only architecture.")
+
     device = torch.device(
         f"cuda:{dist.get_rank() % torch.cuda.device_count()}"
         if torch.cuda.device_count() > 1
