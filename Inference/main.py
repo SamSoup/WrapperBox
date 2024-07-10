@@ -172,9 +172,12 @@ def generate_responses(
 def extract_classification_output(decoded_outputs, num_of_classes):
     predictions = []
     for outputs in decoded_outputs:
+        # Only check the real output components
+        output_start_idx = outputs.index(">>>")
+        output = outputs[output_start_idx:]
         # Simplistic extraction assuming the first token is the answer
         try:
-            decision = int(outputs.strip()[0])
+            decision = int(output.strip()[0])
             if 0 <= decision < num_of_classes:
                 predictions.append(decision)
         except (ValueError, IndexError):
