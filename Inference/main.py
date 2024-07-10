@@ -160,7 +160,9 @@ def main():
     )
 
     ## Load Model
-    model, tokenizer = get_model_and_tokenizer(args.model_name_or_path)
+    model, tokenizer = get_model_and_tokenizer(
+        args.model_name_or_path, causal_lm=True
+    )
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
     model.eval()
