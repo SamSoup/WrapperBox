@@ -53,6 +53,7 @@ def get_model_and_tokenizer(
             model.generation_config.pad_token_id = tokenizer.pad_token_id
 
     # Check if the model is decoder-only
+    print(f"*** Model configurations ***")
     print(model.config)
     if model.config.is_decoder:
         print("Model is a decoder-only architecture.")
