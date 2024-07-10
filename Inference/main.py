@@ -141,6 +141,7 @@ def generate_responses(
 
     with torch.no_grad():
         for batch in tqdm(dataloader):
+            input_lengths = [len(t) for t in batch["text"]]
             inputs = batch["input_ids"].to(device)
             attention_mask = batch["attention_mask"].to(device)
 
@@ -164,7 +165,7 @@ def generate_responses(
 
             if args.is_classification:
                 predictions = extract_classification_output(
-                    decoded_outputs, args.num_classes
+                    decoded_outputs, args.num_classes, input_lengths
                 )
                 results.extend(predictions)
             else:
@@ -173,13 +174,13 @@ def generate_responses(
     return results
 
 
-def extract_classification_output(decoded_outputs, num_of_classes):
+def extract_classification_output(
+    decoded_outputs, num_of_classes, input_lengths
+):
     predictions = []
-    for outputs in decoded_outputs:
-        # NOTE: this assumes the last tokens in the prompt are >>>
+    for outputs, l in zip(decoded_outputs, input_lengths):
         # Only check the real output components with all white space removed
-        output_start_idx = outputs.index(">>>")
-        output = re.sub(r"\s+", "", outputs[output_start_idx + 3 :])
+        output = re.sub(r"\s+", "", outputs[l:])
         # Simplistic extraction assuming the first token is the answer
         try:
             decision = int(output.strip()[0])
