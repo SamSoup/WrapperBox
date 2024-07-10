@@ -79,6 +79,7 @@ class ModelForSentenceLevelRepresentation:
         representations = []
         with torch.no_grad():
             for batch in tqdm(dataloader):
+                torch.cuda.empty_cache()
                 input_ids = batch["input_ids"].to(self.device)
                 attention_mask = batch["attention_mask"].to(self.device)
 
@@ -94,15 +95,10 @@ class ModelForSentenceLevelRepresentation:
                 )
 
                 if output_attentions:
-                    # (batch_size, num_heads, sequence_length, sequence_length)
-                    # attention_mask = outputs.attentions[:, -1]
-                    # print(outputs)
-                    print(len(outputs.attentions))
-                    print(outputs.attentions[0].shape)
-                    input()
+                    # (num_layers, batch_size, num_heads, sequence_length, sequence_length)
+                    attention_mask = outputs.attentions[-1]
                 pooled_representation = self.pooler(
                     outputs.last_hidden_state.cpu(), attention_mask.cpu()
                 )
                 representations.append(pooled_representation)
-                torch.cuda.empty_cache()
         return torch.cat(representations)
