@@ -28,6 +28,24 @@ def get_args():
         help="Specify a path or a hub location to a Dataset",
     )
     parser.add_argument(
+        "--do_train",
+        type=bool,
+        default=True,
+        help="Compute for train dataset?",
+    )
+    parser.add_argument(
+        "--do_test",
+        type=bool,
+        default=True,
+        help="Compute for test dataset?",
+    )
+    parser.add_argument(
+        "--do_eval",
+        type=bool,
+        default=True,
+        help="Compute for eval dataset?",
+    )
+    parser.add_argument(
         "--model_name_or_path",
         type=str,
         help="Specify a path or a hub location to a HF model.",
@@ -76,6 +94,11 @@ def get_args():
 
 if __name__ == "__main__":
     args = get_args()
+    to_dos = {
+        "train": args.do_train,
+        "eval": args.do_eval,
+        "test": args.do_test,
+    }
     mkdir_if_not_exists(args.output_dir)
     datasets = load_dataset(
         args.dataset_name_or_path, use_auth_token=True, cache_dir=CACHE_DIR
@@ -84,13 +107,14 @@ if __name__ == "__main__":
         args.model_name_or_path, args.pooler, args.load_half_precision
     )
     for split, dataset in datasets.items():
-        print(f"***** Computing Representations for {split} dataset *****")
-        # Assume that the column to compute representation is for is 'text'
-        representations = model.extract_representations(
-            texts=dataset["text"],
-            batch_size=args.batch_size,
-            max_length=args.max_length,
-        )
-        save_path = os.path.join(args.output_dir, f"{split}.npy")
-        # Save representations as numpy file
-        np.save(save_path, representations.numpy())
+        if to_dos[split]:
+            print(f"***** Computing Representations for {split} dataset *****")
+            # Assume that the column to compute representation is for is 'text'
+            representations = model.extract_representations(
+                texts=dataset["text"],
+                batch_size=args.batch_size,
+                max_length=args.max_length,
+            )
+            save_path = os.path.join(args.output_dir, f"{split}.npy")
+            # Save representations as numpy file
+            np.save(save_path, representations.numpy())
