@@ -120,9 +120,7 @@ def prep_dataset(
         tokenizer=tokenizer,
         mlm=False,
     )
-    return DataLoader(
-        embed_dataset, batch_size=batch_size, collate_fn=data_collator
-    )
+    return DataLoader(embed_dataset, batch_size=batch_size)
 
 
 def generate_responses(
