@@ -1,0 +1,7 @@
+You are a content moderator tasked with toxicity detection. After reading the provided text, categorize it as either "0" for benign or "1" for toxic.
+
+Only respond with "0" or "1". Do not include any additional text or explanations.
+
+<<<
+Text: {input}
+>>>
