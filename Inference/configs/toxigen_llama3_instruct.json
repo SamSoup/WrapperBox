@@ -6,7 +6,7 @@
     "is_classification": true,
     "num_classes": 2,
     "output_dir": "./results/toxigen/llama3_8B_instruct",
-    "max_new_tokens": 10,
+    "max_new_tokens": 50,
     "temperature": 0.7,
     "top_k": 2,
     "top_p": 0.95,

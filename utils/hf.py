@@ -53,9 +53,8 @@ def get_model_and_tokenizer(
             model.generation_config.pad_token_id = tokenizer.pad_token_id
 
     # Check if the model is decoder-only
-    if model.config.is_decoder and not hasattr(
-        model.config, "is_encoder_decoder"
-    ):
+    print(model.config)
+    if model.config.is_decoder:
         print("Model is a decoder-only architecture.")
         tokenizer.padding_side = "left"
     else:
