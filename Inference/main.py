@@ -24,6 +24,7 @@ from utils.datasets import EmbeddingDataset
 from utils.hf import get_model_and_tokenizer
 from utils.io import mkdir_if_not_exists
 from pprint import pprint
+from tqdm import tqdm
 
 
 def get_args():
@@ -135,7 +136,7 @@ def generate_responses(
     results = []
 
     with torch.no_grad():
-        for batch in dataloader:
+        for batch in tqdm(dataloader):
             inputs = batch["input_ids"].to(device)
             attention_mask = batch["attention_mask"].to(device)
 
@@ -155,6 +156,7 @@ def generate_responses(
                 for output in outputs
             ]
             pprint(decoded_outputs)
+            input()
 
             if args.is_classification:
                 predictions = extract_classification_output(
