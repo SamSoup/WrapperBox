@@ -117,7 +117,7 @@ def generate_responses(
             with torch.no_grad():
                 output = model.generate(
                     input_ids,
-                    max_length=50,
+                    max_new_tokens=2 if is_classification else 50,
                     num_return_sequences=1,
                     temperature=0.7,
                     top_k=2 if is_classification else 50,
