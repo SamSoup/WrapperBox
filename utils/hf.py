@@ -38,16 +38,20 @@ def get_model_and_tokenizer(
     init_distributed()
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=CACHE_DIR)
-    # Set pad token if not already
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
-        tokenizer.pad_token_id = tokenizer.eos_token_id
 
     dtype = torch.float16 if load_half_precison else torch.float
     MODEL_CLASS = AutoModelForCausalLM if causal_lm else AutoModel
     model = MODEL_CLASS.from_pretrained(
         model_name, torch_dtype=dtype, cache_dir=CACHE_DIR
     )
+
+    # Set pad token if not already, assu
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+        tokenizer.pad_token_id = tokenizer.eos_token_id
+        if hasattr(model, "generation_config"):
+            model.generation_config.pad_token_id = tokenizer.pad_token_id
+
     device = torch.device(
         f"cuda:{dist.get_rank() % torch.cuda.device_count()}"
         if torch.cuda.device_count() > 1

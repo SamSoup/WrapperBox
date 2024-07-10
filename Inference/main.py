@@ -141,9 +141,10 @@ def generate_responses(
 
     with torch.no_grad():
         for batch in tqdm(dataloader):
-            print(batch)
-            input_lengths = [len(t) for t in batch["text"]]
             inputs = batch["input_ids"].to(device)
+            input_lengths = (batch["input_ids"] != tokenizer.pad_token_id).sum(
+                dim=1
+            )
             attention_mask = batch["attention_mask"].to(device)
 
             outputs = model.generate(
