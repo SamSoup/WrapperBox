@@ -58,6 +58,11 @@ def get_args():
         default=2,
         help="Number of classes for classification.",
     )
+    parser.add_argument(
+        "--output_dir",
+        type=str,
+        help="Output directory for resultant representations.",
+    )
     args = parser.parse_args()
 
     # If config argument is provided, load configuration from JSON file
