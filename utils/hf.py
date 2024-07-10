@@ -52,8 +52,15 @@ def get_model_and_tokenizer(
 
     # Set pad token if not already, assu
     if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
-        tokenizer.pad_token_id = tokenizer.eos_token_id
+        # NOTE: for llama3, use a special pad token
+        if isinstance(model.config, LlamaConfig):
+            tokenizer.pad_token = "<|end_of_text|>"
+            tokenizer.pad_token_id = tokenizer.convert_tokens_to_ids(
+                tokenizer.pad_token
+            )
+        else:
+            tokenizer.pad_token = tokenizer.eos_token
+            tokenizer.pad_token_id = tokenizer.eos_token_id
         if hasattr(model, "generation_config"):
             model.generation_config.pad_token_id = tokenizer.pad_token_id
     print(f"eos_token_id: {tokenizer.eos_token}")
