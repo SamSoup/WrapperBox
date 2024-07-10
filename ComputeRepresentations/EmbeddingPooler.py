@@ -58,8 +58,12 @@ class EmbeddingPooler:
             attention (torch.tensor): (batch_size, num_heads, seq_length, seq_length)
 
         Returns:
-            torch.tensor: _description_
+            torch.tensor: (batch_size, hidden_size)
         """
+        print(attention.shape)
+        print(attention)
+        input()
+
         # Average attention weights across heads
         att_avg_head = attention.mean(
             dim=1

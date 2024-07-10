@@ -88,6 +88,9 @@ class ModelForSentenceLevelRepresentation:
 
                 if self.pooler_name == "mean_with_attention_head":
                     attention_mask = outputs.attentions[-1]
+                    print(outputs.attentions.shape)
+                    print(outputs.attentions)
+                    input()
                 pooled_representation = self.pooler(
                     outputs.last_hidden_state.cpu(), attention_mask.cpu()
                 )
