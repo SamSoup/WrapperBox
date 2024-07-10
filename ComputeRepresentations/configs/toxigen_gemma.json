@@ -1,6 +1,7 @@
 {
     "dataset_name_or_path": "Samsoup/toxigen",
     "model_name_or_path": "google/gemma-7b",
+    "load_half_precision": false,
     "pooler": "mean_with_attention",
     "batch_size": 8,
     "max_length": 512,

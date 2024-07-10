@@ -33,6 +33,11 @@ def get_args():
         help="Specify a path or a hub location to a HF model.",
     )
     parser.add_argument(
+        "--load_half_precision",
+        type=bool,
+        help="Should we load the model in half precision to save mem?",
+    )
+    parser.add_argument(
         "--pooler",
         type=str,
         help="Name of pooler functions to sue. See `EmbeddingPooler` for options.",
@@ -76,7 +81,7 @@ if __name__ == "__main__":
         args.dataset_name_or_path, use_auth_token=True, cache_dir=CACHE_DIR
     )
     model = ModelForSentenceLevelRepresentation(
-        args.model_name_or_path, args.pooler
+        args.model_name_or_path, args.pooler, args.load_half_precision
     )
     for split, dataset in datasets.items():
         print(f"***** Computing Representations for {split} dataset *****")

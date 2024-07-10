@@ -8,7 +8,9 @@ from tqdm import tqdm
 
 
 class ModelForSentenceLevelRepresentation:
-    def __init__(self, model_name: str, pooler: str):
+    def __init__(
+        self, model_name: str, pooler: str, load_half_precision: bool = False
+    ):
         """
         Initializes the model and tokenizer for sentence-level representation extraction.
 
@@ -20,7 +22,9 @@ class ModelForSentenceLevelRepresentation:
         self.device = torch.device(
             "cuda" if torch.cuda.is_available() else "cpu"
         )
-        self.model, self.tokenizer = get_model_and_tokenizer(model_name)
+        self.model, self.tokenizer = get_model_and_tokenizer(
+            model_name, load_half_precision
+        )
         self.model.to(self.device)
         self.model.eval()
         self.pooler = EmbeddingPooler().get(pooler)
