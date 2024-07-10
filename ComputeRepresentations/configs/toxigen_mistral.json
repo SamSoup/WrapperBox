@@ -1,9 +1,9 @@
 {
     "dataset_name_or_path": "Samsoup/toxigen",
-    "model_name_or_path": "mistralai/Mistral-7B-v0.3",
+    "model_name_or_path": "mistralai/Mistral-7B-Instruct-v0.3",
     "load_half_precision": false,
     "pooler": "mean_with_attention",
     "batch_size": 16,
     "max_length": 512,
-    "output_dir": "./toxigen/mistral_7B/mean_with_attention"
+    "output_dir": "./toxigen/mistral_7B_instruct/mean_with_attention"
 }
