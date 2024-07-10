@@ -47,4 +47,7 @@ class EmbeddingDataset(Dataset):
             truncation=True,
             return_tensors="pt",
         )
-        return {key: val.squeeze(0) for key, val in encoding.items()}
+        return {
+            "text": text,
+            **{key: val.squeeze(0) for key, val in encoding.items()},
+        }
