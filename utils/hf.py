@@ -56,10 +56,15 @@ def get_model_and_tokenizer(
         tokenizer.pad_token_id = tokenizer.eos_token_id
         if hasattr(model, "generation_config"):
             model.generation_config.pad_token_id = tokenizer.pad_token_id
+    print(f"eos_token_id: {tokenizer.eos_token}")
+    print(f"eos_token: {tokenizer.eos_token_id}")
+    print(f"pad_token_id: {tokenizer.pad_token}")
+    print(f"pad_token: {tokenizer.pad_token_id}")
 
     # Check if the model is decoder-only
     print(f"*** Model configurations ***")
     print(model.config)
+    print(model.generation_config)
     if model.config.is_decoder or isinstance(model.config, LlamaConfig):
         print("Model is a decoder-only architecture.")
         tokenizer.padding_side = "left"
