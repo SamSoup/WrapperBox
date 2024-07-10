@@ -1,13 +1,9 @@
 from typing import Tuple
-from transformers import AutoTokenizer, AutoModel
+from transformers import AutoModel, AutoTokenizer, AutoModelForCausalLM
 from utils.constants.directory import CACHE_DIR
-import torch
-
 import torch
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
-from transformers import AutoModel, AutoTokenizer
-from typing import Tuple
 import os
 
 
@@ -24,7 +20,7 @@ def init_distributed():
 
 
 def get_model_and_tokenizer(
-    model_name: str, load_half_precison: bool = False
+    model_name: str, load_half_precison: bool = False, causal_lm: bool = False
 ) -> Tuple[AutoModel, AutoTokenizer]:
     """
     Loads the model and tokenizer based on the provided model name. Assumes
@@ -32,6 +28,8 @@ def get_model_and_tokenizer(
 
     Args:
         model_name (str): Name of the model to load.
+        load_half_precison (bool): Whether to load model in half precision.
+        causal_lm (bool): Whether to load a ModelForCausalLM. Default is False.
 
     Returns:
         Tuple[AutoModel, AutoTokenizer]: Loaded model and tokenizer.
@@ -45,12 +43,11 @@ def get_model_and_tokenizer(
         tokenizer.pad_token = tokenizer.eos_token
         tokenizer.pad_token_id = tokenizer.eos_token_id
 
-    if load_half_precison:
-        model = AutoModel.from_pretrained(
-            model_name, torch_dtype=torch.float16, cache_dir=CACHE_DIR
-        )
-    else:
-        model = AutoModel.from_pretrained(model_name, cache_dir=CACHE_DIR)
+    dtype = torch.float16 if load_half_precison else torch.float
+    MODEL_CLASS = AutoModelForCausalLM if causal_lm else AutoModel
+    model = MODEL_CLASS.from_pretrained(
+        model_name, torch_dtype=dtype, cache_dir=CACHE_DIR
+    )
     device = torch.device(
         f"cuda:{dist.get_rank() % torch.cuda.device_count()}"
         if torch.cuda.device_count() > 1
