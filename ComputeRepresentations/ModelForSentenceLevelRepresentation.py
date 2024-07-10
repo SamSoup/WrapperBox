@@ -18,6 +18,7 @@ class ModelForSentenceLevelRepresentation:
             model_name (str): Name of the model to load.
             pooler (str): Name of the pooling function to use.
         """
+        torch.cuda.empty_cache()
         self.model_name = model_name
         self.device = torch.device(
             "cuda" if torch.cuda.is_available() else "cpu"
@@ -88,5 +89,5 @@ class ModelForSentenceLevelRepresentation:
                     outputs.last_hidden_state.cpu(), attention_mask.cpu()
                 )
                 representations.append(pooled_representation)
-
+                torch.cuda.empty_cache()
         return torch.cat(representations)
