@@ -2,7 +2,7 @@
     "prompt": "./prompts/toxigen_gemma_prompt.txt",
     "dataset_name_or_path": "Samsoup/toxigen",
     "model_name_or_path": "google/gemma-7b-it",
-    "batch_size": 8,
+    "batch_size": 4,
     "is_classification": true,
     "num_classes": 2,
     "output_dir": "./results/toxigen/gemma_7b_instruct",
