@@ -103,7 +103,7 @@ def prep_dataset(
     dataset: Dataset, tokenizer: AutoTokenizer, batch_size: int
 ) -> DataLoader:
     embed_dataset = EmbeddingDataset(
-        texts=dataset["text"], tokenizer=tokenizer, max_length=512
+        texts=dataset["text"], tokenizer=tokenizer, max_length=1024
     )
     data_collator = DataCollatorForLanguageModeling(
         tokenizer=tokenizer,
@@ -133,7 +133,7 @@ def generate_responses(
             outputs = model.generate(
                 input_ids=inputs,
                 attention_mask=attention_mask,
-                max_length=512,
+                max_new_tokens=args.max_new_tokens,
                 num_return_sequences=1,
                 temperature=args.temperature,
                 top_k=args.top_k,
