@@ -184,7 +184,7 @@ def extract_classification_output(decoded_outputs, num_of_classes):
         except (ValueError, IndexError):
             print(
                 f"For response: \n\n{outputs}\n\n ;An decision was not clear"
-                f"in segmented output {output}"
+                f" in segmented output {output}"
             )
         predictions.append(random.randint(1, num_of_classes - 1))
 
