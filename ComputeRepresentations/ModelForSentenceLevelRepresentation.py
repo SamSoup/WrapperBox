@@ -84,7 +84,7 @@ class ModelForSentenceLevelRepresentation:
 
                 output_attentions = (
                     True
-                    if self.pooler_name == "mean_with_attention_head"
+                    if self.pooler_name == "mean_with_attention_heads"
                     else False
                 )
                 outputs = self.model(
