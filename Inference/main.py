@@ -32,7 +32,7 @@ def get_args():
         "--config", type=str, help="Path to JSON configuration file"
     )
     parser.add_argument(
-        "--prompt_prefix",
+        "--prompt",
         type=str,
         help="Path to a prefix (or the raw prefix) to append to each input example.",
     )
@@ -177,24 +177,26 @@ def main():
     datasets = load_dataset(
         args.dataset_name_or_path, use_auth_token=True, cache_dir=CACHE_DIR
     )
+    test_dataset = datasets["test"]
+
+    ## Load Prompt pre-fix and update 'text' column to use this
+    if os.path.isfile(args.prompt):
+        with open(args.prompt, "r") as file:
+            prompt = file.read().strip()
+    else:
+        prompt = args.prompt
+    test_dataset = test_dataset.map(
+        lambda example: {"text": prompt.format(input=example["text"])}
+    )
 
     ## Load Model
     model, tokenizer = get_model_and_tokenizer(
         args.model_name_or_path, causal_lm=True
     )
 
-    dataloader = prep_dataset(datasets["test"], tokenizer, args.batch_size)
+    dataloader = prep_dataset(test_dataset, tokenizer, args.batch_size)
 
-    ## Load Prompt pre-fix and generate
-    if os.path.isfile(args.prompt_prefix):
-        with open(args.prompt_prefix, "r") as file:
-            prompt_prefix = file.read().strip()
-    else:
-        prompt_prefix = args.prompt_prefix
-
-    results = generate_responses(
-        model, tokenizer, dataloader, prompt_prefix, args
-    )
+    results = generate_responses(model, tokenizer, dataloader, args)
 
     output_file = os.path.join(args.output_dir, "output.pkl")
     with open(output_file, "wb") as f:
