@@ -131,6 +131,9 @@ def generate_responses(
     dataloader: DataLoader,
     args: argparse.Namespace,
 ):
+    # NOTE: the current new simply code to use is `transformers.pipeline`, but
+    # I like this current more manual version better for visibility
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.eval()
 
@@ -173,6 +176,7 @@ def generate_responses(
 def extract_classification_output(decoded_outputs, num_of_classes):
     predictions = []
     for outputs in decoded_outputs:
+        # NOTE: this assumes the last tokens in the prompt are >>>
         # Only check the real output components with all white space removed
         output_start_idx = outputs.index(">>>")
         output = re.sub(r"\s+", "", outputs[output_start_idx + 3 :])
