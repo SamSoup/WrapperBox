@@ -10,6 +10,7 @@ import argparse
 import json
 import pickle
 import os
+import random
 import torch
 from datasets import load_dataset, Dataset
 from transformers import (
@@ -48,13 +49,30 @@ def get_args():
     parser.add_argument(
         "--batch_size", type=int, default=8, help="Batch size for DataLoader."
     )
+    parser.add_argument("--seed", type=int, default=42, help="Random seed.")
+    parser.add_argument(
+        "--max_new_tokens",
+        type=int,
+        default=2,
+        help="Maximum number of new tokens.",
+    )
+    parser.add_argument(
+        "--temperature",
+        type=float,
+        default=0.7,
+        help="Temperature for randomness.",
+    )
+    parser.add_argument("--top_k", type=int, default=2, help="")
+    parser.add_argument(
+        "--top_p", type=float, default=0.95, help="Cumulative probability."
+    )
     parser.add_argument(
         "--is_classification",
         action="store_true",
         help="If set, process the output as classification.",
     )
     parser.add_argument(
-        "--num_of_classes",
+        "--num_classes",
         type=int,
         default=2,
         help="Number of classes for classification.",
@@ -100,58 +118,59 @@ def generate_responses(
     model: AutoModelForCausalLM,
     tokenizer: AutoTokenizer,
     dataloader: DataLoader,
-    prompt_prefix: str,
-    is_classification: bool,
-    num_of_classes: int,
+    args: argparse.Namespace,
 ):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.eval()
+
     results = []
 
-    for batch in dataloader:
-        inputs = batch["input_ids"]
-        for input_ids in inputs:
-            input_text = tokenizer.decode(input_ids, skip_special_tokens=True)
-            prompt = prompt_prefix.format(input=input_text)
+    with torch.no_grad():
+        for batch in dataloader:
+            inputs = batch["input_ids"].to(device)
+            attention_mask = batch["attention_mask"].to(device)
 
-            input_ids = tokenizer(prompt, return_tensors="pt").input_ids
-
-            with torch.no_grad():
-                output = model.generate(
-                    input_ids,
-                    max_new_tokens=2 if is_classification else 50,
-                    num_return_sequences=1,
-                    temperature=0.7,
-                    top_k=2 if is_classification else 50,
-                    top_p=0.95,
-                )
-
-            generated_text = tokenizer.decode(
-                output[0], skip_special_tokens=True
+            outputs = model.generate(
+                input_ids=inputs,
+                attention_mask=attention_mask,
+                max_length=512,
+                num_return_sequences=1,
+                temperature=args.temperature,
+                top_k=args.top_k,
+                top_p=args.top_p,
             )
 
-            if is_classification:
+            decoded_outputs = [
+                tokenizer.decode(output, skip_special_tokens=True)
+                for output in outputs
+            ]
+
+            if args.is_classification:
                 classification_output = extract_classification_output(
-                    generated_text, num_of_classes
+                    decoded_outputs, args.num_classes
                 )
                 results.append(classification_output)
             else:
-                results.append(generated_text)
+                results.append(decoded_outputs)
 
     return results
 
 
-def extract_classification_output(generated_text, num_of_classes):
-    # Simplistic extraction assuming the first token is the answer
-    try:
-        decision = int(generated_text.strip()[0])
-        if 0 <= decision < num_of_classes:
-            return decision
-    except (ValueError, IndexError):
-        pass
-    return None  # Handle unexpected output appropriately
+def extract_classification_output(decoded_outputs, num_of_classes):
+    for outputs in decoded_outputs:
+        # Simplistic extraction assuming the first token is the answer
+        try:
+            decision = int(decoded_outputs.strip()[0])
+            if 0 <= decision < num_of_classes:
+                return decision
+        except (ValueError, IndexError):
+            print(f"For response, {outputs}, an decision was not clear.")
+        return random.randint(1, num_of_classes - 1)
 
 
 def main():
     args = get_args()
+    random.seed(args.seed)
     mkdir_if_not_exists(args.output_dir)
 
     ## Load Dataset
@@ -163,9 +182,6 @@ def main():
     model, tokenizer = get_model_and_tokenizer(
         args.model_name_or_path, causal_lm=True
     )
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.to(device)
-    model.eval()
 
     dataloader = prep_dataset(datasets["test"], tokenizer, args.batch_size)
 
@@ -177,12 +193,7 @@ def main():
         prompt_prefix = args.prompt_prefix
 
     results = generate_responses(
-        model,
-        tokenizer,
-        dataloader,
-        prompt_prefix,
-        args.is_classification,
-        args.num_of_classes,
+        model, tokenizer, dataloader, prompt_prefix, args
     )
 
     output_file = os.path.join(args.output_dir, "output.pkl")
