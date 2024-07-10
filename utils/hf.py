@@ -25,7 +25,9 @@ def init_distributed():
         torch.cuda.set_device(dist.get_rank() % torch.cuda.device_count())
 
 
-def get_model_and_tokenizer(model_name: str) -> Tuple[AutoModel, AutoTokenizer]:
+def get_model_and_tokenizer(
+    model_name: str, load_half_precison: bool = False
+) -> Tuple[AutoModel, AutoTokenizer]:
     """
     Loads the model and tokenizer based on the provided model name. Assumes
     that the models can be publicly accessed. Utilizes multiple GPUs if available.
@@ -45,8 +47,12 @@ def get_model_and_tokenizer(model_name: str) -> Tuple[AutoModel, AutoTokenizer]:
         tokenizer.pad_token = tokenizer.eos_token
         tokenizer.pad_token_id = tokenizer.eos_token_id
 
-    model = AutoModel.from_pretrained(model_name, cache_dir=CACHE_DIR)
-
+    if load_half_precison:
+        model = AutoModel.from_pretrained(
+            model_name, torch_dtype=torch.float16, cache_dir=CACHE_DIR
+        )
+    else:
+        model = AutoModel.from_pretrained(model_name, cache_dir=CACHE_DIR)
     device = torch.device(
         f"cuda:{dist.get_rank() % torch.cuda.device_count()}"
         if torch.cuda.device_count() > 1
