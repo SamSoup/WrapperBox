@@ -155,7 +155,7 @@ def generate_responses(
 
             for inp, out in zip(input_ids, output_ids):
                 generated_text = tokenizer.decode(
-                    out[inp.size :], skip_special_tokens=True
+                    out[inp.shape[0] :], skip_special_tokens=True
                 )
 
                 if args.is_classification:
