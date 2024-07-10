@@ -145,6 +145,7 @@ def generate_responses(
             input_lengths = (batch["input_ids"] != tokenizer.pad_token_id).sum(
                 dim=1
             )
+            print(batch.keys())
             attention_mask = batch["attention_mask"].to(device)
 
             outputs = model.generate(
