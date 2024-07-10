@@ -24,25 +24,24 @@ from utils.io import mkdir_if_not_exists
 
 
 def get_args():
-    parser = argparse.ArgumentParser(
-        description="Run generations on a test set using a generative model."
+    parser = argparse.ArgumentParser()
+    # Either give json, or provide all others
+    parser.add_argument(
+        "--config", type=str, help="Path to JSON configuration file"
     )
     parser.add_argument(
         "--prompt_prefix",
         type=str,
-        required=True,
         help="Path to a prefix (or the raw prefix) to append to each input example.",
     )
     parser.add_argument(
         "--dataset_name_or_path",
         type=str,
-        required=True,
         help="Path to the dataset.",
     )
     parser.add_argument(
         "--model_name_or_path",
         type=str,
-        required=True,
         help="Path to the pretrained model.",
     )
     parser.add_argument(
