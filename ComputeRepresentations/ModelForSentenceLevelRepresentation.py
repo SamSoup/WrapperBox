@@ -98,7 +98,7 @@ class ModelForSentenceLevelRepresentation:
                     # attention_mask = outputs.attentions[:, -1]
                     # print(outputs)
                     print(len(outputs.attentions))
-                    print(outputs.attentions[0].size)
+                    print(outputs.attentions[0].shape)
                     input()
                 pooled_representation = self.pooler(
                     outputs.last_hidden_state.cpu(), attention_mask.cpu()
