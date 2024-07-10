@@ -1,0 +1,9 @@
+{
+    "dataset_name_or_path": "Samsoup/toxigen",
+    "model_name_or_path": "meta-llama/Meta-Llama-3-8B-Instruct",
+    "load_half_precision": false,
+    "pooler": "mean_with_attention_head",
+    "batch_size": 16,
+    "max_length": 512,
+    "output_dir": "./toxigen/llama3_8B_instruct/mean_with_attention_head"
+}
