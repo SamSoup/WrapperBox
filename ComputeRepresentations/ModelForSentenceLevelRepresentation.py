@@ -83,10 +83,9 @@ class ModelForSentenceLevelRepresentation:
                 outputs = self.model(
                     input_ids=input_ids, attention_mask=attention_mask
                 )
-                last_hidden_states = outputs.last_hidden_state
 
                 pooled_representation = self.pooler(
-                    last_hidden_states, attention_mask
+                    outputs.last_hidden_state.cpu(), attention_mask.cpu()
                 )
                 representations.append(pooled_representation)
 
