@@ -17,6 +17,7 @@ class EmbeddingPooler:
 
     def __init__(self):
         self.name_to_fct = {
+            "mean_with_attention_heads": self.mean_with_attention_heads,
             "mean_with_attention": self.mean_with_attention,
             "mean": self.mean,
             "cls": self.cls,
@@ -68,7 +69,10 @@ class EmbeddingPooler:
         att_avg_tokens = att_avg_head.mean(dim=-1)  # (batch_size, seq_length)
 
         # Apply the attention weights to the hidden states
-        return (hidden_states * att_avg_tokens.unsqueeze(-1)).sum(dim=1)
+        reps = (hidden_states * att_avg_tokens.unsqueeze(-1)).sum(dim=1)
+        print(reps.shape)
+
+        return reps
 
     def cls(self, hidden_states: torch.tensor, *_):
         return (
