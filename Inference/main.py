@@ -134,6 +134,7 @@ def generate_responses(
                 input_ids=inputs,
                 attention_mask=attention_mask,
                 max_new_tokens=args.max_new_tokens,
+                do_sample=True,
                 num_return_sequences=1,
                 temperature=args.temperature,
                 top_k=args.top_k,
@@ -144,6 +145,7 @@ def generate_responses(
                 tokenizer.decode(output, skip_special_tokens=True)
                 for output in outputs
             ]
+            print(decoded_outputs)
 
             if args.is_classification:
                 classification_output = extract_classification_output(
@@ -160,7 +162,7 @@ def extract_classification_output(decoded_outputs, num_of_classes):
     for outputs in decoded_outputs:
         # Simplistic extraction assuming the first token is the answer
         try:
-            decision = int(decoded_outputs.strip()[0])
+            decision = int(outputs.strip()[0])
             if 0 <= decision < num_of_classes:
                 return decision
         except (ValueError, IndexError):
