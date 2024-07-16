@@ -138,7 +138,7 @@ if __name__ == "__main__":
                 embeddings = model.encode(batch, convert_to_numpy=True)
                 representations.append(embeddings)
 
-            representations = np.vstack(embeddings)
+            representations = np.vstack(representations)
             save_path = os.path.join(args.output_dir, f"{split}.npy")
             # Save representations as numpy file
             np.save(save_path, representations)
