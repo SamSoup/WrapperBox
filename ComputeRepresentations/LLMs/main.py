@@ -145,6 +145,9 @@ if __name__ == "__main__":
                 batch_size=args.batch_size,
                 max_length=args.max_length,
             )
+
+            print(representations.shape)
+            input()
             save_path = os.path.join(args.output_dir, f"{split}.npy")
             # Save representations as numpy file
             np.save(save_path, representations.numpy())
