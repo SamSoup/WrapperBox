@@ -23,6 +23,7 @@ class EmbeddingPooler:
             "cls": self.cls,
             "flatten": self.flatten,
             "eos": self.eos,
+            "last": self.last,
         }
 
     def mean(self, hidden_states: torch.tensor, *_) -> torch.tensor:
@@ -45,6 +46,31 @@ class EmbeddingPooler:
             .detach()
             .cpu()
         )
+
+    def last(self, hidden_states: torch.tensor, attention_mask: torch.tensor):
+        """
+        Selects the hidden states of the last token (that is not a pad token),
+        in the array of hidden_states. Based on the provided mask of non-pad
+        tokens.
+
+        Args:
+            hidden_states (torch.tensor): (batch_size, seq_length, hidden_size)
+            attention_mask (torch.tensor): (batch_size, seq_length)
+
+        Returns:
+            torch.tensor: (batch_size, hidden_size)
+        """
+        # Compute the lengths of sequences (number of non-pad tokens per sequence)
+        seq_lengths = (
+            attention_mask.sum(dim=1) - 1
+        )  # subtracting 1 to get the index of the last non-pad token
+
+        # Gather the last non-pad token's hidden state for each sequence
+        batch_size = hidden_states.shape[0]
+        batch_indices = torch.arange(batch_size)
+        last_hidden_states = hidden_states[batch_indices, seq_lengths]
+
+        return last_hidden_states.detach().cpu()
 
     def mean_with_attention_heads(
         self, hidden_states: torch.tensor, attention: torch.tensor

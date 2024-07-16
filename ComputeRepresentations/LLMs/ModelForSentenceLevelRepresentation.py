@@ -1,7 +1,7 @@
 import torch
 from torch.utils.data import DataLoader
 from typing import List, Iterable
-from ComputeRepresentations.EmbeddingPooler import EmbeddingPooler
+from .EmbeddingPooler import EmbeddingPooler
 from utils.datasets import EmbeddingDataset
 from utils.hf import get_model_and_tokenizer
 from tqdm import tqdm
@@ -97,6 +97,11 @@ class ModelForSentenceLevelRepresentation:
                 if output_attentions:
                     # (num_layers, batch_size, num_heads, sequence_length, sequence_length)
                     attention_mask = outputs.attentions[-1]
+                elif self.pooler_name == "last":
+                    # the mask here is used to check the last token that is not a pad
+                    attention_mask = (
+                        input_ids != self.tokenizer.pad_token_id
+                    ).long()
                 pooled_representation = self.pooler(
                     outputs.last_hidden_state.cpu(), attention_mask.cpu()
                 )

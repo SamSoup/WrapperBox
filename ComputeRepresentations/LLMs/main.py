@@ -12,8 +12,9 @@ from datasets import load_dataset
 from .ModelForSentenceLevelRepresentation import (
     ModelForSentenceLevelRepresentation,
 )
-from utils.constants.directory import CACHE_DIR
+from utils.constants.directory import CACHE_DIR, PROMPTS_DIR
 from utils.io import mkdir_if_not_exists
+from datasets import Dataset
 
 
 def get_args():
@@ -71,6 +72,12 @@ def get_args():
         help="Max length of input tokens.",
     )
     parser.add_argument(
+        "--prompt_path",
+        type=str,
+        default=None,
+        help="Path to a prefix (or the raw prefix) to append to each input example.",
+    )
+    parser.add_argument(
         "--output_dir",
         type=str,
         help="Output directory for resultant representations.",
@@ -92,6 +99,23 @@ def get_args():
     return args
 
 
+def load_prompt_with_dataset(prompt_fname: str, dataset: Dataset):
+    # Load Prompt pre-fix and update 'text' column to use this
+    if os.path.isfile(prompt_fname):
+        prompt_path = prompt_fname
+    else:
+        # just a file name, combine with known location
+        prompt_path = os.path.join(PROMPTS_DIR, prompt_fname)
+    with open(prompt_path, "r") as file:
+        prompt = file.read().strip()
+    # NOTE: Assume 'text' is the column of inputs to compute reps
+    dataset = dataset.map(
+        lambda example: {"text": prompt.format(input=example["text"])}
+    )
+
+    return dataset
+
+
 if __name__ == "__main__":
     args = get_args()
     to_dos = {
@@ -109,7 +133,13 @@ if __name__ == "__main__":
     for split, dataset in datasets.items():
         if to_dos[split]:
             print(f"***** Computing Representations for {split} dataset *****")
-            # Assume that the column to compute representation is for is 'text'
+
+            if args.prompt_path is not None:
+                dataset = load_prompt_with_dataset(
+                    prompt_fname=args.prompt_path, dataset=dataset
+                )
+
+            # NOTE: Assume 'text' is the column of inputs to compute reps
             representations = model.extract_representations(
                 texts=dataset["text"],
                 batch_size=args.batch_size,
