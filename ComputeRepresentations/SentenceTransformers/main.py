@@ -13,6 +13,7 @@ from sentence_transformers import SentenceTransformer
 from utils.constants.directory import CACHE_DIR
 from utils.io import mkdir_if_not_exists
 from torch.utils.data import DataLoader, Dataset
+from tqdm import tqdm
 
 
 class SentenceDataset(Dataset):
@@ -133,7 +134,7 @@ if __name__ == "__main__":
             )
 
             representations = []
-            for batch in dataloader:
+            for batch in tqdm(dataloader):
                 embeddings = model.encode(batch, convert_to_numpy=True)
                 representations.append(embeddings)
 
