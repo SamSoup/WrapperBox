@@ -1,0 +1,7 @@
+{
+    "dataset_name_or_path": "Samsoup/esnli",
+    "model_name_or_path": "dunzhang/stella_en_1.5B_v5",
+    "batch_size": 128,
+    "instruction": "Given a premise and a hypothesis, determine if the hypothesis logically follows from the first (entailment), contradicts it, or is neutral.",
+    "output_dir": "./esnli/stella_instruct/"
+}
