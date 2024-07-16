@@ -1,7 +1,7 @@
 import torch
 from torch.utils.data import DataLoader
 from typing import List, Iterable
-from .EmbeddingPooler import EmbeddingPooler
+from ComputeRepresentations.LLMs.EmbeddingPooler import EmbeddingPooler
 from utils.datasets import EmbeddingDataset
 from utils.hf import get_model_and_tokenizer
 from tqdm import tqdm
