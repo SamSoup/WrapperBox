@@ -1,0 +1,6 @@
+{
+    "dataset_name_or_path": "Samsoup/esnli",
+    "model_name_or_path": "Salesforce/SFR-Embedding-2_R",
+    "batch_size": 128,
+    "output_dir": "./esnli/SFR2"
+}
