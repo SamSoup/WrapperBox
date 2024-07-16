@@ -26,6 +26,18 @@ class SentenceDataset(Dataset):
         return self.sentences[idx]
 
 
+class InstructionSentenceDataset(Dataset):
+    def __init__(self, sentences, instruction):
+        self.sentences = sentences
+        self.instruction = instruction
+
+    def __len__(self):
+        return len(self.sentences)
+
+    def __getitem__(self, idx):
+        return f"Instruct: {self.instruction}\nText: {self.sentences[idx]}"
+
+
 def get_args():
     parser = argparse.ArgumentParser()
     # Either give json, or provide all others
@@ -59,6 +71,12 @@ def get_args():
         "--model_name_or_path",
         type=str,
         help="Specify a path or a hub location to a HF model.",
+    )
+    parser.add_argument(
+        "--instruction",
+        type=str,
+        default=None,
+        help="The instruction to append to the input texts",
     )
     parser.add_argument(
         "--batch_size",
@@ -98,20 +116,26 @@ if __name__ == "__main__":
     datasets = load_dataset(
         args.dataset_name_or_path, use_auth_token=True, cache_dir=CACHE_DIR
     )
+
     model = SentenceTransformer(args.model_name_or_path, cache_folder=CACHE_DIR)
     for split, dataset in datasets.items():
         if to_dos[split]:
             print(f"***** Computing Representations for {split} dataset *****")
             # Assume that the column to compute representation is for is 'text'
-            dataset = SentenceDataset(dataset["text"])
+            if args.instruction is not None:
+                dataset = InstructionSentenceDataset(
+                    dataset["text"], args.instruction
+                )
+            else:
+                dataset = SentenceDataset(dataset["text"])
             dataloader = DataLoader(
                 dataset, batch_size=args.batch_size, shuffle=False
             )
 
-            embeddings = []
+            representations = []
             for batch in dataloader:
                 embeddings = model.encode(batch, convert_to_numpy=True)
-                embeddings.append(embeddings)
+                representations.append(embeddings)
 
             representations = np.vstack(embeddings)
             save_path = os.path.join(args.output_dir, f"{split}.npy")
