@@ -1,0 +1,7 @@
+{
+    "dataset_name_or_path": "Samsoup/toxigen",
+    "model_name_or_path": "hkunlp/instructor-large",
+    "batch_size": 128,
+    "instruction": "Given a text input, determine whether the content is toxic or benign for binary toxicity detection.",
+    "output_dir": "./toxigen/instructor"
+}

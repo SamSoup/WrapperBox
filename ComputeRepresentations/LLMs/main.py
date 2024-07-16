@@ -9,7 +9,7 @@ import json
 import os
 import numpy as np
 from datasets import load_dataset
-from ComputeRepresentations.ModelForSentenceLevelRepresentation import (
+from .ModelForSentenceLevelRepresentation import (
     ModelForSentenceLevelRepresentation,
 )
 from utils.constants.directory import CACHE_DIR
