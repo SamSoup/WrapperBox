@@ -102,8 +102,7 @@ def get_predictions(
     # over the dataset without needing to batch
     print("*** Running Sequence Classification ***")
     for pred in tqdm(nlp_pipeline(dataset)):
-        predictions.append(pred)
-        print(pred)
+        predictions.append(pred["label"])
 
     return predictions
 
@@ -124,7 +123,8 @@ def main():
                 DATA_DIR, "datasets", args.dataset_name_or_path, "test.csv"
             )
         )
-        test_dataset = TextDataset(texts=test_dataset["text"].tolist())
+    labels = test_dataset["label"] if "label" in test_dataset else None
+    test_dataset = TextDataset(texts=test_dataset["text"].tolist())
 
     ## Load Prompt pre-fix and update 'text' column to use this, if any
     if args.prompt is not None:
@@ -142,6 +142,14 @@ def main():
         args.model_name_or_path, causal_lm=False
     )
 
+    ### Print out some specifications
+    config = model.config
+    num_labels = config.num_labels
+    label2id = config.label2id
+
+    print("Number of labels:", num_labels)
+    print("Label to ID mapping:", label2id)
+
     ## Obtain results
     results = get_predictions(
         model=model, tokenizer=tokenizer, dataset=test_dataset
@@ -150,10 +158,10 @@ def main():
     print("A few predictions:", results[:5])
     print(test_dataset)
 
-    if "labels" in test_dataset:
+    if labels is not None:
         metrics = compute_metrics(
             y_pred=results,
-            y_true=test_dataset["labels"],
+            y_true=labels,
             is_multiclass=args.num_classes > 2,
         )
         pprint(metrics)
