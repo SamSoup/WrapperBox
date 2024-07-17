@@ -33,7 +33,10 @@ def init_distributed():
 
 
 def get_model_and_tokenizer(
-    model_name: str, load_half_precison: bool = False, causal_lm: bool = False
+    model_name: str,
+    load_half_precison: bool = False,
+    causal_lm: bool = False,
+    distributed: bool = False,
 ) -> Tuple[AutoModel, AutoTokenizer]:
     """
     Loads the model and tokenizer based on the provided model name. Assumes
@@ -48,7 +51,9 @@ def get_model_and_tokenizer(
         Tuple[AutoModel, AutoTokenizer]: Loaded model and tokenizer.
     """
     print(f"*** Caching to {CACHE_DIR} ***")
-    init_distributed()
+
+    if distributed:
+        init_distributed()
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=CACHE_DIR)
 
