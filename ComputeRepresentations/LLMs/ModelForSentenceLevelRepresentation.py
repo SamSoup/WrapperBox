@@ -103,6 +103,17 @@ class ModelForSentenceLevelRepresentation:
                     output_attentions=output_attentions,
                 )
 
+                ## Obtain the last hidden state
+                if hasattr(outputs, "last_hidden_state"):
+                    last_hidden_states = outputs.last_hidden_state.cpu()
+                elif hasattr(outputs, "hidden_states"):
+                    last_hidden_states = outputs.hidden_states[-1].cpu()
+                else:
+                    raise AttributeError(
+                        "The output does not contain last_hidden_state or hidden_states."
+                    )
+
+                ## Prepare for pooling
                 if output_attentions:
                     # (num_layers, batch_size, num_heads, sequence_length, sequence_length)
                     attention_mask = outputs.attentions[-1]
@@ -112,7 +123,7 @@ class ModelForSentenceLevelRepresentation:
                         input_ids != self.tokenizer.pad_token_id
                     ).long()
                 pooled_representation = self.pooler(
-                    outputs.last_hidden_state.cpu(), attention_mask.cpu()
+                    last_hidden_states, attention_mask.cpu()
                 )
                 representations.append(pooled_representation)
         return torch.cat(representations)
