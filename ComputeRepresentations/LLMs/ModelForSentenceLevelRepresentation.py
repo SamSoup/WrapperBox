@@ -5,6 +5,7 @@ from ComputeRepresentations.LLMs.EmbeddingPooler import EmbeddingPooler
 from CustomDatasets import TokenizedDataset
 from utils.hf import get_model_and_tokenizer
 from tqdm import tqdm
+import gc
 
 
 class ModelForSentenceLevelRepresentation:
@@ -88,7 +89,6 @@ class ModelForSentenceLevelRepresentation:
         representations = []
         with torch.no_grad():
             for batch in tqdm(dataloader):
-                torch.cuda.empty_cache()
                 input_ids = batch["input_ids"].to(self.device)
                 attention_mask = batch["attention_mask"].to(self.device)
 
@@ -113,6 +113,10 @@ class ModelForSentenceLevelRepresentation:
                     raise AttributeError(
                         "The output does not contain last_hidden_state or hidden_states."
                     )
+                ## Free memory immediately!
+                del outputs.hidden_states
+                torch.cuda.empty_cache()
+                gc.collect()
 
                 ## Prepare for pooling
                 if output_attentions:
@@ -127,6 +131,4 @@ class ModelForSentenceLevelRepresentation:
                     last_hidden_states, attention_mask.cpu()
                 )
                 representations.append(pooled_representation)
-
-                del outputs  # explict garbage collection
         return torch.cat(representations)
