@@ -49,10 +49,10 @@ class TokenizedDataset(Dataset):
         label = self.labels[idx]
         encoding = self.tokenizer(
             text,
-            padding=True,
-            truncation=True,  # Enable truncation
+            padding="max_length",
+            truncation=True,
             max_length=self.max_length,
-            return_tensors="pt",  # Return PyTorch tensors
+            return_tensors="pt",
         )
         encoding = {key: val.squeeze(0) for key, val in encoding.items()}
         encoding["labels"] = torch.tensor(label)
