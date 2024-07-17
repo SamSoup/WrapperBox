@@ -1,0 +1,8 @@
+{
+    "dataset_name_or_path": "Samsoup/toxigen",
+    "model_name_or_path": "google-bert/bert-base-uncased",
+    "batch_size": 8,
+    "num_classes": 2,
+    "output_dir": "./results/toxigen/bert_base",
+    "seed": 42
+}

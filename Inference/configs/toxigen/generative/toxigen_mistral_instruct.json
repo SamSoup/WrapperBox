@@ -1,0 +1,14 @@
+{
+    "prompt": "./prompts/toxigen_mistral_prompt.txt",
+    "dataset_name_or_path": "Samsoup/toxigen",
+    "model_name_or_path": "mistralai/Mistral-7B-Instruct-v0.3",
+    "batch_size": 16,
+    "is_classification": true,
+    "num_classes": 2,
+    "output_dir": "./results/toxigen/mistral_7B_instruct",
+    "max_new_tokens": 10,
+    "temperature": 0.7,
+    "top_k": 2,
+    "top_p": 0.95,
+    "seed": 42
+}
