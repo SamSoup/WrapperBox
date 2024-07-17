@@ -5,7 +5,6 @@ from transformers import (
     EvalPrediction,
     TrainingArguments,
     Trainer,
-    set_seed,
 )
 from transformers.trainer_utils import PredictionOutput
 from transformers.data.data_collator import DataCollator
@@ -208,7 +207,7 @@ def startTrainer(
 
         pred_output: PredictionOutput = trainer.predict(predict_dataset)
         predictions = pred_output.predictions
-        if "labels" in predict_dataset:
+        if pred_output.metrics is not None:
             metrics = pred_output.metrics
             trainer.log_metrics("test", metrics)
             trainer.save_metrics("test", metrics)
@@ -218,6 +217,9 @@ def startTrainer(
         logger.info(f"Some predictions: {predictions[:10]}")
 
         if trainer.is_world_process_zero():
+            logger.info(
+                f"*** Saved Predictions to {training_args.output_dir} ***"
+            )
             output_fname = os.path.join(
                 training_args.output_dir, "test_predictions.json"
             )
