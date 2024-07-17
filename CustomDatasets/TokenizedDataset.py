@@ -56,10 +56,4 @@ class TokenizedDataset(Dataset):
         )
         encoding = {key: val.squeeze(0) for key, val in encoding.items()}
         encoding["labels"] = torch.tensor(label)
-        print(encoding)
-        print(f"eos_token_id: {self.tokenizer.eos_token}")
-        print(f"eos_token: {self.tokenizer.eos_token_id}")
-        print(f"pad_token_id: {self.tokenizer.pad_token}")
-        print(f"pad_token: {self.tokenizer.pad_token_id}")
-        input()
         return encoding
