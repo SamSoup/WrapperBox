@@ -100,12 +100,12 @@ def get_model_and_tokenizer(
 
     device = torch.device(
         f"cuda:{dist.get_rank() % torch.cuda.device_count()}"
-        if torch.cuda.device_count() > 1
+        if torch.cuda.device_count() > 1 and distributed
         else "cuda" if torch.cuda.is_available() else "cpu"
     )
     model.to(device)
 
-    if torch.cuda.device_count() > 1:
+    if torch.cuda.device_count() > 1 and distributed:
         model = DDP(model, device_ids=[device])
 
     return model, tokenizer
