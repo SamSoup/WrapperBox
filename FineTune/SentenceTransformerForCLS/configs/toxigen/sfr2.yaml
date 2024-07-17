@@ -1,0 +1,148 @@
+model:
+  name: "Salesforce/SFR-Embedding-2_R"
+  head_params:
+    output_dim: 2
+    dropout_rate: 0.1
+
+dataset:
+  name: "Samsoup/toxigen"
+  input_column: "text"
+  label_column: "label"
+  num_samples: 128
+
+metrics: ["accuracy", "precision", "recall", "f1"]
+
+prompt:
+  use_prompt: true
+  template: "Instruct: {instruction}\nText: {input}" # Input will come from dataset
+  params:
+    instruction: "Given a text input, determine whether the content is toxic or benign for binary toxicity detection."
+
+# Full list at: https://huggingface.co/docs/transformers/main/en/main_classes/trainer#transformers.TrainingArguments
+# I have ignored some of the arguments I think I will never use 
+training_args:
+  seed: 42
+  dataloader_drop_last: False # do not drop last incomplete batch
+  # Directory
+  output_dir: './results'
+  overwrite_output_dir: True
+  # the Dos are not directly used, but are useful when scripting
+  do_train: False
+  do_eval: False
+  do_predict: False
+  # Memory-impactful parameters
+  use_cpu: False
+  gradient_checkpointing: False
+  auto_find_batch_size: True # auto find batch sizes
+  # per_device_train_batch_size: 128
+  # per_device_eval_batch_size: 128
+  gradient_accumulation_steps: 1 # Accumulation steps before back-prop
+  torch_empty_cache_steps: null  # # of steps before emptying torch cache
+  ## FP-16
+  fp16: False
+  fp16_opt_level: 'O1'
+  fp16_backend: "auto"
+  half_precision_backend: "auto"
+  fp16_full_eval: False
+  ## BF-16
+  bf16: False # Requires Ampere or higher if true
+  bf16_full_eval: False
+  # Evaluation
+  eval_delay: 0 # # of epochs/steps to delay first evaluation
+  eval_accumulation_steps: null
+  remove_unused_columns: True
+  load_best_model_at_end: True # Load best model at the end
+  metric_for_best_model: "eval_f1"
+  greater_is_better: True
+  # Optimization parameters
+  optim: "adamw_torch"
+  learning_rate: 0.00001
+  weight_decay: 0.0  # for AdamW
+  adam_beta1: 0.9
+  adam_beta2: 0.999
+  adam_epsilon: 0.00000001
+  max_grad_norm: 1.0 # for gradient clipping
+  warmup_ratio: 0.01 # total training steps for linear warmup
+  warmup_steps: null # overrides warm_up ratio
+  # Scheduling
+  num_train_epochs: 10.0, 
+  max_steps: -1
+  lr_scheduler_type: "linear"
+  lr_scheduler_kwargs: null
+  # Logging
+  report_to: "wandb"
+  run_name: "mnpet_test"
+  log_level: "warning"
+  log_on_each_node: true
+  logging_dir: null # tensor board logging dir
+  logging_strategy: "steps"
+  logging_first_step: False
+  logging_steps: 50
+  logging_nan_inf_filter: False
+  # Saving
+  save_strategy: "steps"
+  save_steps: 100
+  save_total_limit: 1
+  save_safetensors: True
+  save_on_each_node: False
+  save_only_model: True # Do not save optimizer, schduler, rng state
+  load_best_model_at_end: True
+  ## Hub, other arguments ignored since not used
+  push_to_hub: False 
+  # Multinode
+  local_rank: -1
+  ddp_backend: null
+  dataloader_num_workers: 0
+  ## FSDP
+  fsdp: False
+  fsdp_config: null
+  ## Deepspeed
+  deepspeed: False
+  accelerator_config: null
+
+  num_epochs: [null, 10]
+  max_steps: -1
+  sampling_strategy: "oversampling"
+  num_iterations: null
+  body_learning_rate: 0.00001
+  head_learning_rate: 0.001
+  loss: null # This is never used, as I override the compute_loss in Trainer...
+  use_amp: False # Automatic mixed precision
+  warmup_proportion: 0.1
+  l2_weight: 0.1 # for AdamW
+  show_progress_bar: True
+  seed: 42
+  report_to: "wandb" # or can use "tensorboard"
+  run_name: "SFR2_FT"
+  logging_dir: null # tensor board logging dir
+  logging_strategy: "steps"
+  logging_first_step: False
+  logging_steps: 50
+  evaluation_strategy: "steps" # must match save_strategy
+  eval_steps: 100
+  eval_delay: 1 # wait 1 epoch before eval
+  eval_max_steps: -1
+  save_strategy: "steps"
+  save_steps: 100
+  save_total_limit: 1
+  load_best_model_at_end: True
+
+early_stopping:
+  enabled: true
+  patience: 2
+  metric: "eval_f1"
+  mode: "max"
+
+logging:
+  wandb:
+    enabled: true
+    project_name: "setfit-finetuning-sfr2"
+    entity: "samsoup"
+
+# The SetFit Trainers do not allow for custom optimzer, but 
+# uses the good default of AdamW and CrossEntropyLoss
+
+loss_function:
+  type: "CrossEntropyLoss"
+  params: 
+    weight: [0.75, 0.25]  # Example weights for two classes
