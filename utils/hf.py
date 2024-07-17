@@ -124,6 +124,7 @@ def get_model_and_tokenizer(
         accelerator = Accelerator(fp16=load_half_precison)
         model = accelerator.prepare(model)
     else:
+        print(f"Model loaded to {device}")
         model.to(device)
 
     return model, tokenizer
