@@ -142,20 +142,13 @@ def main():
         args.model_name_or_path, causal_lm=False
     )
 
-    ## Tokenize dataset + dataloader
-    # test_dataset = TextDataset(texts=test_dataset["text"])
-    # test_dataset = TokenizedDataset(
-    #     texts=test_dataset["text"],
-    #     labels=test_dataset["label"],
-    #     tokenizer=tokenizer,
-    #     max_length=1024,
-    # )
-    # dataloader = DataLoader(test_dataset, batch_size=args.batch_size)
-
     ## Obtain results
     results = get_predictions(
         model=model, tokenizer=tokenizer, dataset=test_dataset
     )
+
+    print("A few predictions:", results[:5])
+    print(test_dataset)
 
     if "labels" in test_dataset:
         metrics = compute_metrics(
