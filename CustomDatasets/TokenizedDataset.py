@@ -1,22 +1,28 @@
-import torch
+from typing import List, Dict
 from torch.utils.data import Dataset
 from transformers import AutoTokenizer
-from typing import List, Dict
+import torch
 
 
-class EmbeddingDataset(Dataset):
+class TokenizedDataset(Dataset):
     def __init__(
-        self, texts: List[str], tokenizer: AutoTokenizer, max_length: int = 512
+        self,
+        texts: List[str],
+        labels: List[int],
+        tokenizer: AutoTokenizer,
+        max_length: int = 512,
     ):
         """
-        Initializes the EmbeddingDataset with texts, tokenizer, and max_length.
+        Initializes the TokenizedDataset with texts, labels, tokenizer, and max_length.
 
         Args:
             texts (List[str]): List of input texts.
+            labels (List[int]): List of labels corresponding to the input texts.
             tokenizer (AutoTokenizer): Tokenizer to convert texts to token IDs.
             max_length (int): Maximum length of tokenized input sequences.
         """
         self.texts = texts
+        self.labels = labels
         self.tokenizer = tokenizer
         self.max_length = max_length
 
@@ -39,7 +45,10 @@ class EmbeddingDataset(Dataset):
         Returns:
             Dict[str, torch.Tensor]: Tokenized representation of the text.
         """
+        print(f"Index: {idx}, Type: {type(idx)}")  # Debug print statement
+
         text = self.texts[idx]
+        label = self.labels[idx]
         encoding = self.tokenizer(
             text,
             max_length=self.max_length,
@@ -47,30 +56,6 @@ class EmbeddingDataset(Dataset):
             truncation=True,
             return_tensors="pt",
         )
-        return {
-            "text": text,
-            **{key: val.squeeze(0) for key, val in encoding.items()},
-        }
-
-
-class SentenceWithLabelsDataset(Dataset):
-    def __init__(self, texts, labels):
-        self.texts = texts
-        self.labels = labels
-
-    def __len__(self):
-        return len(self.texts)
-
-    def __getitem__(self, idx):
-        return self.texts[idx], self.labels[idx]
-
-
-class SentenceDataset(Dataset):
-    def __init__(self, texts):
-        self.texts = texts
-
-    def __len__(self):
-        return len(self.texts)
-
-    def __getitem__(self, idx):
-        return self.texts[idx]
+        encoding = {key: val.squeeze(0) for key, val in encoding.items()}
+        encoding["labels"] = torch.tensor(label)
+        return encoding

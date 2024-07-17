@@ -15,6 +15,13 @@ import json
 import pickle
 import time
 import datasets
+import yaml
+
+
+def load_yaml(filename: str):
+    with open(filename, "r") as file:
+        config = yaml.safe_load(file)
+    return config
 
 
 def mkdir_if_not_exists(dirpath: str):
