@@ -11,7 +11,6 @@ import json
 import os
 import random
 import pandas as pd
-import torch
 from torch.utils.data import Dataset
 from transformers import (
     AutoTokenizer,
@@ -154,11 +153,15 @@ def main():
     results = get_predictions(
         model=model, tokenizer=tokenizer, dataset=test_dataset
     )
-    ### Post process the labels to ids
+
+    ### Post process the labels to ids and save
     results = [label2id[r] for r in results]
-
     print("A few predictions:", results[:5])
+    output_file = os.path.join(args.output_dir, "test_predictions.json")
+    with open(output_file, "w") as file:
+        json.dump(results, file)
 
+    ### Compute some metrics, if labels available
     if labels is not None:
         metrics = compute_metrics(
             y_pred=results,
@@ -167,10 +170,9 @@ def main():
             prefix="test",
         )
         pprint(metrics)
-
-    output_file = os.path.join(args.output_dir, "output.json")
-    with open(output_file, "w") as file:
-        json.dump(results, file)
+        output_file = os.path.join(args.output_dir, "test_results.json")
+        with open(output_file, "w") as file:
+            json.dump(metrics, file)
 
 
 if __name__ == "__main__":
