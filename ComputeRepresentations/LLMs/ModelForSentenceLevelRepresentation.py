@@ -101,6 +101,7 @@ class ModelForSentenceLevelRepresentation:
                     input_ids=input_ids,
                     attention_mask=attention_mask,
                     output_attentions=output_attentions,
+                    output_hidden_states=True,
                 )
 
                 ## Obtain the last hidden state
@@ -126,4 +127,6 @@ class ModelForSentenceLevelRepresentation:
                     last_hidden_states, attention_mask.cpu()
                 )
                 representations.append(pooled_representation)
+
+                del outputs  # explict garbage collection
         return torch.cat(representations)
