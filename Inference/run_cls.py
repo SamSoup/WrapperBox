@@ -9,7 +9,6 @@ Usage: see python3 main.py --help
 import argparse
 import json
 import os
-import random
 import pandas as pd
 from torch.utils.data import Dataset
 from transformers import (
@@ -18,7 +17,7 @@ from transformers import (
     pipeline,
 )
 from utils.constants.directory import DATA_DIR, PROMPTS_DIR
-from CustomDatasets import TextDataset
+from CustomDatasets import PromptDataset, TextDataset
 from utils.hf import get_model_and_tokenizer, set_seed_for_reproducability
 from utils.inference import compute_metrics
 from utils.io import mkdir_if_not_exists
@@ -123,7 +122,7 @@ def main():
             )
         )
     labels = test_dataset["label"] if "label" in test_dataset else None
-    test_dataset = TextDataset(texts=test_dataset["text"].tolist())
+    texts = test_dataset["text"].tolist()
 
     ## Load Prompt pre-fix and update 'text' column to use this, if any
     if args.prompt is not None:
@@ -132,9 +131,9 @@ def main():
                 prompt = file.read().strip()
         else:
             prompt = os.path.join(PROMPTS_DIR, args.prompt)
-        test_dataset = test_dataset.map(
-            lambda example: {"text": prompt.format(input=example["text"])}
-        )
+        test_dataset = PromptDataset(texts, prompt)
+    else:
+        test_dataset = TextDataset(texts)
 
     ## Load Model
     model, tokenizer = get_model_and_tokenizer(
