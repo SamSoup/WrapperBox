@@ -1,8 +1,19 @@
+try:
+    from datasets import load_dataset
+except ImportError as e:
+    # Handle the import error
+    if "GLIBC" in str(e):
+        print(
+            "GLIBC version outdated: datasets module not imported."
+            "Huggingface dataset loading functions will not work"
+        )
+    else:
+        raise e
+
 from typing import Union
 from huggingface_hub import login
 import pandas as pd
 from sklearn.base import BaseEstimator
-from datasets import load_dataset
 from utils.constants.directory import (
     PREDICTIONS_DIR,
     SAVED_MODELS_DIR,
