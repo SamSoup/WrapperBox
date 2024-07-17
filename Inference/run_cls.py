@@ -23,6 +23,7 @@ import data
 from utils.constants.directory import CACHE_DIR
 from CustomDatasets import TextDataset, TokenizedDataset
 from utils.hf import get_model_and_tokenizer
+from utils.inference import compute_metrics
 from utils.io import mkdir_if_not_exists
 from pprint import pprint
 from tqdm import tqdm
@@ -154,6 +155,14 @@ def main():
     results = get_predictions(
         model=model, tokenizer=tokenizer, dataset=test_dataset
     )
+
+    if "labels" in test_dataset:
+        metrics = compute_metrics(
+            y_pred=results,
+            y_true=test_dataset["labels"],
+            is_multiclass=args.num_classes > 2,
+        )
+        pprint(metrics)
 
     output_file = os.path.join(args.output_dir, "output.json")
     with open(output_file, "w") as file:
