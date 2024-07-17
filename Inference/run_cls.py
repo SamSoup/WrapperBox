@@ -10,18 +10,16 @@ import argparse
 import json
 import os
 import random
+import pandas as pd
 import torch
-from datasets import load_dataset
 from torch.utils.data import Dataset
 from transformers import (
     AutoTokenizer,
     AutoModelForSequenceClassification,
     pipeline,
 )
-from torch.utils.data import DataLoader
-import data
-from utils.constants.directory import CACHE_DIR
-from CustomDatasets import TextDataset, TokenizedDataset
+from utils.constants.directory import DATA_DIR
+from CustomDatasets import TextDataset
 from utils.hf import get_model_and_tokenizer
 from utils.inference import compute_metrics
 from utils.io import mkdir_if_not_exists
@@ -119,11 +117,18 @@ def main():
     random.seed(args.seed)
     mkdir_if_not_exists(args.output_dir)
 
-    ## Load Dataset
-    datasets = load_dataset(
-        args.dataset_name_or_path, use_auth_token=True, cache_dir=CACHE_DIR
-    )
-    test_dataset = datasets["test"]
+    ## Load Dataset, from disk because
+    ## datasets might require a GLIBC version higher
+    ## than what is available
+    if os.path.isfile(args.dataset_name_or_path):
+        test_dataset = pd.read_csv(args.dataset_name_or_path)
+    else:
+        test_dataset = pd.read_csv(
+            os.path.join(
+                DATA_DIR, "datasets", args.dataset_name_or_path, "test.csv"
+            )
+        )
+        test_dataset = TextDataset(texts=test_dataset["text"].tolist())
 
     ## Load Prompt pre-fix and update 'text' column to use this, if any
     if args.prompt is not None:
@@ -142,7 +147,7 @@ def main():
     )
 
     ## Tokenize dataset + dataloader
-    test_dataset = TextDataset(texts=test_dataset["text"])
+    # test_dataset = TextDataset(texts=test_dataset["text"])
     # test_dataset = TokenizedDataset(
     #     texts=test_dataset["text"],
     #     labels=test_dataset["label"],
