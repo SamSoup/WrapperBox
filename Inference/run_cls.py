@@ -158,7 +158,6 @@ def main():
     results = [label2id[r] for r in results]
 
     print("A few predictions:", results[:5])
-    print(test_dataset)
 
     if labels is not None:
         metrics = compute_metrics(
