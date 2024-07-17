@@ -165,6 +165,7 @@ def main():
             y_pred=results,
             y_true=labels,
             is_multiclass=args.num_classes > 2,
+            prefix="test",
         )
         pprint(metrics)
 
