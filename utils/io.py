@@ -1,6 +1,5 @@
 try:
-    from datasets import load_dataset
-    import datasets
+    from datasets import load_dataset, DatasetDict
 except ImportError as e:
     # Handle the import error
     if "GLIBC" in str(e):
@@ -113,7 +112,7 @@ def load_wrapperbox_predictions(
 
 def load_dataset_from_hf(
     dataset: str, retries: int = 3, delay: int = 5
-) -> datasets.DatasetDict:
+) -> DatasetDict:
     # Retrieve the token from the environment variable
     token = os.getenv("HF_TOKEN")
 
@@ -143,7 +142,7 @@ def load_dataset_from_hf(
     )
 
 
-def load_labels_at_split(dataset: Union[str, datasets.DatasetDict], split: str):
+def load_labels_at_split(dataset: Union[str, DatasetDict], split: str):
     if isinstance(dataset, str):
         dataset = load_dataset_from_hf(dataset)
     return np.array(dataset[split]["label"])
