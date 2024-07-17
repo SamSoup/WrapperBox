@@ -10,6 +10,7 @@ from transformers import (
 from utils.constants.directory import CACHE_DIR
 import torch
 import torch.distributed as dist
+from accelerate import Accelerator
 from torch.nn.parallel import DistributedDataParallel as DDP
 import os
 import random
@@ -118,9 +119,11 @@ def get_model_and_tokenizer(
         if torch.cuda.device_count() > 1 and distributed
         else "cuda" if torch.cuda.is_available() else "cpu"
     )
-    model.to(device)
 
     if torch.cuda.device_count() > 1 and distributed:
-        model = DDP(model, device_ids=[device])
+        accelerator = Accelerator(fp16=load_half_precison)
+        model = accelerator.prepare(model)
+    else:
+        model.to(device)
 
     return model, tokenizer
