@@ -1,6 +1,7 @@
 from typing import Tuple
 from transformers import (
     AutoModel,
+    AutoModelForSequenceClassification,
     AutoTokenizer,
     AutoModelForCausalLM,
     LlamaConfig,
@@ -45,7 +46,11 @@ def get_model_and_tokenizer(
     tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=CACHE_DIR)
 
     dtype = torch.float16 if load_half_precison else torch.float
-    MODEL_CLASS = AutoModelForCausalLM if causal_lm else AutoModel
+    MODEL_CLASS = (
+        AutoModelForCausalLM
+        if causal_lm
+        else AutoModelForSequenceClassification
+    )
     model = MODEL_CLASS.from_pretrained(
         model_name, torch_dtype=dtype, cache_dir=CACHE_DIR
     )

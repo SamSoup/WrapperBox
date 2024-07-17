@@ -2,7 +2,7 @@ import torch
 from torch.utils.data import DataLoader
 from typing import List, Iterable
 from ComputeRepresentations.LLMs.EmbeddingPooler import EmbeddingPooler
-from utils.datasets import EmbeddingDataset
+from CustomDatasets import TokenizedDataset
 from utils.hf import get_model_and_tokenizer
 from tqdm import tqdm
 
@@ -50,7 +50,12 @@ class ModelForSentenceLevelRepresentation:
         Returns:
             DataLoader: DataLoader for the dataset.
         """
-        dataset = EmbeddingDataset(texts, self.tokenizer, max_length)
+        dataset = TokenizedDataset(
+            texts,
+            [-1] * len(texts),  # fake labels, not actually used
+            self.tokenizer,
+            max_length,
+        )
         return DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
 
     def extract_representations(

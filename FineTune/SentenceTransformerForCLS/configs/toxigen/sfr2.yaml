@@ -29,7 +29,7 @@ training_args:
   seed: 42
   dataloader_drop_last: False # do not drop last incomplete batch
   # Directory
-  output_dir: './results'
+  output_dir: './results/toxigen/SFR2'
   overwrite_output_dir: True
   # the Dos are not directly used, but are useful when scripting
   do_train: true
@@ -51,7 +51,7 @@ training_args:
   lr_scheduler_type: "linear"
   lr_scheduler_kwargs: null
   # Evaluation
-  evaluation_strategy: "steps" # must match save_strategy
+  eval_strategy: "steps" # must match save_strategy
   eval_steps: 1000
   eval_delay: 0 # # of epochs/steps to delay first evaluation
   eval_accumulation_steps: null
@@ -94,7 +94,7 @@ training_args:
   save_only_model: True # Do not save optimizer, schduler, rng state
   load_best_model_at_end: True
   ## Hub, other arguments ignored since not used
-  push_to_hub: False 
+  push_to_hub: False
   ## Multinode
   local_rank: -1
   ddp_backend: null
