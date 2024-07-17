@@ -18,9 +18,16 @@ def init_distributed():
     Initialize the distributed environment if multiple GPUs are available.
     """
     if torch.cuda.device_count() > 1:
-        if "RANK" not in os.environ or "WORLD_SIZE" not in os.environ:
+        # Check and set necessary environment variables
+        if "RANK" not in os.environ:
             os.environ["RANK"] = "0"
+        if "WORLD_SIZE" not in os.environ:
             os.environ["WORLD_SIZE"] = str(torch.cuda.device_count())
+        if "MASTER_ADDR" not in os.environ:
+            os.environ["MASTER_ADDR"] = "localhost"
+        if "MASTER_PORT" not in os.environ:
+            os.environ["MASTER_PORT"] = "12355"  # or any other free port
+
         dist.init_process_group(backend="nccl")
         torch.cuda.set_device(dist.get_rank() % torch.cuda.device_count())
 
