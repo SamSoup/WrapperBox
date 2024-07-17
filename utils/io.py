@@ -1,15 +1,3 @@
-try:
-    from datasets import load_dataset, DatasetDict
-except ImportError as e:
-    # Handle the import error
-    if "GLIBC" in str(e):
-        print(
-            "GLIBC version outdated: datasets module not imported."
-            "Huggingface dataset loading functions will not work"
-        )
-    else:
-        raise e
-
 from typing import Union
 from huggingface_hub import login
 import pandas as pd
@@ -26,6 +14,7 @@ import json
 import pickle
 import time
 import yaml
+import warnings
 
 
 def load_yaml(filename: str):
@@ -110,44 +99,6 @@ def load_wrapperbox_predictions(
     return np.load(path_to_wrapperbox_preds)
 
 
-def load_dataset_from_hf(
-    dataset: str, retries: int = 3, delay: int = 5
-) -> DatasetDict:
-    # Retrieve the token from the environment variable
-    token = os.getenv("HF_TOKEN")
-
-    if not token:
-        raise ValueError("HF_TOKEN environment variable not set")
-
-    # Log in to Hugging Face using the token
-    login(token=token)
-
-    attempt = 0
-    while attempt < retries:
-        try:
-            # Attempt to load the dataset
-            return load_dataset(
-                f"Samsoup/{dataset}", cache_dir=CACHE_DIR, use_auth_token=True
-            )
-        except Exception as e:
-            print(
-                f"Attempt {attempt + 1} failed with error: \n"
-                f"{str(e)}. Retrying in {delay} seconds..."
-            )
-            attempt += 1
-            time.sleep(delay)
-
-    raise Exception(
-        "Failed to load dataset after multiple attempts due to 401 error"
-    )
-
-
-def load_labels_at_split(dataset: Union[str, DatasetDict], split: str):
-    if isinstance(dataset, str):
-        dataset = load_dataset_from_hf(dataset)
-    return np.array(dataset[split]["label"])
-
-
 def load_neural_predictions(
     dataset: str,
     model: str,
@@ -163,3 +114,56 @@ def load_neural_predictions(
         path_to_predictions,
         sep="\t",
     )["prediction"].to_list()
+
+
+try:
+    from datasets import load_dataset, DatasetDict
+
+    def load_dataset_from_hf(
+        dataset: str, retries: int = 3, delay: int = 5
+    ) -> DatasetDict:
+        # Retrieve the token from the environment variable
+        token = os.getenv("HF_TOKEN")
+
+        if not token:
+            raise ValueError("HF_TOKEN environment variable not set")
+
+        # Log in to Hugging Face using the token
+        login(token=token)
+
+        attempt = 0
+        while attempt < retries:
+            try:
+                # Attempt to load the dataset
+                return load_dataset(
+                    f"Samsoup/{dataset}",
+                    cache_dir=CACHE_DIR,
+                    use_auth_token=True,
+                )
+            except Exception as e:
+                print(
+                    f"Attempt {attempt + 1} failed with error: \n"
+                    f"{str(e)}. Retrying in {delay} seconds..."
+                )
+                attempt += 1
+                time.sleep(delay)
+
+        raise Exception(
+            "Failed to load dataset after multiple attempts due to 401 error"
+        )
+
+    def load_labels_at_split(dataset: Union[str, DatasetDict], split: str):
+        if isinstance(dataset, str):
+            dataset = load_dataset_from_hf(dataset)
+        return np.array(dataset[split]["label"])
+
+except ImportError as e:
+    # Handle the import error
+    if "GLIBC" in str(e):
+        warnings.warn(
+            "GLIBC version outdated: datasets module not imported."
+            "Huggingface dataset loading functions are not available."
+            "Please load all datasets locally.",
+        )
+    else:
+        raise e
