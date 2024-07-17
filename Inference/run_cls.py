@@ -18,7 +18,7 @@ from transformers import (
     AutoModelForSequenceClassification,
     pipeline,
 )
-from utils.constants.directory import DATA_DIR
+from utils.constants.directory import DATA_DIR, PROMPTS_DIR
 from CustomDatasets import TextDataset
 from utils.hf import get_model_and_tokenizer
 from utils.inference import compute_metrics
@@ -86,10 +86,6 @@ def get_predictions(
     tokenizer: AutoTokenizer,
     dataset: Dataset,
 ):
-    # NOTE: the current new simply code to use is `transformers.pipeline`, but
-    # I like this current more manual version better for visibility
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.eval()
 
     # Create the pipeline
@@ -97,7 +93,7 @@ def get_predictions(
         "text-classification",
         model=model,
         tokenizer=tokenizer,
-        device=device,
+        device_map="auto",
     )
 
     predictions = []
@@ -136,7 +132,7 @@ def main():
             with open(args.prompt, "r") as file:
                 prompt = file.read().strip()
         else:
-            prompt = args.prompt
+            prompt = os.path.join(PROMPTS_DIR, args.prompt)
         test_dataset = test_dataset.map(
             lambda example: {"text": prompt.format(input=example["text"])}
         )
