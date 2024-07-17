@@ -1,5 +1,6 @@
 try:
     from datasets import load_dataset
+    import datasets
 except ImportError as e:
     # Handle the import error
     if "GLIBC" in str(e):
@@ -25,7 +26,6 @@ import os
 import json
 import pickle
 import time
-import datasets
 import yaml
 
 
