@@ -57,6 +57,12 @@ def get_args():
         help="Should we load the model in half precision to save mem?",
     )
     parser.add_argument(
+        "--is_causalLM",
+        type=bool,
+        default=True,
+        help="Is the model loaded a CausalLM or SequenceClassification model?",
+    )
+    parser.add_argument(
         "--pooler",
         type=str,
         help="Name of pooler functions to sue. See `EmbeddingPooler` for options.",
@@ -127,8 +133,12 @@ if __name__ == "__main__":
     datasets = load_dataset(
         args.dataset_name_or_path, use_auth_token=True, cache_dir=CACHE_DIR
     )
+    # NOTE: assume we are loading a casualLM
     model = ModelForSentenceLevelRepresentation(
-        args.model_name_or_path, args.pooler, args.load_half_precision
+        args.model_name_or_path,
+        args.pooler,
+        args.load_half_precision,
+        args.is_causalLM,
     )
     for split, dataset in datasets.items():
         if to_dos[split]:
