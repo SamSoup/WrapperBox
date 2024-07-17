@@ -142,7 +142,7 @@ def main():
         args.model_name_or_path, causal_lm=False
     )
 
-    ### Print out some specifications
+    ### Print out some model label-space specifications
     config = model.config
     num_labels = config.num_labels
     label2id = config.label2id
@@ -154,6 +154,8 @@ def main():
     results = get_predictions(
         model=model, tokenizer=tokenizer, dataset=test_dataset
     )
+    ### Post process the labels to ids
+    results = [label2id[r] for r in results]
 
     print("A few predictions:", results[:5])
     print(test_dataset)
