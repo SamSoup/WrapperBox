@@ -5,12 +5,27 @@ from transformers import (
     AutoTokenizer,
     AutoModelForCausalLM,
     LlamaConfig,
+    set_seed,
 )
 from utils.constants.directory import CACHE_DIR
 import torch
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 import os
+import random
+import numpy as np
+
+
+def set_seed_for_reproducability(seed: int):
+    set_seed(seed)
+    torch.manual_seed(seed)
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.cuda.manual_seed(seed)
+
+    # Set a fixed value for the hash seed
+    os.environ["PYTHONHASHSEED"] = str(seed)
+    print(f"Random seed set as {seed}")
 
 
 def init_distributed():

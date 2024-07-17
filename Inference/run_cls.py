@@ -17,10 +17,9 @@ from transformers import (
     AutoModelForSequenceClassification,
     pipeline,
 )
-from FineTune.setupTrainer import set_seed_for_reproducability
 from utils.constants.directory import DATA_DIR, PROMPTS_DIR
 from CustomDatasets import TextDataset
-from utils.hf import get_model_and_tokenizer
+from utils.hf import get_model_and_tokenizer, set_seed_for_reproducability
 from utils.inference import compute_metrics
 from utils.io import mkdir_if_not_exists
 from pprint import pprint

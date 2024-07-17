@@ -18,13 +18,13 @@ import logging
 import datasets
 import transformers
 import sys
-import wandb
 import evaluate
 import torch
 import random
 import os
 import json
 
+from utils.hf import set_seed_for_reproducability
 from utils.inference import randargmax
 
 logger: logging.Logger = logging.getLogger(__name__)
@@ -53,18 +53,6 @@ def init_logging(training_args: TrainingArguments):
 
     logger.info(f"Training Arguments:\n")
     logger.info(training_args.to_json_string())
-
-
-def set_seed_for_reproducability(seed: int):
-    set_seed(seed)
-    torch.manual_seed(seed)
-    random.seed(seed)
-    np.random.seed(seed)
-    torch.cuda.manual_seed(seed)
-
-    # Set a fixed value for the hash seed
-    os.environ["PYTHONHASHSEED"] = str(seed)
-    print(f"Random seed set as {seed}")
 
 
 def load_dataset_with_prompt(
