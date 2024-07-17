@@ -1,6 +1,6 @@
 {
-    "prompt": "./prompts/toxigen_llama_prompt.txt",
-    "dataset_name_or_path": "Samsoup/toxigen",
+    "prompt": "toxigen_llama2_prompt.txt",
+    "dataset_name_or_path": "toxigen",
     "model_name_or_path": "meta-llama/Llama-2-7b-hf",
     "batch_size": 8,
     "num_classes": 2,
