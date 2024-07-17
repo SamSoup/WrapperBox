@@ -45,8 +45,6 @@ class TokenizedDataset(Dataset):
         Returns:
             Dict[str, torch.Tensor]: Tokenized representation of the text.
         """
-        print(f"Index: {idx}, Type: {type(idx)}")  # Debug print statement
-
         text = self.texts[idx]
         label = self.labels[idx]
         encoding = self.tokenizer(
