@@ -76,6 +76,7 @@ def get_model_and_tokenizer(
     dtype = torch.float16 if load_half_precison else torch.float
     if "gemma-2" in model_name:
         dtype = torch.bfloat16 if load_half_precison else torch.float
+    print(f"Loading model to type: {dtype}")
 
     MODEL_CLASS = (
         AutoModelForCausalLM

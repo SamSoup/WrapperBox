@@ -1,6 +1,7 @@
 """
 Runs pairwise comparisons between all transformers with results
 """
+
 from itertools import combinations
 from binomial import compute_binomial_p_value
 from tqdm.auto import tqdm
@@ -30,7 +31,7 @@ for dataset in tqdm(DATASETS, desc="datasets"):
     results = {
         m: pd.DataFrame(np.nan, index=MODELS, columns=MODELS) for m in METRICS
     }
-    data = load_dataset(f"Samsoup/{dataset}", use_auth_token=True)
+    data = load_dataset(f"Samsoup/{dataset}", token=True)
     y_test = np.array(data["test"]["label"])
     is_multiclass = np.unique(y_test).size > 2
     # run all pairwise comparsions

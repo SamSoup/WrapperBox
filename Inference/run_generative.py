@@ -193,7 +193,7 @@ def main():
 
     ## Load Dataset
     datasets = load_dataset(
-        args.dataset_name_or_path, use_auth_token=True, cache_dir=CACHE_DIR
+        args.dataset_name_or_path, token=True, cache_dir=CACHE_DIR
     )
     test_dataset = datasets["test"]
     test_labels = test_dataset["label"] if "label" in test_dataset else None

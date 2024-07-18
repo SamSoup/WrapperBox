@@ -81,7 +81,7 @@ def load_dataset_from_config(
     # the train, eval, and test splits already. Otherwise, one
     # can write their own dataset loading codes
     datasets = load_dataset(
-        dataset_config["name"], use_auth_token=True, cache_dir=CACHE_DIR
+        dataset_config["name"], token=True, cache_dir=CACHE_DIR
     )
     for split, dataset in datasets.items():
         if prompt_config["use_prompt"]:

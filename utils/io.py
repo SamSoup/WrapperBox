@@ -138,7 +138,7 @@ try:
                 return load_dataset(
                     f"Samsoup/{dataset}",
                     cache_dir=CACHE_DIR,
-                    use_auth_token=True,
+                    token=True,
                 )
             except Exception as e:
                 print(

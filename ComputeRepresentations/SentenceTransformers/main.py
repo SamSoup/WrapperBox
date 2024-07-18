@@ -115,7 +115,7 @@ if __name__ == "__main__":
     }
     mkdir_if_not_exists(args.output_dir)
     datasets = load_dataset(
-        args.dataset_name_or_path, use_auth_token=True, cache_dir=CACHE_DIR
+        args.dataset_name_or_path, token=True, cache_dir=CACHE_DIR
     )
 
     model = SentenceTransformer(args.model_name_or_path, cache_folder=CACHE_DIR)
