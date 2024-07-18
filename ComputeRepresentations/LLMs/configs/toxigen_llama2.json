@@ -3,8 +3,8 @@
     "model_name_or_path": "meta-llama/Llama-2-7b-chat-hf",
     "load_half_precision": false,
     "pooler": "mean_with_attention",
-    "batch_size": 8,
-    "max_length": 512,
+    "batch_size": 4,
+    "max_length": 256,
     "prompt_path": "toxigen_llama3_prompt.txt",
     "output_dir": "./toxigen/llama2_7b_chat/mean_with_attention"
 }

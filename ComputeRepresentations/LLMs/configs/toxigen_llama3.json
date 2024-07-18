@@ -4,6 +4,6 @@
     "load_half_precision": false,
     "pooler": "mean_with_attention",
     "batch_size": 16,
-    "max_length": 512,
+    "max_length": 256,
     "output_dir": "./toxigen/llama3_8B_instruct/mean_with_attention"
 }
