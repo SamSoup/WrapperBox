@@ -118,7 +118,6 @@ def load_prompt_with_dataset(prompt_fname: str, dataset: Dataset):
     dataset = dataset.map(
         lambda example: {"text": prompt.format(input=example["text"])}
     )
-
     return dataset
 
 
@@ -141,6 +140,15 @@ if __name__ == "__main__":
         args.is_causalLM,
     )
     for split, dataset in datasets.items():
+        ## Print some diagnostics
+        max_length_in_dataset = max([len(s) for s in dataset["text"]])
+        print(
+            f"The maximum sequence length in the dataset is {max_length_in_dataset}."
+            f"The current set maximum sequence length is {args.max_length}"
+        )
+        if args.max_length < max_length_in_dataset:
+            print("WARNING: Sequence truncation will occur")
+
         if to_dos[split]:
             print(f"***** Computing Representations for {split} dataset *****")
 
