@@ -154,7 +154,6 @@ def generate_responses(
                 temperature=args.temperature,
                 top_k=args.top_k,
                 top_p=args.top_p,
-                pad_token_id=model.config.eos_token_id,
             )
 
             for inp, out in zip(input_ids, output_ids):
