@@ -156,7 +156,9 @@ def generate_responses(
                 generated_text = tokenizer.decode(
                     out[inp.shape[0] :], skip_special_tokens=True
                 )
-
+                all_text = tokenizer.decode(out, skip_special_tokens=True)
+                print("Generated:\n", all_text)
+                input()
                 if args.is_classification:
                     predictions = extract_classification_output(
                         generated_text, args.num_classes
@@ -199,6 +201,9 @@ def main():
     test_dataset = test_dataset.map(
         lambda example: {"text": prompt.format(input=example["text"])}
     )
+
+    ### Log the first input to check format
+    print("First input:\n", test_dataset["text"][0])
 
     ## Load Model
     model, tokenizer = get_model_and_tokenizer(
