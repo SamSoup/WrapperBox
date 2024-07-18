@@ -8,8 +8,6 @@ Usage: see python3 main.py --help
 
 import argparse
 import json
-import pickle
-import re
 import os
 import random
 import torch
@@ -19,13 +17,14 @@ from transformers import (
     AutoModelForCausalLM,
 )
 from torch.utils.data import DataLoader
-import data
 from utils.constants.directory import CACHE_DIR, PROMPTS_DIR
 from CustomDatasets import TokenizedDataset
 from utils.hf import get_model_and_tokenizer
+from utils.inference import compute_metrics
 from utils.io import mkdir_if_not_exists
 from pprint import pprint
 from tqdm import tqdm
+import numpy as np
 
 
 def get_args():
@@ -217,6 +216,17 @@ def main():
     output_file = os.path.join(args.output_dir, "output.json")
     with open(output_file, "w") as file:
         json.dump(results, file)
+
+    ## Optionally, if has test labels, compute some metrics
+    if "label" in test_dataset:
+        test_labels = test_dataset["label"]
+        metrics = compute_metrics(
+            y_pred=results,
+            y_true=test_labels,
+            is_multiclass=np.unique(test_labels).size > 2,
+            prefix="test",
+        )
+        pprint(metrics)
 
 
 if __name__ == "__main__":
