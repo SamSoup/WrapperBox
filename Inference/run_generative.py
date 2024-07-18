@@ -190,6 +190,7 @@ def main():
         args.dataset_name_or_path, use_auth_token=True, cache_dir=CACHE_DIR
     )
     test_dataset = datasets["test"]
+    test_labels = test_dataset["label"] if "label" in test_dataset else None
 
     ## Load Prompt pre-fix and update 'text' column to use this
     if args.prompt is not None:
@@ -218,8 +219,7 @@ def main():
         json.dump(results, file)
 
     ## Optionally, if has test labels, compute some metrics
-    if "label" in test_dataset:
-        test_labels = test_dataset["label"]
+    if test_labels is not None:
         metrics = compute_metrics(
             y_pred=results,
             y_true=test_labels,
