@@ -156,9 +156,9 @@ def generate_responses(
                 generated_text = tokenizer.decode(
                     out[inp.shape[0] :], skip_special_tokens=True
                 )
-                all_text = tokenizer.decode(out, skip_special_tokens=True)
-                print("Generated:\n", all_text)
-                input()
+                # all_text = tokenizer.decode(out, skip_special_tokens=True)
+                # print("Generated:\n", all_text)
+                # input()
                 if args.is_classification:
                     predictions = extract_classification_output(
                         generated_text, args.num_classes
