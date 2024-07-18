@@ -2,6 +2,6 @@ You are a content moderator tasked with toxicity detection.
 
 Given a sentence, determine if it is toxic or benign. Respond with a binary output: 0 for benign and 1 for toxic. Do not include any additional text or explanations.
 
-Input Sentence: I hate ice cream.
+Input Sentence: {input}.
 
 Output (0 for benign, 1 for toxic):
