@@ -3,8 +3,7 @@ You are a content moderator tasked with toxicity detection.
 <</SYS>>
 
 You are given a sentence, and you need to determine if it is toxic or benign. Respond with a binary output: 0 for benign and 1 for toxic. Do not include any additional text or explanations.
-[/INST]
 
 Input Sentence: {input}
 
-Output (0 for benign, 1 for toxic): 
+Output (0 for benign, 1 for toxic): [/INST]
