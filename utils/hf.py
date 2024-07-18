@@ -110,7 +110,11 @@ def get_model_and_tokenizer(
     print(f"*** Model configurations ***")
     print(model.config)
     print(model.generation_config)
-    if model.config.is_decoder or "Llama-3" in model_name:
+    if (
+        model.config.is_decoder
+        or "Llama-3" in model_name
+        or "Llama-2" in model_name
+    ):
         print("Model is a decoder-only architecture.")
         tokenizer.padding_side = "left"
     else:
