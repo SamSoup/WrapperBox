@@ -132,11 +132,10 @@ def main():
 
     ## Load Prompt pre-fix and update 'text' column to use this, if any
     if args.prompt is not None:
-        if os.path.isfile(args.prompt):
-            with open(args.prompt, "r") as file:
-                prompt = file.read().strip()
-        else:
-            prompt = os.path.join(PROMPTS_DIR, args.prompt)
+        if not os.path.isfile(args.prompt):
+            args.prompt = os.path.join(PROMPTS_DIR, args.prompt)
+        with open(args.prompt, "r") as file:
+            prompt = file.read().strip()
         test_dataset = PromptDataset(texts, prompt)
     else:
         test_dataset = TextDataset(texts)

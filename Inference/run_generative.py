@@ -20,7 +20,7 @@ from transformers import (
 )
 from torch.utils.data import DataLoader
 import data
-from utils.constants.directory import CACHE_DIR
+from utils.constants.directory import CACHE_DIR, PROMPTS_DIR
 from CustomDatasets import TokenizedDataset
 from utils.hf import get_model_and_tokenizer
 from utils.io import mkdir_if_not_exists
@@ -193,11 +193,11 @@ def main():
     test_dataset = datasets["test"]
 
     ## Load Prompt pre-fix and update 'text' column to use this
-    if os.path.isfile(args.prompt):
+    if args.prompt is not None:
+        if not os.path.isfile(args.prompt):
+            args.prompt = os.path.join(PROMPTS_DIR, args.prompt)
         with open(args.prompt, "r") as file:
             prompt = file.read().strip()
-    else:
-        prompt = args.prompt
     test_dataset = test_dataset.map(
         lambda example: {"text": prompt.format(input=example["text"])}
     )
