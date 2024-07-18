@@ -73,19 +73,19 @@ def get_model_and_tokenizer(
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=CACHE_DIR)
 
-    dtype = torch.float16 if load_half_precison else torch.float
-    if "gemma-2" in model_name:
-        dtype = torch.bfloat16 if load_half_precison else torch.float
-    print(f"Loading model to type: {dtype}")
-
     MODEL_CLASS = (
         AutoModelForCausalLM
         if causal_lm
         else AutoModelForSequenceClassification
     )
-    model = MODEL_CLASS.from_pretrained(
-        model_name, torch_dtype=dtype, cache_dir=CACHE_DIR
-    )
+    model = MODEL_CLASS.from_pretrained(model_name, cache_dir=CACHE_DIR)
+
+    ## Change to half precision, if specified
+    if load_half_precison:
+        model = model.half()
+        if "gemma-2" in model_name:
+            model = model.bfloat16()
+        print(f"*** Model Loaded in Half Precision ***")
 
     # Set pad token if not already, assu
     if tokenizer.pad_token is None:
