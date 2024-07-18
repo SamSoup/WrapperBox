@@ -82,6 +82,12 @@ def get_args():
         help="If set, process the output as classification.",
     )
     parser.add_argument(
+        "--load_half_precision",
+        type=bool,
+        default=False,
+        help="If true, load the model in half precision",
+    )
+    parser.add_argument(
         "--num_classes",
         type=int,
         default=2,
@@ -207,7 +213,9 @@ def main():
 
     ## Load Model
     model, tokenizer = get_model_and_tokenizer(
-        args.model_name_or_path, causal_lm=True
+        args.model_name_or_path,
+        load_half_precison=args.load_half_precision,
+        causal_lm=True,
     )
 
     dataloader = prep_dataset(test_dataset, tokenizer, args.batch_size)
