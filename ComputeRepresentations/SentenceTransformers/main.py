@@ -126,11 +126,15 @@ if __name__ == "__main__":
     ## datasets might require a GLIBC version higher than what is available
     datasets = {}
     for split in to_dos:
-        datasets[split] = pd.read_csv(
-            os.path.join(
-                DATA_DIR, "datasets", args.dataset_name_or_path, f"{split}.csv"
+        if to_dos[split]:
+            datasets[split] = pd.read_csv(
+                os.path.join(
+                    DATA_DIR,
+                    "datasets",
+                    args.dataset_name_or_path,
+                    f"{split}.csv",
+                )
             )
-        )
 
     # Load the model, wrapping it for multi-gpu if needed
     model = SentenceTransformer(args.model_name_or_path, cache_folder=CACHE_DIR)

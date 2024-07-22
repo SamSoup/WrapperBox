@@ -10,13 +10,12 @@ import argparse
 import json
 import os
 import random
-from typing import Callable, Iterable
+from typing import Callable
 import pandas as pd
 from tqdm import tqdm
 from transformers import (
     pipeline,
 )
-from CustomDatasets import PromptDataset, TextDataset
 from torch.utils.data import Dataset
 from utils.constants.directory import PROMPTS_DIR, DATA_DIR
 from utils.hf import get_model_and_tokenizer
@@ -24,6 +23,29 @@ from utils.inference import compute_metrics
 from utils.io import mkdir_if_not_exists
 from pprint import pprint
 import numpy as np
+
+
+class SentenceDataset(Dataset):
+    def __init__(self, sentences):
+        self.sentences = sentences
+
+    def __len__(self):
+        return len(self.sentences)
+
+    def __getitem__(self, idx):
+        return self.sentences[idx]
+
+
+class SentenceWithPromptDataset(Dataset):
+    def __init__(self, sentences, prompt):
+        self.sentences = sentences
+        self.prompt = prompt
+
+    def __len__(self):
+        return len(self.sentences)
+
+    def __getitem__(self, idx):
+        return self.prompt.format(input=self.sentences[idx])
 
 
 def get_args():
@@ -130,13 +152,10 @@ def generate_responses(
             temperature=args.temperature,
             top_k=args.top_k,
             top_p=args.top_p,
+            return_full_text=False,  # only return added text
         )
     ):
-        print(output)
-        input()
-        # replace the original prompt to only obtain new tokens
-        generated_text = output[0]["generated_text"]
-        # new_tokens = generated_text.replace(text, "").strip()
+        generated_text = output[0]["generated_text"].strip()
         # extract a label if is classification
         if args.is_classification:
             pred = extract_classification_output(
@@ -184,9 +203,9 @@ def main():
             args.prompt = os.path.join(PROMPTS_DIR, args.prompt)
         with open(args.prompt, "r") as file:
             prompt = file.read().strip()
-        test_dataset = PromptDataset(texts, prompt)
+        test_dataset = SentenceWithPromptDataset(texts, prompt)
     else:
-        test_dataset = TextDataset(texts)
+        test_dataset = SentenceDataset(texts)
 
     ### Log the first input to check format
     print("First input:\n", texts[0])
