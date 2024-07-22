@@ -84,6 +84,12 @@ def get_args():
         help="Path to a prefix (or the raw prefix) to append to each input example.",
     )
     parser.add_argument(
+        "--chunk_size",
+        type=int,
+        default=100000,
+        help="If dataset exceeds this size, do chunks/batches to save memory.",
+    )
+    parser.add_argument(
         "--output_dir",
         type=str,
         help="Output directory for resultant representations.",
@@ -105,7 +111,7 @@ def get_args():
     return args
 
 
-def load_prompt_with_dataset(prompt_fname: str, dataset: Dataset):
+def load_prompt_with_dataset(prompt_fname: str, dataset: Dataset) -> Dataset:
     # Load Prompt pre-fix and update 'text' column to use this
     if os.path.isfile(prompt_fname):
         prompt_path = prompt_fname
@@ -157,13 +163,36 @@ if __name__ == "__main__":
                     prompt_fname=args.prompt_path, dataset=dataset
                 )
 
-            # NOTE: Assume 'text' is the column of inputs to compute reps
-            representations = model.extract_representations(
-                texts=dataset["text"],
-                batch_size=args.batch_size,
-                max_length=args.max_length,
+            chunk_size = (
+                args.chunk_size
+                if len(dataset) > args.chunk_size
+                else len(dataset)
             )
+            num_chunks = (len(dataset) // chunk_size) + 1
 
-            save_path = os.path.join(args.output_dir, f"{split}.npy")
-            # Save representations as numpy file
-            np.save(save_path, representations.numpy())
+            for i in range(num_chunks):
+                start_idx = i * chunk_size
+                end_idx = min((i + 1) * chunk_size, len(dataset))
+                dataset_chunk = dataset.select(range(start_idx, end_idx))
+
+                print(
+                    f"Processing chunk {i+1}/{num_chunks}, size: {end_idx-start_idx+1}"
+                )
+
+                # NOTE: Assume 'text' is the column of inputs to compute reps
+                representations = model.extract_representations(
+                    texts=dataset_chunk["text"],
+                    batch_size=args.batch_size,
+                    max_length=args.max_length,
+                )
+
+                save_path = os.path.join(
+                    args.output_dir,
+                    (
+                        f"{split}_chunk_{i+1}.npy"
+                        if len(dataset) > 100000
+                        else f"{split}.npy"
+                    ),
+                )
+                # Save representations as numpy file
+                np.save(save_path, representations.numpy())

@@ -85,6 +85,12 @@ def get_args():
         help="Batch size.",
     )
     parser.add_argument(
+        "--chunk_size",
+        type=int,
+        default=100000,
+        help="If dataset exceeds this size, do chunks/batches to save memory.",
+    )
+    parser.add_argument(
         "--output_dir",
         type=str,
         help="Output directory for resultant representations.",
@@ -133,12 +139,39 @@ if __name__ == "__main__":
                 dataset, batch_size=args.batch_size, shuffle=False
             )
 
-            representations = []
-            for batch in tqdm(dataloader):
-                embeddings = model.encode(batch, convert_to_numpy=True)
-                representations.append(embeddings)
+            chunk_size = (
+                args.chunk_size
+                if len(dataset) > args.chunk_size
+                else len(dataset)
+            )
+            num_chunks = (len(dataset) // chunk_size) + 1
 
-            representations = np.vstack(representations)
-            save_path = os.path.join(args.output_dir, f"{split}.npy")
-            # Save representations as numpy file
-            np.save(save_path, representations)
+            for i in range(num_chunks):
+                start_idx = i * chunk_size
+                end_idx = min((i + 1) * chunk_size, len(dataset))
+                dataset_chunk = dataset.select(range(start_idx, end_idx))
+
+                print(
+                    f"Processing chunk {i+1}/{num_chunks} with indices {start_idx} to {end_idx}"
+                )
+
+                dataloader = DataLoader(
+                    dataset_chunk, batch_size=args.batch_size, shuffle=False
+                )
+
+                representations = []
+                for batch in tqdm(dataloader):
+                    embeddings = model.encode(batch, convert_to_numpy=True)
+                    representations.append(embeddings)
+
+                representations = np.vstack(representations)
+                save_path = os.path.join(
+                    args.output_dir,
+                    (
+                        f"{split}_chunk_{i+1}.npy"
+                        if len(dataset) > args.chunk_size
+                        else f"{split}.npy"
+                    ),
+                )
+                # Save representations as numpy file
+                np.save(save_path, representations)
