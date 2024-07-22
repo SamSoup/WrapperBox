@@ -147,9 +147,6 @@ if __name__ == "__main__":
             )
         else:
             dataset = SentenceDataset(dataset["text"])
-        dataloader = DataLoader(
-            dataset, batch_size=args.batch_size, shuffle=False
-        )
 
         chunk_size = (
             args.chunk_size if len(dataset) > args.chunk_size else len(dataset)
@@ -159,7 +156,9 @@ if __name__ == "__main__":
         for i in range(num_chunks):
             start_idx = i * chunk_size
             end_idx = min((i + 1) * chunk_size, len(dataset))
-            dataset_chunk = dataset.select(range(start_idx, end_idx))
+            dataset_chunk = torch.utils.data.Subset(
+                dataset, range(start_idx, end_idx)
+            )
 
             print(
                 f"Processing chunk {i+1}/{num_chunks} with indices {start_idx} to {end_idx}"
