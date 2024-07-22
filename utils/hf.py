@@ -76,7 +76,7 @@ def get_model_and_tokenizer(
         if causal_lm
         else AutoModelForSequenceClassification
     )
-    ##
+    ## Use device_map = "auto" for automatic multi-gpu support
     model = MODEL_CLASS.from_pretrained(
         model_name, cache_dir=CACHE_DIR, device_map="auto"
     )
@@ -125,15 +125,5 @@ def get_model_and_tokenizer(
         tokenizer.padding_side = "left"
     else:
         print("Model is not a decoder-only architecture.")
-
-    device = torch.device(
-        f"cuda:{dist.get_rank() % torch.cuda.device_count()}"
-        if torch.cuda.device_count() > 1 and distributed
-        else "cuda" if torch.cuda.is_available() else "cpu"
-    )
-
-    if torch.cuda.device_count() > 1 and distributed:
-        accelerator = Accelerator(fp16=load_half_precison)
-        model = accelerator.prepare(model)
 
     return model, tokenizer
