@@ -16,7 +16,9 @@ from tqdm import tqdm
 from transformers import (
     pipeline,
 )
-from utils.constants.directory import CACHE_DIR, PROMPTS_DIR, DATA_DIR
+from CustomDatasets import PromptDataset, TextDataset
+from torch.utils.data import Dataset
+from utils.constants.directory import PROMPTS_DIR, DATA_DIR
 from utils.hf import get_model_and_tokenizer
 from utils.inference import compute_metrics
 from utils.io import mkdir_if_not_exists
@@ -113,15 +115,15 @@ def get_args():
 
 
 def generate_responses(
-    pipeline: Callable, texts: Iterable[str], args: argparse.Namespace
+    pipeline: Callable, dataset: Dataset, args: argparse.Namespace
 ):
     results = []
     # Iterate over the dataset; It is recommended that we iterate directly
     # over the dataset without needing to batch
     print("*** Running Sequence Classification ***")
-    for text in tqdm(texts):
-        output = pipeline(
-            text,
+    for output in tqdm(
+        pipeline(
+            dataset,
             max_new_tokens=args.max_new_tokens,
             do_sample=True,
             num_return_sequences=1,
@@ -129,15 +131,20 @@ def generate_responses(
             top_k=args.top_k,
             top_p=args.top_p,
         )
+    ):
+        print(output)
+        input()
         # replace the original prompt to only obtain new tokens
         generated_text = output[0]["generated_text"]
-        new_tokens = generated_text.replace(text, "").strip()
+        # new_tokens = generated_text.replace(text, "").strip()
         # extract a label if is classification
         if args.is_classification:
-            pred = extract_classification_output(new_tokens, args.num_classes)
+            pred = extract_classification_output(
+                generated_text, args.num_classes
+            )
             results.append(pred)
         else:
-            results.append(new_tokens)
+            results.append(generated_text)
     return results
 
 
@@ -177,7 +184,9 @@ def main():
             args.prompt = os.path.join(PROMPTS_DIR, args.prompt)
         with open(args.prompt, "r") as file:
             prompt = file.read().strip()
-        texts = [prompt.format(input=text) for text in texts]
+        test_dataset = PromptDataset(texts, prompt)
+    else:
+        test_dataset = TextDataset(texts)
 
     ### Log the first input to check format
     print("First input:\n", texts[0])
@@ -197,7 +206,7 @@ def main():
         device_map="auto",
     )
 
-    results = generate_responses(text_generator, texts, args)
+    results = generate_responses(text_generator, test_dataset, args)
 
     output_file = os.path.join(args.output_dir, "output.json")
     with open(output_file, "w") as file:
