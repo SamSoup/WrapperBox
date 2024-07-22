@@ -12,6 +12,7 @@ import os
 import random
 from typing import Callable, Iterable
 import pandas as pd
+from tqdm import tqdm
 from transformers import (
     pipeline,
 )
@@ -130,7 +131,7 @@ def generate_responses(
         top_k=args.top_k,
         top_p=args.top_p,
     )
-    for output in outputs:
+    for output in tqdm(outputs):
         generated_text = output["generated_text"]
         if args.is_classification:
             predictions = extract_classification_output(
