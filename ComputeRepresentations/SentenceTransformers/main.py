@@ -151,7 +151,9 @@ if __name__ == "__main__":
         chunk_size = (
             args.chunk_size if len(dataset) > args.chunk_size else len(dataset)
         )
-        num_chunks = (len(dataset) // chunk_size) + 1
+        num_chunks = (
+            len(dataset) + chunk_size - 1
+        ) // chunk_size  # Correct calculation
 
         for i in range(num_chunks):
             start_idx = i * chunk_size
