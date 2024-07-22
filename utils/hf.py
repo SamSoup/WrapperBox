@@ -10,7 +10,6 @@ from utils.constants.directory import CACHE_DIR
 import torch
 import torch.distributed as dist
 from accelerate import Accelerator
-from torch.nn.parallel import DistributedDataParallel as DDP
 import os
 import random
 import numpy as np

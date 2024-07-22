@@ -1,0 +1,14 @@
+{
+    "prompt": "esnli/llama2_prompt.txt",
+    "dataset_name_or_path": "esnli",
+    "model_name_or_path": "meta-llama/Llama-2-7b-chat-hf",
+    "batch_size": 4,
+    "is_classification": true,
+    "num_classes": 2,
+    "output_dir": "./results/esnli/llama2_7B_chat",
+    "max_new_tokens": 10,
+    "temperature": 0.7,
+    "top_k": 2,
+    "top_p": 0.95,
+    "seed": 42
+}

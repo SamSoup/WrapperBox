@@ -1,0 +1,15 @@
+{
+    "prompt": "esnli/gemma_prompt.txt",
+    "dataset_name_or_path": "esnli",
+    "model_name_or_path": "google/gemma-2-9b-it",
+    "load_half_precision": true,
+    "batch_size": 4,
+    "is_classification": true,
+    "num_classes": 2,
+    "output_dir": "./results/esnli/gemma2_9b_instruct",
+    "max_new_tokens": 10,
+    "temperature": 0.7,
+    "top_k": 2,
+    "top_p": 0.95,
+    "seed": 42
+}

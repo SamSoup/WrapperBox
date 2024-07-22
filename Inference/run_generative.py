@@ -10,20 +10,16 @@ import argparse
 import json
 import os
 import random
-import torch
-from datasets import load_dataset, Dataset
+from typing import Callable, Iterable
+import pandas as pd
 from transformers import (
-    AutoTokenizer,
-    AutoModelForCausalLM,
+    pipeline,
 )
-from torch.utils.data import DataLoader
-from utils.constants.directory import CACHE_DIR, PROMPTS_DIR
-from CustomDatasets import TokenizedDataset
+from utils.constants.directory import CACHE_DIR, PROMPTS_DIR, DATA_DIR
 from utils.hf import get_model_and_tokenizer
 from utils.inference import compute_metrics
 from utils.io import mkdir_if_not_exists
 from pprint import pprint
-from tqdm import tqdm
 import numpy as np
 
 
@@ -115,62 +111,28 @@ def get_args():
     return args
 
 
-def prep_dataset(
-    dataset: Dataset, tokenizer: AutoTokenizer, batch_size: int
-) -> DataLoader:
-    dataset = TokenizedDataset(
-        texts=dataset["text"],
-        labels=dataset["label"],
-        tokenizer=tokenizer,
-        max_length=1024,
-    )
-    return DataLoader(dataset, batch_size=batch_size)
-
-
 def generate_responses(
-    model: AutoModelForCausalLM,
-    tokenizer: AutoTokenizer,
-    dataloader: DataLoader,
-    args: argparse.Namespace,
+    pipeline: Callable, texts: Iterable[str], args: argparse.Namespace
 ):
-    # NOTE: the current new simply code to use is `transformers.pipeline`, but
-    # I like this current more manual version better for visibility
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.eval()
-
     results = []
-    with torch.no_grad():
-        for batch in tqdm(dataloader):
-            input_ids = batch["input_ids"].to(device)
-            attention_mask = batch["attention_mask"].to(device)
-
-            output_ids = model.generate(
-                input_ids=input_ids,
-                attention_mask=attention_mask,
-                max_new_tokens=args.max_new_tokens,
-                do_sample=True,
-                num_return_sequences=1,
-                temperature=args.temperature,
-                top_k=args.top_k,
-                top_p=args.top_p,
+    outputs = pipeline(
+        texts,
+        max_new_tokens=args.max_new_tokens,
+        do_sample=True,
+        num_return_sequences=1,
+        temperature=args.temperature,
+        top_k=args.top_k,
+        top_p=args.top_p,
+    )
+    for output in outputs:
+        generated_text = output["generated_text"]
+        if args.is_classification:
+            predictions = extract_classification_output(
+                generated_text, args.num_classes
             )
-
-            for inp, out in zip(input_ids, output_ids):
-                generated_text = tokenizer.decode(
-                    out[inp.shape[0] :], skip_special_tokens=True
-                )
-                # all_text = tokenizer.decode(out, skip_special_tokens=True)
-                # print("Generated:\n", all_text)
-                # input()
-                if args.is_classification:
-                    predictions = extract_classification_output(
-                        generated_text, args.num_classes
-                    )
-                    results.append(predictions)
-                else:
-                    results.append(generated_text)
-
+            results.append(predictions)
+        else:
+            results.append(generated_text)
     return results
 
 
@@ -190,12 +152,19 @@ def main():
     random.seed(args.seed)
     mkdir_if_not_exists(args.output_dir)
 
-    ## Load Dataset
-    datasets = load_dataset(
-        args.dataset_name_or_path, token=True, cache_dir=CACHE_DIR
-    )
-    test_dataset = datasets["test"]
-    test_labels = test_dataset["label"] if "label" in test_dataset else None
+    ## Load Dataset, from disk because
+    ## datasets might require a GLIBC version higher
+    ## than what is available
+    if os.path.isfile(args.dataset_name_or_path):
+        test_dataset = pd.read_csv(args.dataset_name_or_path)
+    else:
+        test_dataset = pd.read_csv(
+            os.path.join(
+                DATA_DIR, "datasets", args.dataset_name_or_path, "test.csv"
+            )
+        )
+    labels = test_dataset["label"] if "label" in test_dataset else None
+    texts = test_dataset["text"].tolist()
 
     ## Load Prompt pre-fix and update 'text' column to use this
     if args.prompt is not None:
@@ -203,12 +172,10 @@ def main():
             args.prompt = os.path.join(PROMPTS_DIR, args.prompt)
         with open(args.prompt, "r") as file:
             prompt = file.read().strip()
-    test_dataset = test_dataset.map(
-        lambda example: {"text": prompt.format(input=example["text"])}
-    )
+        texts = [prompt.format(input=text) for text in texts]
 
     ### Log the first input to check format
-    print("First input:\n", test_dataset["text"][0])
+    print("First input:\n", texts[0])
 
     ## Load Model
     model, tokenizer = get_model_and_tokenizer(
@@ -216,21 +183,27 @@ def main():
         load_half_precison=args.load_half_precision,
         causal_lm=True,
     )
+    model.eval()
 
-    dataloader = prep_dataset(test_dataset, tokenizer, args.batch_size)
+    text_generator = pipeline(
+        "text-generation",
+        model=model,
+        tokenizer=tokenizer,
+        device_map="auto",
+    )
 
-    results = generate_responses(model, tokenizer, dataloader, args)
+    results = generate_responses(text_generator, texts, args)
 
     output_file = os.path.join(args.output_dir, "output.json")
     with open(output_file, "w") as file:
         json.dump(results, file)
 
     ## Optionally, if has test labels, compute some metrics
-    if test_labels is not None:
+    if labels is not None:
         metrics = compute_metrics(
             y_pred=results,
-            y_true=test_labels,
-            is_multiclass=np.unique(test_labels).size > 2,
+            y_true=labels,
+            is_multiclass=np.unique(labels).size > 2,
             prefix="test",
         )
         pprint(metrics)
