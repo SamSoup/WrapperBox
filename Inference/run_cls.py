@@ -58,12 +58,6 @@ def get_args():
         help="Number of classes for classification.",
     )
     parser.add_argument(
-        "--distributed",
-        type=bool,
-        default=False,
-        help="Use distributed accelerator.",
-    )
-    parser.add_argument(
         "--output_dir",
         type=str,
         help="Output directory for resultant representations.",
@@ -142,7 +136,7 @@ def main():
 
     ## Load Model
     model, tokenizer = get_model_and_tokenizer(
-        args.model_name_or_path, causal_lm=False, distributed=args.distributed
+        args.model_name_or_path, causal_lm=False
     )
 
     ### Print out some model label-space specifications

@@ -27,25 +27,6 @@ def set_seed_for_reproducability(seed: int):
     print(f"Random seed set as {seed}")
 
 
-def init_distributed():
-    """
-    Initialize the distributed environment if multiple GPUs are available.
-    """
-    if torch.cuda.device_count() > 1:
-        # Check and set necessary environment variables
-        if "RANK" not in os.environ:
-            os.environ["RANK"] = "0"
-        if "WORLD_SIZE" not in os.environ:
-            os.environ["WORLD_SIZE"] = str(torch.cuda.device_count())
-        if "MASTER_ADDR" not in os.environ:
-            os.environ["MASTER_ADDR"] = "localhost"
-        if "MASTER_PORT" not in os.environ:
-            os.environ["MASTER_PORT"] = "12355"  # or any other free port
-
-        dist.init_process_group(backend="nccl")
-        torch.cuda.set_device(dist.get_rank() % torch.cuda.device_count())
-
-
 def get_model_and_tokenizer(
     model_name: str,
     load_half_precison: bool = False,
@@ -65,9 +46,6 @@ def get_model_and_tokenizer(
         Tuple[AutoModel, AutoTokenizer]: Loaded model and tokenizer.
     """
     print(f"*** Caching to {CACHE_DIR} ***")
-
-    if distributed:
-        init_distributed()
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=CACHE_DIR)
 
