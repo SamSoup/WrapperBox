@@ -1,0 +1,10 @@
+{
+    "dataset_name_or_path": "toxigen",
+    "model_name_or_path": "mistralai/Mistral-7B-Instruct-v0.3",
+    "load_half_precision": false,
+    "pooler": "mean_with_attention",
+    "batch_size": 4,
+    "max_length": 512,
+    "prompt_path": "toxigen/zero_shot/mistral_prompt.txt",
+    "output_dir": "./toxigen/Mistral_7B_Instruct/mean_with_attention"
+}

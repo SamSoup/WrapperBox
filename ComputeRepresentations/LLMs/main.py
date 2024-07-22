@@ -7,14 +7,14 @@ Usage: python3 main.py --help
 import argparse
 import json
 import os
+from typing import Iterable
+import pandas as pd
 import numpy as np
-from datasets import load_dataset
 from ComputeRepresentations.LLMs.ModelForSentenceLevelRepresentation import (
     ModelForSentenceLevelRepresentation,
 )
-from utils.constants.directory import CACHE_DIR, PROMPTS_DIR
+from utils.constants.directory import DATA_DIR, PROMPTS_DIR
 from utils.io import mkdir_if_not_exists
-from datasets import Dataset
 
 
 def get_args():
@@ -111,8 +111,9 @@ def get_args():
     return args
 
 
-def load_prompt_with_dataset(prompt_fname: str, dataset: Dataset) -> Dataset:
-    # Load Prompt pre-fix and update 'text' column to use this
+def format_texts_with_prompt(
+    prompt_fname: str, texts: Iterable[str]
+) -> Iterable[str]:
     if os.path.isfile(prompt_fname):
         prompt_path = prompt_fname
     else:
@@ -120,11 +121,9 @@ def load_prompt_with_dataset(prompt_fname: str, dataset: Dataset) -> Dataset:
         prompt_path = os.path.join(PROMPTS_DIR, prompt_fname)
     with open(prompt_path, "r") as file:
         prompt = file.read().strip()
-    # NOTE: Assume 'text' is the column of inputs to compute reps
-    dataset = dataset.map(
-        lambda example: {"text": prompt.format(input=example["text"])}
-    )
-    return dataset
+
+    texts = [prompt.format(input=t) for t in texts]
+    return texts
 
 
 if __name__ == "__main__":
@@ -135,9 +134,20 @@ if __name__ == "__main__":
         "test": args.do_test,
     }
     mkdir_if_not_exists(args.output_dir)
-    datasets = load_dataset(
-        args.dataset_name_or_path, token=True, cache_dir=CACHE_DIR
-    )
+    # Load Datasets, from disk because
+    ## datasets might require a GLIBC version higher than what is available
+    datasets = {}
+    for split in to_dos:
+        if to_dos[split]:
+            datasets[split] = pd.read_csv(
+                os.path.join(
+                    DATA_DIR,
+                    "datasets",
+                    args.dataset_name_or_path,
+                    f"{split}.csv",
+                )
+            )
+
     # NOTE: assume we are loading a casualLM
     model = ModelForSentenceLevelRepresentation(
         args.model_name_or_path,
@@ -147,7 +157,8 @@ if __name__ == "__main__":
     )
     for split, dataset in datasets.items():
         ## Print some diagnostics
-        max_length_in_dataset = max([len(s) for s in dataset["text"]])
+        texts = dataset["text"].tolist()
+        max_length_in_dataset = max([len(s) for s in texts])
         print(
             f"The maximum sequence length in the dataset is {max_length_in_dataset}."
             f"The current set maximum sequence length is {args.max_length}"
@@ -159,21 +170,19 @@ if __name__ == "__main__":
             print(f"***** Computing Representations for {split} dataset *****")
 
             if args.prompt_path is not None:
-                dataset = load_prompt_with_dataset(
-                    prompt_fname=args.prompt_path, dataset=dataset
+                texts = format_texts_with_prompt(
+                    prompt_fname=args.prompt_path, texts=texts
                 )
 
             chunk_size = (
-                args.chunk_size
-                if len(dataset) > args.chunk_size
-                else len(dataset)
+                args.chunk_size if len(texts) > args.chunk_size else len(texts)
             )
-            num_chunks = (len(dataset) // chunk_size) + 1
+            num_chunks = (len(texts) // chunk_size) + 1
 
             for i in range(num_chunks):
                 start_idx = i * chunk_size
-                end_idx = min((i + 1) * chunk_size, len(dataset))
-                dataset_chunk = dataset.select(range(start_idx, end_idx))
+                end_idx = min((i + 1) * chunk_size, len(texts))
+                texts_chunk = texts[start_idx:end_idx]
 
                 print(
                     f"Processing chunk {i+1}/{num_chunks}, size: {end_idx-start_idx+1}"
@@ -181,7 +190,7 @@ if __name__ == "__main__":
 
                 # NOTE: Assume 'text' is the column of inputs to compute reps
                 representations = model.extract_representations(
-                    texts=dataset_chunk["text"],
+                    texts=texts_chunk,
                     batch_size=args.batch_size,
                     max_length=args.max_length,
                 )
@@ -190,7 +199,7 @@ if __name__ == "__main__":
                     args.output_dir,
                     (
                         f"{split}_chunk_{i+1}.npy"
-                        if len(dataset) > args.chunk_size
+                        if len(texts) > args.chunk_size
                         else f"{split}.npy"
                     ),
                 )
