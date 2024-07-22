@@ -1,5 +1,5 @@
 {
-    "prompt": "esnli/gemma_prompt.txt",
+    "prompt": "esnli/zero_shot/gemma_prompt.txt",
     "dataset_name_or_path": "esnli",
     "model_name_or_path": "google/gemma-2-9b-it",
     "load_half_precision": true,

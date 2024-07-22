@@ -1,5 +1,5 @@
 {
-    "prompt": "esnli/toxigen_llama_prompt.txt",
+    "prompt": "esnli/zero_shot/toxigen_llama_prompt.txt",
     "dataset_name_or_path": "esnli",
     "model_name_or_path": "meta-llama/Meta-Llama-3-8B-Instruct",
     "batch_size": 8,
