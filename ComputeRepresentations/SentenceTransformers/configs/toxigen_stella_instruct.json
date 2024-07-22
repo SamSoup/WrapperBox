@@ -2,6 +2,6 @@
     "dataset_name_or_path": "Samsoup/toxigen",
     "model_name_or_path": "dunzhang/stella_en_1.5B_v5",
     "batch_size": 128,
-    "instruction": "Given a text input, determine whether the content is toxic or benign for binary toxicity detection.",
+    "instruction": "Given a text input, classify the content as either toxic or benign for binary toxicity detection.",
     "output_dir": "./toxigen/stella_instruct/"
 }

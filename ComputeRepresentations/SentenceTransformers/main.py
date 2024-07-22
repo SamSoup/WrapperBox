@@ -135,10 +135,8 @@ if __name__ == "__main__":
     # Load the model, wrapping it for multi-gpu if needed
     model = SentenceTransformer(args.model_name_or_path, cache_folder=CACHE_DIR)
     if torch.cuda.device_count() > 1:
-        print(f"Using {torch.cuda.device_count()} GPUs!")
-        model = torch.nn.DataParallel(model)
-        model = model.module  # call on the inner module later
-        model = model.to("cuda")
+        print(f"Starting multiple processes on multiple gpus!")
+        pool = model.start_multi_process_pool()
 
     for split, dataset in datasets.items():
         print(f"***** Computing Representations for {split} dataset *****")
@@ -173,7 +171,10 @@ if __name__ == "__main__":
 
             representations = []
             for batch in tqdm(dataloader):
-                embeddings = model.encode(batch, convert_to_numpy=True)
+                if torch.cuda.device_count() > 1:
+                    embeddings = model.encode_multi_process(batch, pool)
+                else:
+                    embeddings = model.encode(batch, convert_to_numpy=True)
                 representations.append(embeddings)
 
             representations = np.vstack(representations)
@@ -187,3 +188,7 @@ if __name__ == "__main__":
             )
             # Save representations as numpy file
             np.save(save_path, representations)
+
+    if torch.cuda.device_count() > 1:
+        # Stop the processes for multiple gpus
+        model.stop_multi_process_pool(pool)

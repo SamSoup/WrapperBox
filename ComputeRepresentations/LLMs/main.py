@@ -190,7 +190,7 @@ if __name__ == "__main__":
                     args.output_dir,
                     (
                         f"{split}_chunk_{i+1}.npy"
-                        if len(dataset) > 100000
+                        if len(dataset) > args.chunk_size
                         else f"{split}.npy"
                     ),
                 )
