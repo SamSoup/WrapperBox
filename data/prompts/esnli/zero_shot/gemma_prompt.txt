@@ -3,7 +3,7 @@ You are a natural language inference (NLI) model.
 
 After reading the provided text, categorize the relationship between the premise and the hypothesis as either "0" for entailment, "1" for neutral, or "2" for contradiction. Only respond with one of these three numbers. Do not include any additional text or explanations.
 <<<
-Text: {input}
+{input}
 >>>
 <end_of_turn>
 <start_of_turn>model
