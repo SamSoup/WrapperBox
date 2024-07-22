@@ -129,15 +129,15 @@ def generate_responses(
             top_k=args.top_k,
             top_p=args.top_p,
         )
-
-        generated_text = output["generated_text"]
+        # replace the original prompt to only obtain new tokens
+        generated_text = output[0]["generated_text"]
+        new_tokens = generated_text.replace(text, "").strip()
+        # extract a label if is classification
         if args.is_classification:
-            pred = extract_classification_output(
-                generated_text, args.num_classes
-            )
+            pred = extract_classification_output(new_tokens, args.num_classes)
             results.append(pred)
         else:
-            results.append(generated_text)
+            results.append(new_tokens)
     return results
 
 
