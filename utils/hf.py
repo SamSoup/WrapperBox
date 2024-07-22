@@ -4,7 +4,6 @@ from transformers import (
     AutoModelForSequenceClassification,
     AutoTokenizer,
     AutoModelForCausalLM,
-    LlamaConfig,
     set_seed,
 )
 from utils.constants.directory import CACHE_DIR
@@ -78,7 +77,7 @@ def get_model_and_tokenizer(
         if causal_lm
         else AutoModelForSequenceClassification
     )
-    ## 
+    ##
     model = MODEL_CLASS.from_pretrained(
         model_name, cache_dir=CACHE_DIR, device_map="auto"
     )
