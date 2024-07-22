@@ -208,7 +208,7 @@ def main():
         test_dataset = SentenceDataset(texts)
 
     ### Log the first input to check format
-    print("First input:\n", texts[0])
+    print("First input:\n", test_dataset[0])
 
     ## Load Model
     model, tokenizer = get_model_and_tokenizer(
