@@ -78,7 +78,11 @@ def get_model_and_tokenizer(
         if causal_lm
         else AutoModelForSequenceClassification
     )
-    model = MODEL_CLASS.from_pretrained(model_name, cache_dir=CACHE_DIR)
+    ## 
+    model = MODEL_CLASS.from_pretrained(
+        model_name, cache_dir=CACHE_DIR, device_map="auto"
+    )
+    # model = MODEL_CLASS.from_pretrained(model_name, torch_dtype=torch.float16, cache_dir=CACHE_DIR)
 
     ## Change to half precision, if specified
     if load_half_precison:
