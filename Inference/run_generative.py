@@ -116,22 +116,26 @@ def generate_responses(
     pipeline: Callable, texts: Iterable[str], args: argparse.Namespace
 ):
     results = []
-    outputs = pipeline(
-        texts,
-        max_new_tokens=args.max_new_tokens,
-        do_sample=True,
-        num_return_sequences=1,
-        temperature=args.temperature,
-        top_k=args.top_k,
-        top_p=args.top_p,
-    )
-    for output in tqdm(outputs):
+    # Iterate over the dataset; It is recommended that we iterate directly
+    # over the dataset without needing to batch
+    print("*** Running Sequence Classification ***")
+    for text in tqdm(texts):
+        output = pipeline(
+            text,
+            max_new_tokens=args.max_new_tokens,
+            do_sample=True,
+            num_return_sequences=1,
+            temperature=args.temperature,
+            top_k=args.top_k,
+            top_p=args.top_p,
+        )
+
         generated_text = output["generated_text"]
         if args.is_classification:
-            predictions = extract_classification_output(
+            pred = extract_classification_output(
                 generated_text, args.num_classes
             )
-            results.append(predictions)
+            results.append(pred)
         else:
             results.append(generated_text)
     return results
