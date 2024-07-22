@@ -4,6 +4,7 @@
     "model_name_or_path": "google/gemma-7b-it",
     "batch_size": 2,
     "is_classification": true,
+    "distributed": true,
     "num_classes": 2,
     "output_dir": "./results/esnli/gemma_7b_instruct",
     "max_new_tokens": 10,

@@ -84,6 +84,12 @@ def get_args():
         help="If true, load the model in half precision",
     )
     parser.add_argument(
+        "--distributed",
+        type=bool,
+        default=False,
+        help="Load to multiple gpus?",
+    )
+    parser.add_argument(
         "--num_classes",
         type=int,
         default=2,
