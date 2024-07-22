@@ -137,8 +137,8 @@ if __name__ == "__main__":
     if torch.cuda.device_count() > 1:
         print(f"Using {torch.cuda.device_count()} GPUs!")
         model = torch.nn.DataParallel(model)
-    model = model.to("cuda")
-    model = model.module  # call on the inner module later
+        model = model.module  # call on the inner module later
+        model = model.to("cuda")
 
     for split, dataset in datasets.items():
         print(f"***** Computing Representations for {split} dataset *****")
