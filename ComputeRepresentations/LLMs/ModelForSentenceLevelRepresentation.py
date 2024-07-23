@@ -31,7 +31,6 @@ class ModelForSentenceLevelRepresentation:
         self.model, self.tokenizer = get_model_and_tokenizer(
             model_name, load_half_precision, causal_lm=casual_lm
         )
-        self.model.to(self.device)
         self.model.eval()
         self.pooler_name = pooler
         self.pooler = EmbeddingPooler().get(pooler)

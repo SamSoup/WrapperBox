@@ -31,7 +31,6 @@ def get_model_and_tokenizer(
     model_name: str,
     load_half_precison: bool = False,
     causal_lm: bool = False,
-    distributed: bool = False,
 ) -> Tuple[AutoModel, AutoTokenizer]:
     """
     Loads the model and tokenizer based on the provided model name. Assumes
