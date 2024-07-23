@@ -158,14 +158,6 @@ if __name__ == "__main__":
     for split, dataset in datasets.items():
         ## Print some diagnostics
         texts = dataset["text"].tolist()
-        max_length_in_dataset = max([len(s) for s in texts])
-        print(
-            "**** Sequence Length Diagnostic ****\n"
-            f"The maximum sequence length in the dataset is {max_length_in_dataset}.\n"
-            f"The current set maximum sequence length is {args.max_length}"
-        )
-        if args.max_length < max_length_in_dataset:
-            print("WARNING: Sequence truncation will occur")
 
         if to_dos[split]:
             print(f"***** Computing Representations for {split} dataset *****")
@@ -176,6 +168,14 @@ if __name__ == "__main__":
                 )
 
             print(f"First input: {texts[0]}")
+            max_length_in_dataset = max([len(s) for s in texts])
+            print(
+                "**** Sequence Length Diagnostic ****\n"
+                f"The maximum sequence length in the dataset is {max_length_in_dataset}.\n"
+                f"The current set maximum sequence length is {args.max_length}"
+            )
+            if args.max_length < max_length_in_dataset:
+                print("WARNING: Sequence truncation will occur")
 
             chunk_size = (
                 args.chunk_size if len(texts) > args.chunk_size else len(texts)
