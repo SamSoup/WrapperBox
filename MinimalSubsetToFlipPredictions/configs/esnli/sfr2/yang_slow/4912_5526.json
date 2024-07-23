@@ -9,5 +9,7 @@
     "l2": 1,
     "do_yang2023": true,
     "wrapper_name": "LogisticRegression",
-    "algorithm_type": "slow"
+    "algorithm_type": "slow",
+    "idx_start": 4912,
+    "idx_end": 5526
 }
