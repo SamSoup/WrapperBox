@@ -120,3 +120,4 @@ logging:
 
 loss_function:
   type: "CrossEntropyLoss"
+  params: # no weights for balanced dataset
