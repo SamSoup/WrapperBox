@@ -3,8 +3,8 @@
     "model_name_or_path": "google/gemma-7b-it",
     "load_half_precision": false,
     "pooler": "mean_with_attention",
-    "batch_size": 2,
+    "batch_size": 4,
     "max_length": 512,
     "prompt_path": null,
-    "output_dir": "./esnli_subset/Gemma_7B_Instruct/mean_with_attention"
+    "output_dir": "./esnli_subset/Gemma_7B_Instruct/mean_with_attention/no_prompt"
 }

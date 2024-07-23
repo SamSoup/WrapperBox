@@ -6,5 +6,5 @@
     "batch_size": 4,
     "max_length": 512,
     "prompt_path": null,
-    "output_dir": "./esnli_subset/Llama2_7B/mean_with_attention"
+    "output_dir": "./esnli_subset/Llama2_7B/mean_with_attention/no_prompt"
 }
