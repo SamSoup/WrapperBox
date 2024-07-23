@@ -1,6 +1,6 @@
 {
     "dataset": "esnli_subset",
-    "model": "sfr2_instruct",
+    "model": "sfr2_instruct_alt",
     "seed": 42,
     "wrapper_name": "LGBM",
     "output_dir": "./results/sfr2/esnli_subset/LGBM",
