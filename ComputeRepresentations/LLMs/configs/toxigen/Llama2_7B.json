@@ -3,7 +3,7 @@
     "model_name_or_path": "meta-llama/Llama-2-7b-hf",
     "load_half_precision": false,
     "pooler": "mean_with_attention",
-    "batch_size": 4,
+    "batch_size": 2,
     "max_length": 1024,
     "prompt_path": "toxigen/zero_shot/llama2_prompt.txt",
     "output_dir": "./toxigen/Llama2_7B/mean_with_attention"
