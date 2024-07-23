@@ -3,8 +3,8 @@
     "model_name_or_path": "meta-llama/Meta-Llama-3-8B-Instruct",
     "load_half_precision": false,
     "pooler": "mean_with_attention",
-    "batch_size": 4,
-    "max_length": 512,
+    "batch_size": 1,
+    "max_length": 2048,
     "prompt_path": "esnli/zero_shot/llama3_prompt.txt",
     "output_dir": "./esnli_subset/Llama3_8B_Instruct/mean_with_attention"
 }
