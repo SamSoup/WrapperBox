@@ -160,7 +160,8 @@ if __name__ == "__main__":
         texts = dataset["text"].tolist()
         max_length_in_dataset = max([len(s) for s in texts])
         print(
-            f"The maximum sequence length in the dataset is {max_length_in_dataset}."
+            "**** Sequence Length Diagnostic ****\n"
+            f"The maximum sequence length in the dataset is {max_length_in_dataset}.\n"
             f"The current set maximum sequence length is {args.max_length}"
         )
         if args.max_length < max_length_in_dataset:
