@@ -9,7 +9,6 @@ showJob:
 		echo "Usage: make showJob job_id=<job_id>"; \
 	else \
 		squeue -j $(job_id) -o "%i %j %t %M %l %R"; \
-		sacct -j $(job_id) --format=JobID,JobName%30,Partition,NodeList,Elapsed,State; \
 	fi
 
 sshToMachine:
