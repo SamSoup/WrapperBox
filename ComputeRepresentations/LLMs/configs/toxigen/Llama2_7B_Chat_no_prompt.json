@@ -1,0 +1,10 @@
+{
+    "dataset_name_or_path": "toxigen",
+    "model_name_or_path": "meta-llama/Llama-2-7b-chat-hf",
+    "load_half_precision": false,
+    "pooler": "mean_with_attention",
+    "batch_size": 4,
+    "max_length": 512,
+    "prompt_path": null,
+    "output_dir": "./toxigen/Llama2_7B_Chat/mean_with_attention/no_prompt"
+}
