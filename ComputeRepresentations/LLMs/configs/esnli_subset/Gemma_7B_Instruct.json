@@ -5,6 +5,6 @@
     "pooler": "mean_with_attention",
     "batch_size": 4,
     "max_length": 1024,
-    "prompt_path": "esnli_subset/zero_shot/gemma_prompt.txt",
+    "prompt_path": "esnli/zero_shot/gemma_prompt.txt",
     "output_dir": "./esnli_subset/Gemma_7B_Instruct/mean_with_attention"
 }
