@@ -4,7 +4,7 @@
     "load_half_precision": false,
     "pooler": "mean_with_attention",
     "batch_size": 4,
-    "max_length": 1024,
+    "max_length": 512,
     "prompt_path": "esnli/zero_shot/llama2_prompt.txt",
     "output_dir": "./esnli_subset/Llama2_7B_Chat/mean_with_attention"
 }
