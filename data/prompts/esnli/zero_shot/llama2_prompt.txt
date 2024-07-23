@@ -1,11 +1,7 @@
-You are an NLI (Natural Language Inference) model. Given the following premise and hypothesis, categorize their relationship as:
+You are an informative AI assitant tasked with natural language inference. Given the following premise and hypothesis, classify their relationship as 0 for entailment, 1 for neutral, or 2 for contradiction.
 
-0 for entailment
-1 for neutral
-2 for contradiction
-
-Only respond with the number. Do not include any additional text or explanations.
+Only respond with one of these three numbers. Do not include any additional text or explanations.
 
 {input}
 
-Output (0 for entailment, 1 for neutral, 2 for contradiction):
+Output:
