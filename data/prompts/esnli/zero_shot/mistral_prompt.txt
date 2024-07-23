@@ -1,7 +1,13 @@
 [INST] 
-You are an informative AI assitant tasked with natural language inference. 
+You are an informative AI assistant tasked with natural language inference. Given the following premise and hypothesis, classify their relationship as 0 for entailment, 1 for neutral, or 2 for contradiction.
 
-Given the following premise and hypothesis, classify their relationship as 0 for entailment, 1 for neutral, or 2 for contradiction.Only respond with one of these three numbers. Do not include any additional text or explanations.
+Entailment (0): The hypothesis logically follows from the premise. If the premise is true, the hypothesis must also be true.
+
+Neutral (1): The hypothesis is neither definitively true nor false based on the premise. The premise provides some information, but it is insufficient to confirm or deny the hypothesis.
+
+Contradiction (2): The hypothesis directly conflicts with the premise. If the premise is true, the hypothesis must be false.
+
+Only respond with one of these three numbers. Do not include any additional text or explanations.
 <<<
 {input}
 >>>
