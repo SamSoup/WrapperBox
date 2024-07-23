@@ -1,0 +1,7 @@
+{
+    "dataset_name_or_path": "esnli_subset",
+    "model_name_or_path": "Salesforce/SFR-Embedding-2_R",
+    "batch_size": 64,
+    "instruction": "Given a premise and a hypothesis, determine if the hypothesis logically follows from the premise (entailment), contradicts the premise (contradiction), or neither follows logically nor contradicts it (neutral).",
+    "output_dir": "./esnli_subset/SFR2_instruct_alt"
+}
