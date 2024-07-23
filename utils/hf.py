@@ -57,6 +57,8 @@ def get_model_and_tokenizer(
     model = MODEL_CLASS.from_pretrained(
         model_name, cache_dir=CACHE_DIR, device_map="auto"
     )
+    device = next(model.parameters()).device
+    print(f"The model is on device: {device}")
     # model = MODEL_CLASS.from_pretrained(model_name, torch_dtype=torch.float16, cache_dir=CACHE_DIR)
 
     ## Change to half precision, if specified
