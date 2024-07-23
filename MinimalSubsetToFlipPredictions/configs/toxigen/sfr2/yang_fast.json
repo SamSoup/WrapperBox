@@ -1,0 +1,13 @@
+{
+    "dataset": "toxigen",
+    "model": "sfr2_instruct",
+    "seed": 42,
+    "output_dir": "./results/sfr2/toxigen/yang_fast",
+    "load_sentence_transformer_embedding": true,
+    "load_sentence_transformer_wrapper": true,
+    "thresh": 0.5,
+    "l2": 1,
+    "do_yang2023": true,
+    "wrapper_name": "LogisticRegression",
+    "algorithm_type": "fast"
+}

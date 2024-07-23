@@ -7,6 +7,7 @@ python3 main.py --config conig/<X>
 OR: pass in all other arguments
 """
 
+import pickle
 from MinimalSubsetToFlipPredictions.Yang2023.interface import (
     compute_minimal_subset_to_flip_predictions,
 )
@@ -14,7 +15,11 @@ from MinimalSubsetToFlipPredictions.models.factory import (
     FindMinimalSubsetFactory,
 )
 from classifiers.KNeighborsClassifierDummy import KNeighborsClassifierDummy
-from utils.constants.directory import RESULTS_DIR, SAVED_MODELS_DIR
+from utils.constants.directory import (
+    RESULTS_DIR,
+    SAVED_MODELS_DIR,
+    EMBEDDINGS_DIR,
+)
 from utils.constants.models import (
     WRAPPER_BOXES_NEEDING_BATCHED_MINIMAL_SUBET_SEARCH,
 )
@@ -57,6 +62,18 @@ def get_args():
     )
     parser.add_argument(
         "--model", type=str, default="deberta-large", help="Name of the model"
+    )
+    parser.add_argument(
+        "--load_sentence_transformer_embedding",
+        type=bool,
+        default=False,
+        help="If true, load from EMBEDDING_DIR/MODEL_NAME for embeddings of sentence transformers",
+    )
+    parser.add_argument(
+        "--load_sentence_transformer_wrapper",
+        type=bool,
+        default=False,
+        help="If true, load from EMBEDDING_DIR/MODEL_NAME for embeddings of sentence transformers",
     )
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
     parser.add_argument(
@@ -160,7 +177,7 @@ def get_args():
     return args
 
 
-def load_embeddings_from_disk(args: argparse.Namespace):
+def load_pooled_layer_embeddings_from_disk(args: argparse.Namespace):
     train_embeddings = load_embeddings(
         dataset=args.dataset,
         model=args.model,
@@ -186,6 +203,35 @@ def load_embeddings_from_disk(args: argparse.Namespace):
         split="test",
         pooler=args.pooler,
         layer=args.layer,
+    )
+
+    train_eval_embeddings = np.vstack([train_embeddings, eval_embeddings])
+    test_embeddings = test_embeddings[args.idx_start : args.idx_end, :]
+
+    # Print summary of embeddings
+    print(f"Loaded train embeddings with {train_embeddings.shape} shape")
+    print(f"Loaded eval embeddings with {eval_embeddings.shape} shape")
+    print(f"Loaded test embeddings with {test_embeddings.shape} shape")
+
+    return (
+        train_embeddings,
+        eval_embeddings,
+        train_eval_embeddings,
+        test_embeddings,
+    )
+
+
+def load_sentence_transformer_embeddings_from_disk(args: argparse.Namespace):
+    train_embeddings = np.load(
+        os.path.join(EMBEDDINGS_DIR, args.dataset, args.model, "train.npy")
+    )
+
+    eval_embeddings = np.load(
+        os.path.join(EMBEDDINGS_DIR, args.dataset, args.model, "eval.npy")
+    )
+
+    test_embeddings = np.load(
+        os.path.join(EMBEDDINGS_DIR, args.dataset, args.model, "test.npy")
     )
 
     train_eval_embeddings = np.vstack([train_embeddings, eval_embeddings])
@@ -245,12 +291,17 @@ def load_dataset_and_labels(args: argparse.Namespace):
 if __name__ == "__main__":
     # Get arguments from command line
     args = get_args()
+    DATASET_FCT = (
+        load_sentence_transformer_embeddings_from_disk
+        if args.load_sentence_transformer_embedding
+        else load_pooled_layer_embeddings_from_disk
+    )
     (
         train_embeddings,
         eval_embeddings,
         train_eval_embeddings,
         test_embeddings,
-    ) = load_embeddings_from_disk(args=args)
+    ) = DATASET_FCT(args=args)
     (
         dataset_dict,
         train_eval_dataset_dict,
@@ -260,9 +311,6 @@ if __name__ == "__main__":
         test_labels,
     ) = load_dataset_and_labels(args=args)
 
-    # Check output dir is absolute path; if not, append RESULTS_DIR
-    if not os.path.isabs(args.output_dir):
-        args.output_dir = RESULTS_DIR / args.output_dir
     mkdir_if_not_exists(args.output_dir)
 
     # Load Wrapper box, unless we are doing cached KNN
@@ -312,13 +360,26 @@ if __name__ == "__main__":
         )
         print("Loaded Cached KNN predictions and neighbors from disk")
     else:
-        clf = load_wrapperbox(
-            dataset=args.dataset,
-            model=args.model,
-            seed=args.seed,
-            pooler=args.pooler,
-            wrapperbox=args.wrapper_name,
-        )
+        if args.load_sentence_transformer_wrapper:
+            with open(
+                os.path.join(
+                    SAVED_MODELS_DIR,
+                    args.dataset,
+                    "SentenceTransformers",
+                    args.model,
+                    f"{args.wrapper_name}.pkl",
+                ),
+                "rb",
+            ) as f:
+                clf = pickle.load(f)
+        else:
+            clf = load_wrapperbox(
+                dataset=args.dataset,
+                model=args.model,
+                seed=args.seed,
+                pooler=args.pooler,
+                wrapperbox=args.wrapper_name,
+            )
 
     if args.do_yang2023:
         # Running Yang et al

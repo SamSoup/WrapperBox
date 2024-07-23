@@ -217,20 +217,20 @@ class FindMinimalSubsetKNN(FindMinimalSubset):
         #     subset_indices.append(indices[:end].tolist())
 
         # do parallel versus do iterative, due to memory constraints
-        if predictions.size < 1000:
-            print("Samll Sample Size, Finding St via Parallel Processes")
-            label_indices_to_remove = self._find_subset_parallel(
-                predictions=predictions,
-                neighbors_matrix=neigh_labels,
-                K=clf.n_neighbors,
-            )
-        else:
-            print("Large Sample Size, Finding St via Brute Force")
-            label_indices_to_remove = self._find_subset_brute_force(
-                predictions=predictions,
-                neighbors_matrix=neigh_labels,
-                K=clf.n_neighbors,
-            )
+        # if predictions.size < 1000:
+        #     print("Samll Sample Size, Finding St via Parallel Processes")
+        #     label_indices_to_remove = self._find_subset_parallel(
+        #         predictions=predictions,
+        #         neighbors_matrix=neigh_labels,
+        #         K=clf.n_neighbors,
+        #     )
+        # else:
+        print("Large Sample Size, Finding St via Brute Force")
+        label_indices_to_remove = self._find_subset_brute_force(
+            predictions=predictions,
+            neighbors_matrix=neigh_labels,
+            K=clf.n_neighbors,
+        )
 
         # need to convert label indices to example indices
         subset_indices = []

@@ -146,6 +146,8 @@ def IP(
     grad_f = F_dev * (pred * (1 - pred))
     delta_pred = grad_f @ delta_k
 
+    print(delta_pred, delta_pred.shape)
+
     # Loop over all dev points:
     appro_ks = []
     new_predictions = []
