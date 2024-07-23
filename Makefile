@@ -1,5 +1,5 @@
 # Default target
-.PHONY: showMyJobs showJob sshToMachine showQueue showDir taccinfo clean
+.PHONY: showMyJobs showJob showMultiNodeJob sshToMachine showQueue showDir taccinfo clean
 
 showMyJobs:
 	squeue -u ysu707
@@ -9,6 +9,13 @@ showJob:
 		echo "Usage: make showJob job_id=<job_id>"; \
 	else \
 		squeue -j $(job_id) -o "%i %j %t %M %l %R"; \
+	fi
+
+showMultiNodeJob:
+	@if [ -z "$(job_id)" ]; then \
+		echo "Usage: make showMultiNodeJob job_id=<job_id>"; \
+	else \
+		sacct -j $(job_id) --format=JobID,JobName%30,Partition,NodeList,Elapsed,State; \
 	fi
 
 sshToMachine:
