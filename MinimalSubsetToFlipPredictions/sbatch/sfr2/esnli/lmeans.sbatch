@@ -22,7 +22,7 @@ for i in {0..15}; do
     source /work/06782/ysu707/ls6/conda/etc/profile.d/conda.sh
     conda activate wrapperbox
     cd /work/06782/ysu707/ls6/WrapperBox/MinimalSubsetToFlipPredictions
-    python3 verify_validity.py --config configs/esnli/sfr2/lmeans/${start}_${end}.json
+    python3 main.py --config configs/esnli/sfr2/lmeans/${start}_${end}.json
   " &
 done
 
