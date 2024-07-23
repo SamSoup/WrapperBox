@@ -4,7 +4,7 @@
     "load_half_precision": false,
     "pooler": "mean_with_attention",
     "batch_size": 4,
-    "max_length": 512,
+    "max_length": 1024,
     "prompt_path": "toxigen/zero_shot/mistral_prompt.txt",
     "output_dir": "./toxigen/Mistral_7B_Instruct/mean_with_attention"
 }
