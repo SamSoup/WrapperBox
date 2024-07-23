@@ -84,4 +84,4 @@ class FindMinimalSubset(ABC):
         ) as f:
             f.write(json_string)
 
-        print(f"Wrote results to {filename}")
+        print(f"Wrote results to {output_dir}/{filename}")
