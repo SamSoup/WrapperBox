@@ -177,7 +177,7 @@ if __name__ == "__main__":
             chunk_size = (
                 args.chunk_size if len(texts) > args.chunk_size else len(texts)
             )
-            num_chunks = (len(texts) // chunk_size) + 1
+            num_chunks = (len(dataset) + chunk_size - 1) // chunk_size
 
             for i in range(num_chunks):
                 start_idx = i * chunk_size
@@ -185,7 +185,7 @@ if __name__ == "__main__":
                 texts_chunk = texts[start_idx:end_idx]
 
                 print(
-                    f"Processing chunk {i+1}/{num_chunks}, size: {end_idx-start_idx+1}"
+                    f"Processing chunk {i+1}/{num_chunks}, with indices {start_idx} to {end_idx}"
                 )
 
                 # NOTE: Assume 'text' is the column of inputs to compute reps
