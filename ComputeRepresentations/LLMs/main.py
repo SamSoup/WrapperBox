@@ -175,6 +175,8 @@ if __name__ == "__main__":
                     prompt_fname=args.prompt_path, texts=texts
                 )
 
+            print(f"First input: {texts[0]}")
+
             chunk_size = (
                 args.chunk_size if len(texts) > args.chunk_size else len(texts)
             )
