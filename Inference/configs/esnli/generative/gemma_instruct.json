@@ -6,8 +6,8 @@
     "is_classification": true,
     "num_classes": 3,
     "output_dir": "./results/esnli/gemma_7b_instruct",
-    "max_new_tokens": 10,
-    "temperature": 0.7,
+    "max_new_tokens": 2,
+    "temperature": 0.3,
     "top_k": 2,
     "top_p": 0.95,
     "seed": 42
