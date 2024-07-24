@@ -1,0 +1,14 @@
+{
+    "subsets_filename": "./results/sfr2/esnli_subset/yang_fast/yang_fast.pkl",
+    "dataset": "esnli_subset",
+    "model": "sfr2_instruct_alt",
+    "wrapper_name": "LogisticRegression",
+    "seed": 42,
+    "output_dir": "./results/sfr2/esnli_subset/evaluate_yang_fast",
+    "load_sentence_transformer_embedding": true,
+    "load_sentence_transformer_wrapper": true,
+    "thresh": 0.5,
+    "l2": 1,
+    "idx_start": 614,
+    "idx_end": 1228
+}
