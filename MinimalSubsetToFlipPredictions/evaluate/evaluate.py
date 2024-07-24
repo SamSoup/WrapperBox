@@ -103,7 +103,7 @@ def retrain_and_evaluate_validity(
     new_clf.fit(reduced_embeddings, reduced_labels)
     new_pred = get_predictions(new_clf, x_test.reshape(1, -1))[0]
     # this subset is valid only if new prediction does not equal old prediction
-    print(old_pred, new_pred)
+    # print(old_pred, new_pred)
     return old_pred, new_pred, new_pred != old_pred
 
 

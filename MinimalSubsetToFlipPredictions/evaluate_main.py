@@ -2,16 +2,9 @@
 ## and is meant to be run in parallel for different examples to check
 
 from MinimalSubsetToFlipPredictions.evaluate import (
-    compute_subset_metrics,
     evaluate_predictions,
 )
-from sklearn import clone
-from sklearn.base import BaseEstimator
-from sklearn.linear_model import LogisticRegression
-from sympy import false
-from tqdm import tqdm
-
-from utils.constants.directory import RESULTS_DIR, WORK_DIR
+from utils.constants.directory import WORK_DIR, EMBEDDINGS_DIR, SAVED_MODELS_DIR
 from utils.io import (
     load_dataset_from_hf,
     load_labels_at_split,
@@ -40,7 +33,7 @@ def parse_args():
         "--subsets_filename",
         type=str,
         default=None,
-        help="Name of the file that contains the subset sizes.",
+        help="Name of the file that contains the indices of subsets per prediction.",
     )
     parser.add_argument(
         "--idx_start",
@@ -70,16 +63,16 @@ def parse_args():
     )
     parser.add_argument("--layer", type=int, default=24, help="Layer number")
     parser.add_argument(
-        "--do_yang2023",
+        "--load_sentence_transformer_embedding",
         type=bool,
         default=False,
-        help="If true, run minimal subset algorithm" " from yang et. al. 2023",
+        help="If true, load from EMBEDDING_DIR/MODEL_NAME for embeddings of sentence transformers",
     )
     parser.add_argument(
-        "--algorithm_type",
-        type=str,
-        default="fast",
-        help="Algorithm 1 or Algorithm 2 as indicated by fast (1) or slow (2)",
+        "--load_sentence_transformer_wrapper",
+        type=bool,
+        default=False,
+        help="If true, load from EMBEDDING_DIR/MODEL_NAME for embeddings of sentence transformers",
     )
     parser.add_argument(
         "--wrapper_name",
@@ -115,7 +108,7 @@ def parse_args():
     return args
 
 
-def load_embeddings_from_disk(args: argparse.Namespace):
+def load_pooled_layer_embeddings_from_disk(args: argparse.Namespace):
     train_embeddings = load_embeddings(
         dataset=args.dataset,
         model=args.model,
@@ -145,6 +138,35 @@ def load_embeddings_from_disk(args: argparse.Namespace):
 
     train_eval_embeddings = np.vstack([train_embeddings, eval_embeddings])
     # test_embeddings = test_embeddings[args.idx_start : args.idx_end, :]
+    # Print summary of embeddings
+    print(f"Loaded train embeddings with {train_embeddings.shape} shape")
+    print(f"Loaded eval embeddings with {eval_embeddings.shape} shape")
+    print(f"Loaded test embeddings with {test_embeddings.shape} shape")
+
+    return (
+        train_embeddings,
+        eval_embeddings,
+        train_eval_embeddings,
+        test_embeddings,
+    )
+
+
+def load_sentence_transformer_embeddings_from_disk(args: argparse.Namespace):
+    train_embeddings = np.load(
+        os.path.join(EMBEDDINGS_DIR, args.dataset, args.model, "train.npy")
+    )
+
+    eval_embeddings = np.load(
+        os.path.join(EMBEDDINGS_DIR, args.dataset, args.model, "eval.npy")
+    )
+
+    test_embeddings = np.load(
+        os.path.join(EMBEDDINGS_DIR, args.dataset, args.model, "test.npy")
+    )
+
+    train_eval_embeddings = np.vstack([train_embeddings, eval_embeddings])
+    test_embeddings = test_embeddings[args.idx_start : args.idx_end, :]
+
     # Print summary of embeddings
     print(f"Loaded train embeddings with {train_embeddings.shape} shape")
     print(f"Loaded eval embeddings with {eval_embeddings.shape} shape")
@@ -197,12 +219,17 @@ def load_dataset_and_labels(args: argparse.Namespace):
 if __name__ == "__main__":
     # Get arguments from command line
     args = parse_args()
+    DATASET_FCT = (
+        load_sentence_transformer_embeddings_from_disk
+        if args.load_sentence_transformer_embedding
+        else load_pooled_layer_embeddings_from_disk
+    )
     (
         train_embeddings,
         eval_embeddings,
         train_eval_embeddings,
         test_embeddings,
-    ) = load_embeddings_from_disk(args=args)
+    ) = DATASET_FCT(args=args)
     (
         dataset_dict,
         train_eval_dataset_dict,
@@ -212,16 +239,18 @@ if __name__ == "__main__":
         test_labels,
     ) = load_dataset_and_labels(args=args)
 
-    # Load pre-trained classifiers
-    if args.do_yang2023:
-        clf = load_wrapperbox(
-            dataset=args.dataset,
-            model=args.model,
-            seed=args.seed,
-            pooler=args.pooler,
-            wrapperbox="LogisticRegression",
-        )
-        save_name = f"yang_{args.algorithm_type}"
+    if args.load_sentence_transformer_wrapper:
+        with open(
+            os.path.join(
+                SAVED_MODELS_DIR,
+                args.dataset,
+                "SentenceTransformers",
+                args.model,
+                f"{args.wrapper_name}.pkl",
+            ),
+            "rb",
+        ) as f:
+            clf = pickle.load(f)
     else:
         clf = load_wrapperbox(
             dataset=args.dataset,
@@ -230,18 +259,19 @@ if __name__ == "__main__":
             pooler=args.pooler,
             wrapperbox=args.wrapper_name,
         )
-        save_name = args.wrapper_name
 
     # Load pre-computed subsets from directory
     fname = args.subsets_filename
     if fname is None:
-        fname = f"{args.dataset}_{args.model}_{save_name}.pickle"
-    if not os.path.isabs(fname):
+        fname = f"{args.dataset}_{args.model}_{args.wrapper_name}.pickle"
+    if not os.path.isabs(fname) and not os.path.isfile(fname):
         fname = os.path.join(WORK_DIR, fname)
     with open(fname, "rb") as handle:
         flip_list = pickle.load(handle)
 
-    # Finally: evaluate and retrain
+    # Evaluate and retrain
+    if args.idx_end is None:
+        args.idx_end = len(flip_list)
     ex_indices_to_check = np.arange(args.idx_start, args.idx_end)
     total = ex_indices_to_check.size
     print(
@@ -257,13 +287,9 @@ if __name__ == "__main__":
         ex_indices_to_check=ex_indices_to_check,
     )
 
-    # Check output dir is absolute path; if not, append RESULTS_DIR
-    if not os.path.isabs(args.output_dir):
-        args.output_dir = RESULTS_DIR / args.output_dir
-    mkdir_if_not_exists(args.output_dir)
-
     # Save is subset to disk
-    prefix = f"{args.dataset}_{args.model}_{save_name}_{args.idx_start}to{args.idx_end}"
+    mkdir_if_not_exists(args.output_dir)
+    prefix = f"{args.dataset}_{args.model}_{args.wrapper_name}_{args.idx_start}to{args.idx_end}"
     fname = f"{prefix}_is_valid_subsets.pickle"
     output_file_path = os.path.join(args.output_dir, fname)
     with open(output_file_path, "wb") as f:

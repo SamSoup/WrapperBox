@@ -2,7 +2,7 @@
     "dataset": "toxigen",
     "model": "sfr2_instruct",
     "seed": 42,
-    "output_dir": "./results/sfr2/toxigen/yang_fast",
+    "output_dir": "./results/sfr2/toxigen/yang_slow",
     "load_sentence_transformer_embedding": true,
     "load_sentence_transformer_wrapper": true,
     "thresh": 0.5,
