@@ -165,7 +165,6 @@ def load_sentence_transformer_embeddings_from_disk(args: argparse.Namespace):
     )
 
     train_eval_embeddings = np.vstack([train_embeddings, eval_embeddings])
-    test_embeddings = test_embeddings[args.idx_start : args.idx_end, :]
 
     # Print summary of embeddings
     print(f"Loaded train embeddings with {train_embeddings.shape} shape")
