@@ -142,7 +142,7 @@ def generate_responses(
     results = []
     # Iterate over the dataset; It is recommended that we iterate directly
     # over the dataset without needing to batch
-    print("*** Running Sequence Classification ***")
+    print("*** Running Model Inference ***")
     for output in tqdm(
         pipeline(
             dataset,

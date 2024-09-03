@@ -68,7 +68,7 @@ def get_model_and_tokenizer(
             model = model.bfloat16()
         print(f"*** Model Loaded in Half Precision ***")
 
-    # Set pad token if not already, assu
+    # Set pad token if not already
     if tokenizer.pad_token is None:
         # NOTE: for llama3, use a special pad token
         if "Llama-3" in model_name:
